@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="workspace-header">
+                <div class="workspace-icon">P</div>
+                <div class="workspace-info">
+                    <h3>Pros Workspace</h3>
+                    <p>Free - 1 member</p>
+                </div>
+            </div>
+
+            <div class="upload-section">
+                <div class="button-group">
+                    <button class="upload-btn">Upload</button>
+                    <button class="add-btn">+</button>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <h4>Libraries</h4>
+                <div class="nav-item active">
+                    <div class="icon">📁</div>
+                    <a href="#dashboard" style="text-decoration: none; color: inherit;">Personal</a>
+                </div>
+                <div class="nav-item">
+                    <div class="icon">📁</div>
+                    <a href="#shared" style="text-decoration: none; color: inherit;">Shared</a>
+                </div>
+                <div class="nav-item">
+                    <div class="icon">📁</div>
+                    <a href="#team" style="text-decoration: none; color: inherit;">Team</a>
+                </div>
+            </div>
+
+            <div class="nav-section" style="margin-top: 30px;">
+                <div class="nav-item">
+                    <div class="icon">⭐</div>
+                    <a href="#favorites" style="text-decoration: none; color: inherit;">Favorites</a>
+                </div>
+                <div class="nav-item">
+                    <div class="icon">📊</div>
+                    <a href="#analytics" style="text-decoration: none; color: inherit;">Analytics</a>
+                </div>
+                <div class="nav-item">
+                    <div class="icon">📥</div>
+                    <a href="#inbox" style="text-decoration: none; color: inherit;">Inbox</a>
+                </div>
+                <div class="nav-item">
+                    <div class="icon">🗂️</div>
+                    <a href="#trash" style="text-decoration: none; color: inherit;">Trash</a>
+                </div>
+                <div class="nav-item">
+                    <div class="icon">⚙️</div>
+                    <a href="#settings" style="text-decoration: none; color: inherit;">Settings</a>
+                </div>
+            </div>
+
+            <div class="invite-section">
+                <p class="invite-text">Teams that communicate better, grow faster</p>
+                <button class="invite-btn">
+                    <span style="margin-right: 8px;">👥</span>
+                    Invite members
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <h1>Personal Library</h1>
+                <div class="top-bar-right">
+                    <button class="upgrade-btn">Upgrade</button>
+                    <button class="icon-btn">🔍</button>
+                    <button class="icon-btn">🔔</button>
+                    <button class="icon-btn">❓</button>
+                    <div class="profile-menu">
+                        <button class="profile-btn" onclick="toggleDropdown()">KA</button>
+                        <div class="dropdown" id="profileDropdown">
+                            <div class="dropdown-header">
+                                <h4>Ken Agus</h4>
+                                <p>agusken657@gmail.com</p>
+                            </div>
+                            <div class="dropdown-item">Upgrade</div>
+                            <div class="dropdown-item">Workspace Settings</div>
+                            <div class="dropdown-item">Personal Settings</div>
+                            <div class="dropdown-item">Install Jumpshare</div>
+                            <div class="dropdown-item">Help Center</div>
+                            <div class="dropdown-item">Send Feedback</div>
+                            <div class="dropdown-item">Sign Out</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <!-- Content will be loaded here based on navigation -->
+            </div>
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
