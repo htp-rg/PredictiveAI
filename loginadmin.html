@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OTP Login - GitHub Pages</title>
-  <script src="https://smtpjs.com/v3/smtp.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     body { font-family: Arial; background: #f2f2f2; margin: 0; padding: 0; }
     .container { max-width: 400px; margin: 60px auto; padding: 20px; border-radius: 8px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -26,7 +26,7 @@
 
     <form id="loginForm">
       <label for="email">Email:</label>
-      <input type="email" id="email" required placeholder="Enter your email">
+      <input type="email" id="email" required value="orariojames2@gmail.com">
 
       <label for="password">Password:</label>
       <input type="password" id="password" required placeholder="Enter your password">
@@ -43,6 +43,8 @@
   </div>
 
   <script>
+    emailjs.init("ITbHFP1WBTFPISemM"); 
+
     let otp = null;
     let otpExpiry = null;
     let timerInterval = null;
@@ -70,26 +72,23 @@
 
     function sendOTP(email) {
       otp = Math.floor(100000 + Math.random() * 900000);
-      otpExpiry = new Date(Date.now() + 15*60*1000); 
+      otpExpiry = new Date(Date.now() + 15*60*1000);
 
-      Email.send({
-        Host: "smtp.gmail.com",
-        Username: "orariojames2@gmail.com",      
-        Password: "orariojames",         
-        To: email,
-        From: "YOUR_GMAIL@gmail.com",
-        Subject: "OTP for MARKET AND TRADE MONITORING SYSTEM",
-        Body: `Hello, your OTP is <strong>${otp}</strong>. It is valid for 15 minutes.`
-      }).then(
-        message => {
-          if(message === "OK") {
-            document.getElementById("message").textContent = `OTP sent to ${email}`;
-            startTimer();
-          } else {
-            document.getElementById("message").textContent = "Failed to send OTP";
-          }
-        }
-      );
+      const templateParams = {
+        to_email: email,
+        passcode: otp,
+        time: otpExpiry.toLocaleTimeString()
+      };
+
+      emailjs.send('service_qvm338i', 'template_koj1ggb', templateParams)
+        .then(() => {
+          document.getElementById("message").textContent = `OTP sent to ${email}`;
+          startTimer();
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById("message").textContent = "Failed to send OTP";
+        });
     }
 
     sendBtn.addEventListener("click", () => {
@@ -109,7 +108,6 @@
       e.preventDefault();
       const password = document.getElementById("password").value;
       const codeInput = document.getElementById("codeInput").value.trim();
-
       const correctPassword = "orariojames";
 
       if(!otp) {
