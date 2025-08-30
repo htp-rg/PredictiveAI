@@ -6,7 +6,6 @@
   <title>MARKET AND TRADE MONITORING SYSTEM</title>
   <link rel="stylesheet" href="style.css">
 
-
   <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script type="text/javascript">
     (function() {
@@ -16,6 +15,11 @@
 </head>
 <body>
   <div class="container" style="max-width:400px; margin:60px auto; padding:20px; border:1px solid #ddd; border-radius:8px; background:#fff;">
+  
+    <h1 style="text-align:center; margin-bottom:10px; font-size:20px; color:#333;">
+      MARKET AND TRADE MONITORING SYSTEM
+    </h1>
+
     <h2 style="text-align:center; margin-bottom:20px;">Login as Admin</h2>
 
     <form id="loginForm">
@@ -43,7 +47,6 @@
   <script>
     let sentCode = null;
 
-   
     document.getElementById("sendCodeBtn").addEventListener("click", function() {
       const userEmail = document.getElementById("email").value;
       if (!userEmail) {
@@ -69,15 +72,13 @@
       });
     });
 
- 
     document.getElementById("loginForm").addEventListener("submit", function(event) {
       event.preventDefault();
 
       const password = document.getElementById("password").value;
       const codeInput = document.getElementById("codeInput").value;
 
-     
-      const correctPassword = "orariojames"; // 
+      const correctPassword = "orariojames"; 
 
       if (password === correctPassword && codeInput == sentCode) {
         window.location.href = "dash.html"; 
