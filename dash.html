@@ -1,272 +1,106 @@
-:root{
-  --text:#111111; 
-  --blue:#0a53c1; 
-  --blue-600:#0c60db;
-  --ink-20:#f4f6f8; 
-  --white:#ffffff;
-  --border:#e6e8eb;
-  --shadow:0 6px 24px rgba(0,0,0,.06);
-}
-
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background:var(--white);
-  color:var(--text);
-}
-
-
-.app{display:grid; grid-template-columns:280px 1fr; min-height:100vh}
-.sidebar{border-right:1px solid var(--border); background:var(--white)}
-.main{display:grid; grid-template-rows:64px 1fr; min-width:0}
-
-
-.brand{
-  display:flex; align-items:center; gap:.6rem; height:64px; padding:0 1rem;
-  border-bottom:1px solid var(--border);
-  font-weight:800; letter-spacing:.3px; text-transform:uppercase
-}
-.brand .logo{
-  width:34px; height:34px; border-radius:8px; border:2px solid var(--text);
-  display:grid; place-items:center; font-weight:800
-}
-nav{padding:1rem}
-.nav-group{margin:.75rem 0}
-.nav-label{font-size:.75rem; opacity:.7; margin:.75rem 1rem}
-.nav-item{
-  display:flex; align-items:center; gap:.75rem; padding:.65rem .9rem;
-  border-radius:12px; text-decoration:none; color:var(--text);
-  border:1px solid transparent;
-  transition:transform .18s ease, background-color .18s ease, border-color .18s ease;
-}
-.nav-item:hover{background:var(--ink-20); border-color:var(--border); transform:translateY(-1px)}
-.nav-item.active{background:var(--ink-20); border-color:var(--text)}
-
-
-.topbar{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:0 1rem; border-bottom:1px solid var(--border); background:var(--white);
-}
-.search{
-  display:flex; align-items:center; gap:.5rem;
-  border:1px solid var(--border); border-radius:12px; padding:.5rem .75rem;
-}
-.search input{border:none; outline:none; background:transparent; color:var(--text); width:100%}
-.actions{display:flex; align-items:center; gap:.5rem}
-.btn{
-  background:transparent; color:var(--text);
-  border:1px solid var(--text); padding:.5rem .9rem;
-  border-radius:12px; cursor:pointer; font-weight:600;
-  transition:transform .15s ease, box-shadow .15s ease, background-color .2s ease;
-}
-.btn:hover{background:var(--ink-20); box-shadow:var(--shadow); transform:translateY(-1px)}
-.menu-btn{display:none}
-
-
-.content{padding:1.25rem; overflow:auto}
-.breadcrumbs{font-size:.85rem; opacity:.8}
-.grid{display:grid; gap:1rem; grid-template-columns:repeat(12,1fr)}
-.card{
-  background:var(--white); border:1px solid var(--border);
-  border-radius:16px; padding:1rem; box-shadow:var(--shadow);
-}
-.card h3{margin:.25rem 0 .75rem; font-size:1rem}
-
-
-table{width:100%; border-collapse:collapse; font-size:.95rem}
-table th, table td{border-bottom:1px solid var(--border); padding:.6rem .4rem; text-align:left}
-table th{font-size:.8rem; opacity:.7}
-</head>
-<body>
-  <div class="app">
-
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <div class="logo">Ad</div>
-        <span>LGU 3 ADMIN SYSTEM</span>
-      </div>
-      <nav>
-        <div class="nav-group">
-          <div class="nav-label">Main</div>
-          <a href="#" class="nav-item active" data-route="dashboard">Dashboard</a>
-          <a href="#" class="nav-item" data-route="contacts">Contacts</a>
-          <a href="#" class="nav-item" data-route="opportunities">Opportunities</a>
-          <a href="#" class="nav-item" data-route="marketing">Marketing</a>
-          <a href="#" class="nav-item" data-route="automations">Automations</a>
-        </div>
-        <div class="nav-group">
-          <div class="nav-label">Assets</div>
-          <a href="#" class="nav-item" data-route="websites">Websites</a>
-          <a href="#" class="nav-item" data-route="funnels">Funnels</a>
-          <a href="#" class="nav-item" data-route="reporting">Reporting</a>
-          <a href="#" class="nav-item" data-route="settings">Settings</a>
-        </div>
-      </nav>
-    </aside>
-
-  
-    <section class="main">
-      <header class="topbar">
-        <button class="btn menu-btn" id="menuBtn">☰</button>
-        <div class="search">
-          <span>🔎</span>
-          <input id="searchInput" type="search" placeholder="Search opportunities…" />
-        </div>
-        <div class="actions">
-          <button class="btn" id="newBtn">+ New</button>
-          <button class="btn" id="exportBtn">Export</button>
-        </div>
-      </header>
-
-      <div class="content">
-        <div class="breadcrumbs">Home / <span id="crumb">Dashboard</span></div>
-        <h1 id="pageTitle">Dashboard</h1>
-
-     
-        <div class="grid">
-          <div class="card"><h3>Leads</h3><p id="kpiLeads">1,284</p><small>+12% MoM</small></div>
-          <div class="card"><h3>Opportunities</h3><p id="kpiOpps">342</p><small>+5% MoM</small></div>
-          <div class="card"><h3>Close Rate</h3><p id="kpiClose">28%</p><small>+2 pts</small></div>
-          <div class="card"><h3>Revenue</h3><p id="kpiRevenue">$19,300</p><small>Auto</small></div>
-        </div>
-
-        <!-- Chart & Table -->
-        <div class="grid">
-          <div class="card wide">
-            <h3>Pipeline (Last 6 Weeks)</h3>
-            <canvas id="pipelineChart" height="150"></canvas>
-          </div>
-          <div class="card">
-            <h3>Tasks</h3>
-            <ul>
-              <li><input type="checkbox" /> Call new leads</li>
-              <li><input type="checkbox" checked /> Launch campaign</li>
-              <li><input type="checkbox" /> Update funnel</li>
-              <li><input type="checkbox" /> Review automation</li>
-            </ul>
-          </div>
-        </div>
-
-      
-        <div class="card">
-          <h3>Recent Opportunities</h3>
-          <table id="oppsTable">
-            <thead>
-              <tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th><th>Action</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Website Redesign</td><td>Proposal</td><td>$8400</td><td>Alex</td><td>Today</td><td><button class="editBtn">Edit</button></td></tr>
-              <tr><td>SEO Retainer</td><td>Negotiation</td><td>$2100</td><td>Sam</td><td>Yesterday</td><td><button class="editBtn">Edit</button></td></tr>
-              <tr><td>Ads Package</td><td>Qualified</td><td>$3600</td><td>Jamie</td><td>Aug 20</td><td><button class="editBtn">Edit</button></td></tr>
-              <tr><td>CRM Migration</td><td>Discovery</td><td>$5200</td><td>Riley</td><td>Aug 17</td><td><button class="editBtn">Edit</button></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-  </div>
-
- 
-  <div class="overlay" id="overlay">
-    <div class="popup">
-      <h3 id="popupTitle">Add Opportunity</h3>
-      <form id="opportunityForm">
-        <input type="text" id="deal" placeholder="Deal" required />
-        <input type="text" id="stage" placeholder="Stage" required />
-        <input type="number" id="value" placeholder="Value ($)" required />
-        <input type="text" id="owner" placeholder="Owner" required />
-        <button type="submit">Save</button>
-        <button type="button" id="cancelBtn">Cancel</button>
-      </form>
-    </div>
-  </div>
-
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard</title>
+  <title>LGU 3 Admin Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    .sidebar { width: 220px; transition: transform 0.3s ease; }
-    .sidebar.open { transform: translateX(0); }
-    .sidebar:not(.open) { transform: translateX(-100%); }
-    .topbar button { margin-left: 8px; }
-    canvas { background: #fff; border-radius: 8px; padding: 10px; }
+    :root{
+      --text:#111111; --blue:#0a53c1; --ink-20:#f4f6f8;
+      --white:#ffffff; --border:#e6e8eb;
+      --shadow:0 6px 24px rgba(0,0,0,.06);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--white);color:var(--text);}
+    .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+    .sidebar{border-right:1px solid var(--border);background:var(--white);transition:transform .3s}
+    .sidebar.open{transform:translateX(0)}
+    .sidebar:not(.open){transform:translateX(-100%)}
+    .brand{font-weight:800;text-transform:uppercase;padding:1rem;border-bottom:1px solid var(--border);}
+    nav{padding:1rem}
+    .nav-item{display:block;padding:.6rem;border-radius:8px;text-decoration:none;color:var(--text);}
+    .nav-item:hover,.nav-item.active{background:var(--ink-20)}
+    .main{display:grid;grid-template-rows:64px 1fr;min-width:0}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 1rem;border-bottom:1px solid var(--border);}
+    .search{display:flex;align-items:center;border:1px solid var(--border);border-radius:12px;padding:.4rem .7rem}
+    .search input{border:none;outline:none}
+    .btn{border:1px solid var(--text);background:transparent;padding:.4rem .8rem;border-radius:8px;cursor:pointer}
+    .content{padding:1rem;overflow:auto}
+    .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+    .card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem;box-shadow:var(--shadow)}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid var(--border);padding:.6rem;text-align:left}
+    th{font-size:.85rem;opacity:.7}
+    .overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center}
+    .modal{background:#fff;padding:1rem;border-radius:12px;min-width:300px}
+    .modal input,.modal select{display:block;width:100%;margin:.5rem 0;padding:.4rem}
   </style>
 </head>
 <body>
   <div class="app">
+    
     <aside class="sidebar open" id="sidebar">
       <div class="brand">LGU 3 ADMIN SYSTEM</div>
-      <a href="#" class="nav-item active" data-route="dashboard">Dashboard</a>
-      <a href="#" class="nav-item" data-route="contacts">Contacts</a>
-      <a href="#" class="nav-item" data-route="opportunities">Opportunities</a>
-      <a href="#" class="nav-item" data-route="marketing">Marketing</a>
-      <a href="#" class="nav-item" data-route="automations">Automations</a>
-      <a href="#" class="nav-item" data-route="websites">Websites</a>
-      <a href="#" class="nav-item" data-route="funnels">Funnels</a>
-      <a href="#" class="nav-item" data-route="reporting">Reporting</a>
-      <a href="#" class="nav-item" data-route="settings">Settings</a>
+      <nav>
+        <a href="#" class="nav-item active" data-route="dashboard">Dashboard</a>
+        <a href="#" class="nav-item" data-route="contacts">Contacts</a>
+        <a href="#" class="nav-item" data-route="opportunities">Opportunities</a>
+        <a href="#" class="nav-item" data-route="marketing">Marketing</a>
+        <a href="#" class="nav-item" data-route="automations">Automations</a>
+        <a href="#" class="nav-item" data-route="websites">Websites</a>
+        <a href="#" class="nav-item" data-route="funnels">Funnels</a>
+        <a href="#" class="nav-item" data-route="reporting">Reporting</a>
+        <a href="#" class="nav-item" data-route="settings">Settings</a>
+      </nav>
     </aside>
 
+ 
     <section class="main">
       <header class="topbar">
         <button class="btn" id="menuBtn">☰</button>
-        <div class="search">
-          🔎 <input id="searchInput" type="search" placeholder="Search…" />
-        </div>
+        <div class="search">🔎 <input id="searchInput" type="search" placeholder="Search opportunities…"></div>
         <div>
           <button class="btn" id="newBtn">+ New</button>
           <button class="btn" id="exportBtn">Export</button>
         </div>
       </header>
 
-      <div class="content">
-        <h1>Dashboard</h1>
+      <div class="content" id="contentArea">
         
-        
-        <div class="grid" style="grid-template-columns:repeat(4,1fr);">
-          <div class="card"><h3>Leads</h3><p id="kpiLeads">1284</p></div>
-          <div class="card"><h3>Opportunities</h3><p id="kpiOpps">342</p></div>
-          <div class="card"><h3>Close Rate</h3><p id="kpiClose">28%</p></div>
-          <div class="card"><h3>Revenue</h3><p id="kpiRevenue">$0</p></div>
-        </div>
+        <div id="dashboardView">
+          <h1>Dashboard</h1>
+          <div class="grid">
+            <div class="card"><h3>Leads</h3><p id="kpiLeads">1,284</p><small>+12% MoM</small></div>
+            <div class="card"><h3>Opportunities</h3><p id="kpiOpps">4</p><small>+5% MoM</small></div>
+            <div class="card"><h3>Close Rate</h3><p id="kpiClose">28%</p><small>+2 pts</small></div>
+            <div class="card"><h3>Revenue</h3><p id="kpiRevenue">$0</p><small>Auto</small></div>
+          </div>
 
-      
-        <div class="card" style="margin-top:1rem;">
-          <h3>Pipeline Overview</h3>
-          <canvas id="pipelineChart" height="100"></canvas>
-        </div>
+          <div class="card" style="margin-top:1rem;">
+            <h3>Pipeline (Last 6 Weeks)</h3>
+            <canvas id="pipelineChart" height="100"></canvas>
+          </div>
 
-       
-        <div class="card" style="margin-top:1rem;">
-          <h3>Recent Opportunities</h3>
-          <table id="oppsTable">
-            <thead>
-              <tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th><th>Action</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Website Redesign</td><td>Proposal</td><td>$8400</td><td>Alex</td><td>Today</td>
-                <td><button class="btn edit-btn">Edit</button></td>
-              </tr>
-              <tr>
-                <td>SEO Retainer</td><td>Negotiation</td><td>$2100</td><td>Sam</td><td>Yesterday</td>
-                <td><button class="btn edit-btn">Edit</button></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="card" style="margin-top:1rem;">
+            <h3>Recent Opportunities</h3>
+            <table id="oppsTable">
+              <thead><tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>Website Redesign</td><td>Proposal</td><td>$8400</td><td>Alex</td><td>Today</td><td><button class="btn edit-btn">Edit</button></td></tr>
+                <tr><td>SEO Retainer</td><td>Negotiation</td><td>$2100</td><td>Sam</td><td>Yesterday</td><td><button class="btn edit-btn">Edit</button></td></tr>
+                <tr><td>Ads Package</td><td>Qualified</td><td>$3600</td><td>Jamie</td><td>Aug 20</td><td><button class="btn edit-btn">Edit</button></td></tr>
+                <tr><td>CRM Migration</td><td>Discovery</td><td>$5200</td><td>Riley</td><td>Aug 17</td><td><button class="btn edit-btn">Edit</button></td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>
   </div>
 
-
+  
   <div class="overlay" id="overlay">
     <div class="modal">
       <h3 id="modalTitle">New Opportunity</h3>
@@ -282,114 +116,70 @@ table th{font-size:.8rem; opacity:.7}
   </div>
 
 <script>
-  const newBtn = document.getElementById("newBtn");
-  const overlay = document.getElementById("overlay");
-  const saveBtn = document.getElementById("saveBtn");
-  const table = document.getElementById("oppsTable").querySelector("tbody");
-  const searchInput = document.getElementById("searchInput");
-  const revenueEl = document.getElementById("kpiRevenue");
-  const oppsEl = document.getElementById("kpiOpps");
-  let editingRow = null;
+  const overlay=document.getElementById("overlay"), saveBtn=document.getElementById("saveBtn"),
+        table=document.querySelector("#oppsTable tbody"), searchInput=document.getElementById("searchInput"),
+        revenueEl=document.getElementById("kpiRevenue"), oppsEl=document.getElementById("kpiOpps");
+  let editingRow=null;
 
-  function openModal(editRow=null) {
-    overlay.style.display="flex";
-    editingRow = editRow;
-    if(editRow){
-      document.getElementById("modalTitle").innerText="Edit Opportunity";
-      document.getElementById("dealInput").value = editRow.cells[0].innerText;
-      document.getElementById("stageInput").value = editRow.cells[1].innerText;
-      document.getElementById("valueInput").value = editRow.cells[2].innerText.replace(/\$/,"");
-      document.getElementById("ownerInput").value = editRow.cells[3].innerText;
-    } else {
-      document.getElementById("modalTitle").innerText="New Opportunity";
-      document.querySelectorAll(".modal input").forEach(i=>i.value="");
-    }
+  function openModal(row=null){ overlay.style.display="flex"; editingRow=row;
+    if(row){document.getElementById("modalTitle").innerText="Edit Opportunity";
+      document.getElementById("dealInput").value=row.cells[0].innerText;
+      document.getElementById("stageInput").value=row.cells[1].innerText;
+      document.getElementById("valueInput").value=row.cells[2].innerText.replace(/\$/,"");
+      document.getElementById("ownerInput").value=row.cells[3].innerText;
+    } else {document.getElementById("modalTitle").innerText="New Opportunity";
+      document.querySelectorAll(".modal input").forEach(i=>i.value="");}
   }
-  function closeModal(){ overlay.style.display="none"; }
+  function closeModal(){overlay.style.display="none";}
+  document.getElementById("newBtn").onclick=()=>openModal();
 
-  newBtn.onclick = ()=>openModal();
-
-  saveBtn.onclick = ()=>{
-    const deal = document.getElementById("dealInput").value;
-    const stage = document.getElementById("stageInput").value;
-    const value = "$"+document.getElementById("valueInput").value;
-    const owner = document.getElementById("ownerInput").value;
-    const updated = "Today";
-
-    if(editingRow){
-      editingRow.cells[0].innerText=deal;
-      editingRow.cells[1].innerText=stage;
-      editingRow.cells[2].innerText=value;
-      editingRow.cells[3].innerText=owner;
-      editingRow.cells[4].innerText=updated;
-    } else {
-      const row = table.insertRow();
-      row.innerHTML=`<td>${deal}</td><td>${stage}</td><td>${value}</td><td>${owner}</td><td>${updated}</td>
-        <td><button class="btn edit-btn">Edit</button></td>`;
-    }
-    updateRevenue();
-    attachEditButtons();
-    closeModal();
+  saveBtn.onclick=()=>{
+    const deal=document.getElementById("dealInput").value, stage=document.getElementById("stageInput").value,
+          value="$"+document.getElementById("valueInput").value, owner=document.getElementById("ownerInput").value,
+          updated="Today";
+    if(editingRow){editingRow.cells[0].innerText=deal;editingRow.cells[1].innerText=stage;editingRow.cells[2].innerText=value;
+      editingRow.cells[3].innerText=owner;editingRow.cells[4].innerText=updated;}
+    else{const row=table.insertRow();row.innerHTML=`<td>${deal}</td><td>${stage}</td><td>${value}</td><td>${owner}</td><td>${updated}</td>
+      <td><button class="btn edit-btn">Edit</button></td>`;}
+    updateRevenue();attachEditButtons();closeModal();
   };
+
+  searchInput.onkeyup=()=>{const q=searchInput.value.toLowerCase();
+    [...table.rows].forEach(r=>{r.style.display=r.innerText.toLowerCase().includes(q)?"":"none"});};
+
+  function updateRevenue(){let total=0;[...table.rows].forEach(r=>{total+=parseFloat(r.cells[2].innerText.replace(/\$/,""))||0});
+    revenueEl.innerText="$"+total.toLocaleString();oppsEl.innerText=table.rows.length;}
+  function attachEditButtons(){document.querySelectorAll(".edit-btn").forEach(b=>b.onclick=()=>openModal(b.closest("tr")));}
+
+  attachEditButtons();updateRevenue();
+
+  document.getElementById("menuBtn").onclick=()=>{document.getElementById("sidebar").classList.toggle("open");};
+  document.getElementById("exportBtn").onclick=()=>{const blob=new Blob([document.documentElement.outerHTML],{type:"text/html"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="dash.html";a.click();};
+
+  
+  const ctx=document.getElementById("pipelineChart"), chart=new Chart(ctx,{type:"line",
+    data:{labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+      datasets:[{label:"Opportunities",data:[10,15,8,20,18,25],
+        borderColor:"#0a53c1",backgroundColor:"rgba(10,83,193,0.2)",fill:true,tension:0.3}]}});
+  setInterval(()=>{chart.data.datasets[0].data.push(Math.floor(Math.random()*30));chart.data.datasets[0].data.shift();chart.update();},3000);
 
  
-  searchInput.addEventListener("keyup", ()=>{
-    const q = searchInput.value.toLowerCase();
-    [...table.rows].forEach(row=>{
-      row.style.display = row.innerText.toLowerCase().includes(q) ? "" : "none";
-    });
-  });
-
-  function updateRevenue(){
-    let total=0;
-    [...table.rows].forEach(r=>{
-      total += parseFloat(r.cells[2].innerText.replace(/\$/,""))||0;
-    });
-    revenueEl.innerText="$"+total.toLocaleString();
-    oppsEl.innerText=table.rows.length;
-  }
-
-  function attachEditButtons(){
-    document.querySelectorAll(".edit-btn").forEach(btn=>{
-      btn.onclick=()=>openModal(btn.closest("tr"));
-    });
-  }
-
-  attachEditButtons();
-  updateRevenue();
-
-  
-  document.getElementById("menuBtn").onclick = () => {
-    document.getElementById("sidebar").classList.toggle("open");
-  };
-
-  
-  document.getElementById("exportBtn").onclick = () => {
-    const content = document.documentElement.outerHTML;
-    const blob = new Blob([content], { type: "text/html" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "dash.html";
-    link.click();
-  };
-
-  
-  new Chart(document.getElementById("pipelineChart"), {
-    type: "line",
-    data: {
-      labels: ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"],
-      datasets: [{
-        label: "Opportunities",
-        data: [10, 15, 8, 20, 18, 25],
-        borderColor: "#0a53c1",
-        backgroundColor: "rgba(10,83,193,0.2)",
-        fill: true,
-        tension: 0.3
-      }]
-    }
+  const routes={contacts:"<h1>Contacts</h1><p>Contacts page content.</p>",
+                opportunities:"<h1>Opportunities</h1><p>Opportunities details here.</p>",
+                marketing:"<h1>Marketing</h1><p>Marketing tools here.</p>",
+                automations:"<h1>Automations</h1><p>Automation workflows.</p>",
+                websites:"<h1>Websites</h1><p>Website builder content.</p>",
+                funnels:"<h1>Funnels</h1><p>Funnels info.</p>",
+                reporting:"<h1>Reporting</h1><p>Reports & analytics.</p>",
+                settings:"<h1>Settings</h1><p>System settings here.</p>"};
+  document.querySelectorAll(".nav-item").forEach(link=>{
+    link.onclick=(e)=>{e.preventDefault();
+      document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+      link.classList.add("active");
+      const route=link.dataset.route;
+      document.getElementById("contentArea").innerHTML=route==="dashboard"?document.getElementById("dashboardView").outerHTML:routes[route]||"";}
   });
 </script>
-</body>
-</html>
 </body>
 </html>
