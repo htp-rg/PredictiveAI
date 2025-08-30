@@ -25,6 +25,11 @@
       text-align: center;
       color: #333;
     }
+    label {
+      display: block;
+      margin-top: 15px;  /* spacing between fields */
+      font-weight: bold;
+    }
     input, button {
       padding: 10px;
       border-radius: 5px;
@@ -34,6 +39,7 @@
     }
     input {
       width: 100%;
+      margin-top: 5px;
     }
     button {
       cursor: pointer;
@@ -44,7 +50,21 @@
     #loginForm button[type="submit"] {
       width: 100%;
       background: green;
+      margin-top: 15px;
+    }
+    .code-row {
+      display: flex;
+      gap: 10px; 
       margin-top: 10px;
+    }
+    .code-row input {
+      flex: 2;
+      min-width: 0;
+    }
+    .code-row button {
+      flex: 1;
+      background: #4285f4;
+      margin: 0;
     }
     #timer {
       text-align: center;
@@ -52,25 +72,15 @@
       font-size: 12px;
       color: #555;
     }
+    #resendBtn {
+      display: none;
+      margin-top: 5px;
+      width: 100%;
+      background: orange;
+    }
     #message {
       text-align: center;
       margin-top: 10px;
-    }
-
-   
-    .code-row {
-      display: flex;
-      gap: 10px; 
-      margin-bottom: 8px;
-    }
-    .code-row input {
-      flex: 2;   /
-      min-width: 0; 
-    }
-    .code-row button {
-      flex: 1;   
-      background: #4285f4;
-      margin: 0;
     }
   </style>
 
@@ -89,18 +99,19 @@
     <h2>Login as Admin</h2>
 
     <form id="loginForm">
-      <label>Email:</label>
+      <label for="email">Email:</label>
       <input type="email" id="email" required placeholder="Enter your email">
 
-      <label>Password:</label>
+      <label for="password">Password:</label>
       <input type="password" id="password" required placeholder="Enter your password">
 
-      
       <div class="code-row">
         <input type="text" id="codeInput" placeholder="Enter code">
         <button type="button" id="sendCodeBtn">Send Code</button>
       </div>
+
       <div id="timer"></div>
+      <button type="button" id="resendBtn">Resend Code</button>
 
       <button type="submit">Login</button>
     </form>
