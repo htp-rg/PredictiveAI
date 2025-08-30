@@ -111,6 +111,213 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .sidebar { width: 220px; transition: transform 0.3s ease; }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar:not(.open) { transform: translateX(-100%); }
+    .topbar button { margin-left: 8px; }
+    canvas { background: #fff; border-radius: 8px; padding: 10px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar open" id="sidebar">
+      <div class="brand">LGU 3 ADMIN SYSTEM</div>
+      <a href="#" class="nav-item active" data-route="dashboard">Dashboard</a>
+      <a href="#" class="nav-item" data-route="contacts">Contacts</a>
+      <a href="#" class="nav-item" data-route="opportunities">Opportunities</a>
+      <a href="#" class="nav-item" data-route="marketing">Marketing</a>
+      <a href="#" class="nav-item" data-route="automations">Automations</a>
+      <a href="#" class="nav-item" data-route="websites">Websites</a>
+      <a href="#" class="nav-item" data-route="funnels">Funnels</a>
+      <a href="#" class="nav-item" data-route="reporting">Reporting</a>
+      <a href="#" class="nav-item" data-route="settings">Settings</a>
+    </aside>
+
+    <section class="main">
+      <header class="topbar">
+        <button class="btn" id="menuBtn">☰</button>
+        <div class="search">
+          🔎 <input id="searchInput" type="search" placeholder="Search…" />
+        </div>
+        <div>
+          <button class="btn" id="newBtn">+ New</button>
+          <button class="btn" id="exportBtn">Export</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <h1>Dashboard</h1>
+        
+        
+        <div class="grid" style="grid-template-columns:repeat(4,1fr);">
+          <div class="card"><h3>Leads</h3><p id="kpiLeads">1284</p></div>
+          <div class="card"><h3>Opportunities</h3><p id="kpiOpps">342</p></div>
+          <div class="card"><h3>Close Rate</h3><p id="kpiClose">28%</p></div>
+          <div class="card"><h3>Revenue</h3><p id="kpiRevenue">$0</p></div>
+        </div>
+
+      
+        <div class="card" style="margin-top:1rem;">
+          <h3>Pipeline Overview</h3>
+          <canvas id="pipelineChart" height="100"></canvas>
+        </div>
+
+       
+        <div class="card" style="margin-top:1rem;">
+          <h3>Recent Opportunities</h3>
+          <table id="oppsTable">
+            <thead>
+              <tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Website Redesign</td><td>Proposal</td><td>$8400</td><td>Alex</td><td>Today</td>
+                <td><button class="btn edit-btn">Edit</button></td>
+              </tr>
+              <tr>
+                <td>SEO Retainer</td><td>Negotiation</td><td>$2100</td><td>Sam</td><td>Yesterday</td>
+                <td><button class="btn edit-btn">Edit</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3 id="modalTitle">New Opportunity</h3>
+      <input id="dealInput" placeholder="Deal" />
+      <select id="stageInput">
+        <option>Discovery</option><option>Qualified</option><option>Proposal</option><option>Negotiation</option>
+      </select>
+      <input id="valueInput" placeholder="Value (e.g. 5000)" type="number" />
+      <input id="ownerInput" placeholder="Owner" />
+      <button class="btn" id="saveBtn">Save</button>
+      <button class="btn" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+
+<script>
+  const newBtn = document.getElementById("newBtn");
+  const overlay = document.getElementById("overlay");
+  const saveBtn = document.getElementById("saveBtn");
+  const table = document.getElementById("oppsTable").querySelector("tbody");
+  const searchInput = document.getElementById("searchInput");
+  const revenueEl = document.getElementById("kpiRevenue");
+  const oppsEl = document.getElementById("kpiOpps");
+  let editingRow = null;
+
+  function openModal(editRow=null) {
+    overlay.style.display="flex";
+    editingRow = editRow;
+    if(editRow){
+      document.getElementById("modalTitle").innerText="Edit Opportunity";
+      document.getElementById("dealInput").value = editRow.cells[0].innerText;
+      document.getElementById("stageInput").value = editRow.cells[1].innerText;
+      document.getElementById("valueInput").value = editRow.cells[2].innerText.replace(/\$/,"");
+      document.getElementById("ownerInput").value = editRow.cells[3].innerText;
+    } else {
+      document.getElementById("modalTitle").innerText="New Opportunity";
+      document.querySelectorAll(".modal input").forEach(i=>i.value="");
+    }
+  }
+  function closeModal(){ overlay.style.display="none"; }
+
+  newBtn.onclick = ()=>openModal();
+
+  saveBtn.onclick = ()=>{
+    const deal = document.getElementById("dealInput").value;
+    const stage = document.getElementById("stageInput").value;
+    const value = "$"+document.getElementById("valueInput").value;
+    const owner = document.getElementById("ownerInput").value;
+    const updated = "Today";
+
+    if(editingRow){
+      editingRow.cells[0].innerText=deal;
+      editingRow.cells[1].innerText=stage;
+      editingRow.cells[2].innerText=value;
+      editingRow.cells[3].innerText=owner;
+      editingRow.cells[4].innerText=updated;
+    } else {
+      const row = table.insertRow();
+      row.innerHTML=`<td>${deal}</td><td>${stage}</td><td>${value}</td><td>${owner}</td><td>${updated}</td>
+        <td><button class="btn edit-btn">Edit</button></td>`;
+    }
+    updateRevenue();
+    attachEditButtons();
+    closeModal();
+  };
+
+ 
+  searchInput.addEventListener("keyup", ()=>{
+    const q = searchInput.value.toLowerCase();
+    [...table.rows].forEach(row=>{
+      row.style.display = row.innerText.toLowerCase().includes(q) ? "" : "none";
+    });
+  });
+
+  function updateRevenue(){
+    let total=0;
+    [...table.rows].forEach(r=>{
+      total += parseFloat(r.cells[2].innerText.replace(/\$/,""))||0;
+    });
+    revenueEl.innerText="$"+total.toLocaleString();
+    oppsEl.innerText=table.rows.length;
+  }
+
+  function attachEditButtons(){
+    document.querySelectorAll(".edit-btn").forEach(btn=>{
+      btn.onclick=()=>openModal(btn.closest("tr"));
+    });
+  }
+
+  attachEditButtons();
+  updateRevenue();
+
+  
+  document.getElementById("menuBtn").onclick = () => {
+    document.getElementById("sidebar").classList.toggle("open");
+  };
+
+  
+  document.getElementById("exportBtn").onclick = () => {
+    const content = document.documentElement.outerHTML;
+    const blob = new Blob([content], { type: "text/html" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "dash.html";
+    link.click();
+  };
+
+  
+  new Chart(document.getElementById("pipelineChart"), {
+    type: "line",
+    data: {
+      labels: ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"],
+      datasets: [{
+        label: "Opportunities",
+        data: [10, 15, 8, 20, 18, 25],
+        borderColor: "#0a53c1",
+        backgroundColor: "rgba(10,83,193,0.2)",
+        fill: true,
+        tension: 0.3
+      }]
+    }
+  });
+</script>
+</body>
+</html>
 </body>
 </html>
