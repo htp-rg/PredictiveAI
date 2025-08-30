@@ -65,6 +65,21 @@
       display: flex;
       align-items: center;
     }
+    .code-row {
+  display: flex;
+  gap: 5px;           
+  margin-bottom: 8px; 
+}
+
+.code-row input {
+  flex: 2;             
+  min-width: 0;       
+}
+
+.code-row button {
+  flex: 1;            
+  margin: 0;           
+}
   </style>
 
   <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
@@ -88,11 +103,11 @@
       <label>Password:</label>
       <input type="password" id="password" required placeholder="Enter your password">
 
-      <div class="code-row">
-        <input type="text" id="codeInput" placeholder="Enter code">
-        <button type="button" id="sendCodeBtn">Send Code</button>
-      </div>
-      <div id="timer"></div>
+<div class="code-row">
+  <input type="text" id="codeInput" placeholder="Enter code">
+  <button type="button" id="sendCodeBtn">Send Code</button>
+</div>
+<div id="timer"></div>
 
       <button type="submit">Login</button>
     </form>
