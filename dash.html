@@ -69,7 +69,7 @@ th{font-size:.85rem;opacity:.7}
     </header>
 
     <div class="content" id="contentArea">
-      <!-- Dynamic content will be loaded here -->
+      
     </div>
   </section>
 </div>
@@ -133,9 +133,17 @@ const pages = {
       </table>
     </div>
   `,
+  contacts: `<h1>Contacts</h1><p>Contacts content here...</p>`,
+  opportunities: `<h1>Opportunities</h1><p>Opportunities content here...</p>`,
+  marketing: `<h1>Marketing</h1><p>Marketing content here...</p>`,
+  automations: `<h1>Automations</h1><p>Automations content here...</p>`,
+  websites: `<h1>Websites</h1><p>Websites content here...</p>`,
+  funnels: `<h1>Funnels</h1><p>Funnels content here...</p>`,
+  reporting: `<h1>Reporting</h1><p>Reporting content here...</p>`,
+  settings: `<h1>Settings</h1><p>Settings content here...</p>`
 };
 
-  
+
 function openModal(row=null){
   overlay.style.display="flex"; 
   editingRow=row;
@@ -257,7 +265,7 @@ document.getElementById("exportBtn").onclick = ()=>{
   const blob = new Blob([document.documentElement.outerHTML],{type:"text/html"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download="dash.html";
+  a.download="dashboard.html";
   a.click();
 };
 
