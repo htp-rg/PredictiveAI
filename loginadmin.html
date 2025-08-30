@@ -1,50 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> </title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MARKET AND TRADE MONITORING SYSTEM</title>
   <link rel="stylesheet" href="style.css">
+
+
   <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script type="text/javascript">
     (function() {
-      emailjs.init("YOUR_PUBLIC_KEY"); 
+      emailjs.init("YOUR_PUBLIC_KEY"); // <-- replace with your EmailJS public key
     })();
   </script>
 </head>
 <body>
-  <div class="container">
-    <h2>Login as Admin</h2>
+  <div class="container" style="max-width:400px; margin:60px auto; padding:20px; border:1px solid #ddd; border-radius:8px; background:#fff;">
+    <h2 style="text-align:center; margin-bottom:20px;">Login as Admin</h2>
+
     <form id="loginForm">
-      <label for="email">Enter Your Email:</label>
-      <input type="email" id="email" required>
-      <button type="submit">Send Verification</button>
+      <label>Email:</label>
+      <input type="email" id="email" required placeholder="Enter your email" style="width:100%;padding:10px;margin:8px 0;">
+
+      <label>Password:</label>
+      <input type="password" id="password" required placeholder="Enter your password" style="width:100%;padding:10px;margin:8px 0;">
+
+      <button type="button" id="sendCodeBtn" style="width:100%;padding:10px;background:#4285f4;color:#fff;border:none;border-radius:5px;margin:8px 0;cursor:pointer;">
+        Send Code
+      </button>
+
+      <label>Verification Code:</label>
+      <input type="text" id="codeInput" placeholder="Enter code" style="width:100%;padding:10px;margin:8px 0;">
+
+      <button type="submit" style="width:100%;padding:10px;background:green;color:#fff;border:none;border-radius:5px;margin:8px 0;cursor:pointer;">
+        Login
+      </button>
     </form>
 
-    <div id="message"></div>
+    <div id="message" style="text-align:center; margin-top:10px;"></div>
   </div>
 
   <script>
+    let sentCode = null;
+
+   
+    document.getElementById("sendCodeBtn").addEventListener("click", function() {
+      const userEmail = document.getElementById("email").value;
+      if (!userEmail) {
+        alert("Please enter your email first.");
+        return;
+      }
+
+      sentCode = Math.floor(100000 + Math.random() * 900000); // 6-digit code
+
+      emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+        to_email: "orariojames2@gmail.com",   //
+        user_email: userEmail,
+        verification_code: sentCode
+      })
+      .then(function(response) {
+        document.getElementById("message").innerHTML =
+          `<p style="color:green;">Verification code sent to admin Gmail ✅</p>`;
+        console.log("SUCCESS!", response.status, response.text);
+      }, function(error) {
+        document.getElementById("message").innerHTML =
+          `<p style="color:red;">Error sending email ❌</p>`;
+        console.error("FAILED...", error);
+      });
+    });
+
+    // Handle login
     document.getElementById("loginForm").addEventListener("submit", function(event) {
       event.preventDefault();
 
-      const userEmail = document.getElementById("email").value;
-      const verificationCode = Math.floor(100000 + Math.random() * 900000); 
+      const password = document.getElementById("password").value;
+      const codeInput = document.getElementById("codeInput").value;
 
-      emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
-        to_email: "orariojames2@gmail.com",   
-        user_email: userEmail,              
-        verification_code: verificationCode
-      })
-      .then(function(response) {
-        document.getElementById("message").innerHTML = 
-          `<p style="color:green;">Verification code sent to <b>orariojames2@gmail.com</b></p>`;
-        console.log("SUCCESS!", response.status, response.text);
-      }, function(error) {
-        document.getElementById("message").innerHTML = 
-          `<p style="color:red;">Error sending email. Try again.</p>`;
-        console.error("FAILED...", error);
-      });
+     
+      const correctPassword = "orariojames"; // 
+
+      if (password === correctPassword && codeInput == sentCode) {
+        window.location.href = "dash.html"; // redirect to dashboard
+      } else {
+        document.getElementById("message").innerHTML =
+          `<p style="color:red;">Invalid password or verification code ❌</p>`;
+      }
     });
   </script>
 </body>
