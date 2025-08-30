@@ -1,124 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ADMIN</title>
-  
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 400px;
-      margin: 60px auto;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    h1, h2 {
-      text-align: center;
-      color: #333;
-    }
-    label {
-      display: block;
-      margin-top: 15px;  /* spacing between fields */
-      font-weight: bold;
-    }
-    input, button {
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-    input {
-      width: 100%;
-      margin-top: 5px;
-    }
-    button {
-      cursor: pointer;
-      border: none;
-      color: #fff;
-      font-size: 14px;
-    }
-    #loginForm button[type="submit"] {
-      width: 100%;
-      background: green;
-      margin-top: 15px;
-    }
-    .code-row {
-      display: flex;
-      gap: 10px; 
-      margin-top: 10px;
-    }
-    .code-row input {
-      flex: 2;
-      min-width: 0;
-    }
-    .code-row button {
-      flex: 1;
-      background: #4285f4;
-      margin: 0;
-    }
-    #timer {
-      text-align: center;
-      margin-top: 5px;
-      font-size: 12px;
-      color: #555;
-    }
-    #resendBtn {
-      display: none;
-      margin-top: 5px;
-      width: 100%;
-      background: orange;
-    }
-    #message {
-      text-align: center;
-      margin-top: 10px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ADMIN - OTP Login</title>
 
-  <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
-  <script type="text/javascript">
-    (function(){
-      emailjs.init("ITbHFP1WBTFPISemM"); 
-    })();
-  </script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  h1, h2 {
+    text-align: center;
+    color: #333;
+  }
+  label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+  input, button {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  input {
+    width: 100%;
+    margin-top: 5px;
+  }
+  button {
+    cursor: pointer;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+  }
+  #loginForm button[type="submit"] {
+    width: 100%;
+    background: green;
+    margin-top: 15px;
+  }
+  .code-row {
+    display: flex;
+    gap: 10px; 
+    margin-top: 10px;
+  }
+  .code-row input {
+    flex: 2;
+    min-width: 0;
+  }
+  .code-row button {
+    flex: 1;
+    background: #4285f4;
+    margin: 0;
+  }
+  #timer {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #555;
+  }
+  #resendBtn {
+    display: none;
+    margin-top: 5px;
+    width: 100%;
+    background: orange;
+  }
+  #message {
+    text-align: center;
+    margin-top: 10px;
+  }
+</style>
+
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+  (function(){
+    emailjs.init("ITbHFP1WBTFPISemM"); 
+  })();
+</script>
+
 </head>
-
 <body>
-  <h1>MARKET AND TRADE MONITORING SYSTEM</h1>
 
-  <div class="container">
-    <h2>Login as Admin</h2>
+<h1>MARKET AND TRADE MONITORING SYSTEM</h1>
+<div class="container">
+  <h2>Login as Admin</h2>
 
-    <form id="loginForm">
-      <label for="email">Email:</label>
-      <input type="email" id="email" required placeholder="Enter your email">
+  <form id="loginForm">
+    <label for="email">Email:</label>
+    <input type="email" id="email" required placeholder="Enter your email">
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" required placeholder="Enter your password">
+    <label for="password">Password:</label>
+    <input type="password" id="password" required placeholder="Enter your password">
 
-      <div class="code-row">
-        <input type="text" id="codeInput" placeholder="Enter code">
-        <button type="button" id="sendCodeBtn">Send Code</button>
-      </div>
+    <div class="code-row">
+      <input type="text" id="codeInput" placeholder="Enter OTP">
+      <button type="button" id="sendCodeBtn">Send Code</button>
+    </div>
 
-      <div id="timer"></div>
-      <button type="button" id="resendBtn">Resend Code</button>
+    <div id="timer"></div>
+    <button type="button" id="resendBtn">Resend Code</button>
+    <button type="submit">Login</button>
+  </form>
 
-      <button type="submit">Login</button>
-    </form>
+  <div id="message"></div>
+</div>
 
-    <div id="message"></div>
-  </div>
+<script>
+let sentCode = null;
+let otpExpiry = null;
+let countdown = null;
 
-  <script src="loginadmin.js"></script>
+document.getElementById("sendCodeBtn").addEventListener("click", function() {
+  const emailInput = document.getElementById("email");
+  const userEmail = emailInput.value.trim();
+  if (!userEmail) {
+    alert("Please enter your email first.");
+    return;
+  }
+
+  sentCode = Math.floor(100000 + Math.random() * 900000);
+  otpExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+  emailjs.send("service_qvm338i", "hi5sicu", {
+    user_email: userEmail,
+    passcode: sentCode,
+    time: "15 minutes"
+  }).then(response => {
+    document.getElementById("message").innerHTML = `<p style="color:green;">OTP sent to ${userEmail} ✅</p>`;
+    startCountdown();
+  }).catch(error => {
+    console.error("Failed to send OTP:", error);
+    document.getElementById("message").innerHTML = `<p style="color:red;">Failed to send OTP ❌</p>`;
+  });
+});
+
+
+function startCountdown() {
+  let seconds = 60;
+  const timerEl = document.getElementById("timer");
+  const resendBtn = document.getElementById("resendBtn");
+
+  document.getElementById("sendCodeBtn").disabled = true;
+  resendBtn.style.display = "none";
+
+  timerEl.textContent = `Please wait ${seconds} seconds to resend.`;
+
+  clearInterval(countdown);
+  countdown = setInterval(() => {
+    seconds--;
+    if (seconds > 0) {
+      timerEl.textContent = `Please wait ${seconds} seconds to resend.`;
+    } else {
+      clearInterval(countdown);
+      timerEl.textContent = "";
+      resendBtn.style.display = "block";
+      document.getElementById("sendCodeBtn").disabled = false;
+    }
+  }, 1000);
+}
+
+
+document.getElementById("resendBtn").addEventListener("click", function() {
+  this.style.display = "none";
+  document.getElementById("sendCodeBtn").click();
+});
+
+
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const password = document.getElementById("password").value.trim();
+  const codeInput = document.getElementById("codeInput").value.trim();
+  const now = new Date();
+  const correctPassword = "orariojames"; // demo password
+
+  if (!sentCode) {
+    document.getElementById("message").innerHTML = `<p style="color:red;">Please request OTP first ❌</p>`;
+  } else if (now > otpExpiry) {
+    document.getElementById("message").innerHTML = `<p style="color:red;">OTP expired! Request a new one ❌</p>`;
+  } else if (password === correctPassword && codeInput == sentCode) {
+    window.location.href = "dash.html";
+  } else {
+    document.getElementById("message").innerHTML = `<p style="color:red;">Invalid password or OTP ❌</p>`;
+  }
+});
+</script>
+
 </body>
 </html>
