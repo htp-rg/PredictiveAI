@@ -42,17 +42,17 @@ th{font-size:.85rem;opacity:.7}
 <div class="app">
   <aside class="sidebar open" id="sidebar">
     <div class="brand">LGU 3 ADMIN SYSTEM</div>
-    <nav>
-      <a href="#" class="nav-item active" data-page="dashboard">Dashboard</a>
-      <a href="#" class="nav-item" data-page="Vendor">Vendor Management</a>
-      <a href="#" class="nav-item" data-page="Commodity">Commodity and Price Monitoring</a>
-      <a href="#" class="nav-item" data-page="Supply">Supply Monitoring</a>
-      <a href="#" class="nav-item" data-page="Inspection">Inspection and compliance</a>
-      <a href="#" class="nav-item" data-page="Reports">Reports and Dashboard with AI analytic</a>
-      <a href="#" class="nav-item" data-page="Settings">Settings</a>
-      <a href="main.html" class="nav-item logout-btn" style="margin-top: 2rem; font-weight: bold;">Logout</a>
-    </nav>
-  </aside>
+   <nav>
+    <a href="#" class="nav-item active" data-page="dashboard">Dashboard</a>
+    <a href="#" class="nav-item" data-page="Vendor">Vendor Management</a>
+    <a href="#" class="nav-item" data-page="Commodity">Commodity and Price Monitoring</a>
+    <a href="#" class="nav-item" data-page="Supply">Supply Monitoring</a>
+    <a href="#" class="nav-item" data-page="Inspection">Inspection and compliance</a>
+    <a href="#" class="nav-item" data-page="Reports">Reports and Dashboard with AI analytic</a>
+    <a href="#" class="nav-item" data-page="Settings">Settings</a>
+    <a href="main.html" class="nav-item logout-btn" style="margin-top: 2rem; font-weight: bold;">Logout</a>
+  </nav>
+</aside>
 
   <section class="main">
     <header class="topbar">
@@ -103,7 +103,17 @@ const pages = {
     <div class="grid">
       <div class="card">
         <h3>Pipeline (Last 6 Weeks)</h3>
-        <canvas id="pipelineChart" height="200"></canvas>
+        <canvas id="pipelineChart" height="100"></canvas>
+      </div>
+      <div class="card" id="tasksCard">
+        <h3>Tasks</h3>
+        <ul id="taskList" style="list-style:none;padding:0;margin:0;">
+          <li><input type="checkbox" /> Call new leads <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" checked /> Launch email campaign <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Update funnel step <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Review automation <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+        </ul>
+        <button id="addTaskBtn" class="btn" style="margin-top:.5rem;">➕</button>
       </div>
     </div>
   `,
@@ -132,34 +142,57 @@ function openModal(row=null){
 
 function closeModal(){overlay.style.display="none";}
 
-function initDashboard(){
-  contentArea.innerHTML = pages.dashboard;
-
-  // Initialize chart after canvas exists
-  const ctx = document.getElementById("pipelineChart");
-  if(ctx){
-    pipelineChart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: ["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
-        datasets: [{
-          label: "Opportunities",
-          data: [10,15,8,20,18,25],
-          borderColor: "#0a53c1",
-          backgroundColor: "rgba(10,83,193,0.2)",
-          fill: true,
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-  }
+function attachEditButtons(){
+  document.querySelectorAll(".edit-btn").forEach(b=>{
+    b.onclick=()=>openModal(b.closest("tr"));
+  });
 }
 
-// Handle nav clicks except logout
+function attachTaskActions(){
+  const taskList=document.getElementById("taskList"), addTaskBtn=document.getElementById("addTaskBtn");
+  if(!taskList) return;
+  document.querySelectorAll("#taskList li").forEach(li=>{
+    const editIcon=li.querySelector(".edit-icon"), deleteIcon=li.querySelector(".delete-icon");
+    editIcon.onclick=()=>{const newText=prompt("Edit Task", li.firstChild.textContent.trim()); if(newText) li.firstChild.textContent=newText+" ";};
+    deleteIcon.onclick=()=>{if(confirm("Delete this task?")) li.remove();};
+  });
+  addTaskBtn.onclick=()=>{
+    const taskName=prompt("Enter new task:");
+    if(taskName){
+      const li=document.createElement("li");
+      li.innerHTML=`<input type="checkbox" /> ${taskName} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
+      taskList.appendChild(li);
+      attachTaskActions();
+    }
+  };
+}
+
+function initDashboard(){
+  const container = document.getElementById("contentArea");
+  container.innerHTML = pages.dashboard;
+  attachEditButtons();
+  attachTaskActions();
+
+  const ctx = document.getElementById("pipelineChart");
+  if(ctx){ 
+    pipelineChart = new Chart(ctx,{ 
+    type:"line", 
+      data:{
+        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+        datasets:[{ 
+          label:"Opportunities", 
+          data:[10,15,8,20,18,25], 
+          borderColor:"#0a53c1",
+          backgroundColor:"rgba(10,83,193,0.2)", 
+          fill:true, 
+          tension:0.3 
+        }]
+      } 
+    }); 
+  } 
+}
+
+
 document.querySelectorAll(".nav-item").forEach(link => {
   if(!link.classList.contains("logout-btn")){
     link.onclick = (e)=>{
@@ -175,6 +208,29 @@ document.querySelectorAll(".nav-item").forEach(link => {
 
 document.getElementById("backBtn").onclick = () => { window.history.back(); };
 document.getElementById("menuBtn").onclick = () => { document.getElementById("sidebar").classList.toggle("open"); };
+document.getElementById("newBtn").onclick = () => openModal();
+document.getElementById("saveBtn").onclick = () => {
+  const table = document.querySelector("#oppsTable tbody");
+  if(!table) return;
+  const deal = document.getElementById("dealInput").value,
+        stage = document.getElementById("stageInput").value,
+        value = "$" + document.getElementById("valueInput").value,
+        owner = document.getElementById("ownerInput").value,
+        updated = "Today";
+  if(editingRow){
+    editingRow.cells[0].innerText = deal;
+    editingRow.cells[1].innerText = stage;
+    editingRow.cells[2].innerText = value;
+    editingRow.cells[3].innerText = owner;
+    editingRow.cells[4].innerText = updated;
+  } else {
+    const row = table.insertRow();
+    row.innerHTML = `<td>${deal}</td><td>${stage}</td><td>${value}</td><td>${owner}</td><td>${updated}</td>
+      <td><button class="btn edit-btn">Edit</button></td>`;
+  }
+  attachEditButtons();
+  closeModal();
+};
 
 initDashboard();
 </script>
