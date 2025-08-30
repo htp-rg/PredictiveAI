@@ -114,9 +114,17 @@ const pages = {
           <li><input type="checkbox" /> Review automation <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
         </ul>
         <button id="addTaskBtn" class="btn" style="margin-top:.5rem;">➕</button>
-      </div>
-    </div>
-  `,
+        <h3>Recent Opportunities</h3> 
+        <table id="oppsTable">
+        <thead><tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th><th>Action</th></tr></thead> <tbody>
+        <tr><td>Website Redesign</td><td>Proposal</td><td>$8400</td><td>Alex</td><td>Today</td><td><button class="btn edit-btn">Edit</button></td></tr>
+        <tr><td>SEO Retainer</td><td>Negotiation</td><td>$2100</td><td>Sam</td><td>Yesterday</td><td><button class="btn edit-btn">Edit</button></td></tr> 
+        <tr><td>Ads Package</td><td>Qualified</td><td>$3600</td><td>Jamie</td><td>Aug 20</td><td><button class="btn edit-btn">Edit</button></td></tr> 
+        <tr><td>CRM Migration</td><td>Discovery</td><td>$5200</td><td>Riley</td><td>Aug 17</td><td><button class="btn edit-btn">Edit</button></td></tr> 
+        </tbody> 
+        </table>
+        </div>
+        ,
   Vendor: `<h1>Vendor Management</h1><p>Vendor content here...</p>`,
   Commodity: `<h1>Commodity and Price Monitoring</h1><p>Commodity content here...</p>`,
   Supply: `<h1>Supply Monitoring</h1><p>Supply content here...</p>`,
