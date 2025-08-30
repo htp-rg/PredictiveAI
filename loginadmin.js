@@ -47,7 +47,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     document.getElementById("message").innerHTML =
       `<p style="color:red;">OTP expired! Please request a new code ❌</p>`;
   } else if (password === correctPassword && codeInput == sentCode) {
-    window.location.href = "dash.html"; // Redirect to dashboard
+    window.location.href = "dash.html"; 
   } else {
     document.getElementById("message").innerHTML =
       `<p style="color:red;">Invalid password or verification code ❌</p>`;
