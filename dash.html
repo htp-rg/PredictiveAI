@@ -49,8 +49,8 @@ th{font-size:.85rem;opacity:.7}
     <a href="#" class="nav-item" data-page="Supply">Supply Monitoring</a>
     <a href="#" class="nav-item" data-page="Inspection">Inspection and compliance</a>
     <a href="#" class="nav-item" data-page="Reports">Reports and Dashboard with AI analytic</a>
-    <a href="#" class="nav-item" data-page="settings">Settings</a>
-    <a href="main.html" class="nav-item" style="margin-top: 2rem; font-weight: bold;">Logout</a>
+    <a href="#" class="nav-item" data-page="Settings">Settings</a>
+    <a href="main.html" class="nav-item logout-btn" style="margin-top: 2rem; font-weight: bold;">Logout</a>
   </nav>
 </aside>
 
@@ -67,9 +67,7 @@ th{font-size:.85rem;opacity:.7}
       </div>
     </header>
 
-    <div class="content" id="contentArea">
-      
-    </div>
+    <div class="content" id="contentArea"></div>
   </section>
 </div>
 
@@ -92,7 +90,6 @@ const overlay = document.getElementById("overlay");
 const contentArea = document.getElementById("contentArea");
 let editingRow = null;
 let pipelineChart = null;
-
 
 const pages = {
   dashboard: `
@@ -119,33 +116,14 @@ const pages = {
         <button id="addTaskBtn" class="btn" style="margin-top:.5rem;">➕</button>
       </div>
     </div>
-    <div class="card" style="margin-top:1rem;">
-      <h3>Recent Opportunities</h3>
-      <table id="oppsTable">
-        <thead><tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th><th>Action</th></tr></thead>
-        <tbody>
-          <tr><td>Website Redesign</td><td>Proposal</td><td>$8400</td><td>Alex</td><td>Today</td><td><button class="btn edit-btn">Edit</button></td></tr>
-          <tr><td>SEO Retainer</td><td>Negotiation</td><td>$2100</td><td>Sam</td><td>Yesterday</td><td><button class="btn edit-btn">Edit</button></td></tr>
-          <tr><td>Ads Package</td><td>Qualified</td><td>$3600</td><td>Jamie</td><td>Aug 20</td><td><button class="btn edit-btn">Edit</button></td></tr>
-          <tr><td>CRM Migration</td><td>Discovery</td><td>$5200</td><td>Riley</td><td>Aug 17</td><td><button class="btn edit-btn">Edit</button></td></tr>
-        </tbody>
-      </table>
-    </div>
   `,
- Vendor: `
- <h1>Vendor Management</h1><p>Contacts content here...</p>`,
- Commodity: `
- <h1>Commodity and Price Monitoring</h1><p>Opportunities content here...</p>`,
- Supply: `
- <h1>Supply Monitoring</h1><p>Marketing content here...</p>`,
- Inspection: `
- <h1>Inspection and compliance</h1><p>Automations content here...</p>`,
- Reports: `
- <h1>Reports and Dashboard with AI analytic</h1><p>Websites content here...</p>`,
- Settings: `
- <h1>Settings</h1><p>Websites content here...</p>`,
+  Vendor: `<h1>Vendor Management</h1><p>Vendor content here...</p>`,
+  Commodity: `<h1>Commodity and Price Monitoring</h1><p>Commodity content here...</p>`,
+  Supply: `<h1>Supply Monitoring</h1><p>Supply content here...</p>`,
+  Inspection: `<h1>Inspection and compliance</h1><p>Inspection content here...</p>`,
+  Reports: `<h1>Reports and Dashboard with AI analytic</h1><p>Reports content here...</p>`,
+  Settings: `<h1>Settings</h1><p>Settings content here...</p>`,
 };
-
 
 function openModal(row=null){
   overlay.style.display="flex"; 
@@ -189,97 +167,52 @@ function attachTaskActions(){
   };
 }
 
-function updateRevenue(){
-  const table=document.querySelector("#oppsTable tbody");
-  const revenueEl=document.getElementById("kpiRevenue"), oppsEl=document.getElementById("kpiOpps");
-  if(!table) return;
-  let total=0;
-  [...table.rows].forEach(r=>{total+=parseFloat(r.cells[2].innerText.replace(/\$/,""))||0});
-  revenueEl.innerText="$"+total.toLocaleString(); 
-  oppsEl.innerText=table.rows.length;
-}
-
 function initDashboard(){
   const container = document.getElementById("contentArea");
   container.innerHTML = pages.dashboard;
   attachEditButtons();
   attachTaskActions();
-  updateRevenue();
-
-  const ctx = document.getElementById("pipelineChart");
-  if(ctx){
-    pipelineChart = new Chart(ctx,{
-      type:"line",
-      data:{
-        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
-        datasets:[{
-          label:"Opportunities",
-          data:[10,15,8,20,18,25],
-          borderColor:"#0a53c1",
-          backgroundColor:"rgba(10,83,193,0.2)",
-          fill:true,
-          tension:0.3
-        }]
-      }
-    });
-  }
 }
 
-
-document.querySelectorAll(".nav-item").forEach(link=>{
-  link.onclick=(e)=>{
-    e.preventDefault();
-    document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));
-    link.classList.add("active");
-    const page = link.dataset.page;
-    contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
-    if(page==="dashboard") initDashboard();
+// Nav-item handling (skip logout)
+document.querySelectorAll(".nav-item").forEach(link => {
+  if(!link.classList.contains("logout-btn")){
+    link.onclick = (e)=>{
+      e.preventDefault();
+      document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));
+      link.classList.add("active");
+      const page = link.dataset.page;
+      contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
+      if(page==="dashboard") initDashboard();
+    }
   }
 });
-
 
 document.getElementById("backBtn").onclick = () => { window.history.back(); };
-document.getElementById("menuBtn").onclick=()=>{document.getElementById("sidebar").classList.toggle("open");};
-document.getElementById("newBtn").onclick=()=>openModal();
-document.getElementById("saveBtn").onclick=()=>{
-  const table=document.querySelector("#oppsTable tbody");
-  if(!table) return;
-  const deal=document.getElementById("dealInput").value,
-        stage=document.getElementById("stageInput").value,
-        value="$"+document.getElementById("valueInput").value,
-        owner=document.getElementById("ownerInput").value,
-        updated="Today";
-  if(editingRow){
-    editingRow.cells[0].innerText=deal;
-    editingRow.cells[1].innerText=stage;
-    editingRow.cells[2].innerText=value;
-    editingRow.cells[3].innerText=owner;
-    editingRow.cells[4].innerText=updated;
-  } else {
-    const row=table.insertRow();
-    row.innerHTML=`<td>${deal}</td><td>${stage}</td><td>${value}</td><td>${owner}</td><td>${updated}</td>
-      <td><button class="btn edit-btn">Edit</button></td>`;
-  }
-  attachEditButtons(); updateRevenue(); closeModal();
-};
-
-
-document.getElementById("exportBtn").onclick = ()=>{
-  const blob = new Blob([document.documentElement.outerHTML],{type:"text/html"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download="dashboard.html";
-  a.click();
-};
-
-
-document.getElementById("searchInput").addEventListener("input",(e)=>{
+document.getElementById("menuBtn").onclick = () => { document.getElementById("sidebar").classList.toggle("open"); };
+document.getElementById("newBtn").onclick = () => openModal();
+document.getElementById("saveBtn").onclick = () => {
   const table = document.querySelector("#oppsTable tbody");
   if(!table) return;
-  const q = e.target.value.toLowerCase();
-  [...table.rows].forEach(r=>{r.style.display=r.innerText.toLowerCase().includes(q)?"":"none"});
-});
-
+  const deal = document.getElementById("dealInput").value,
+        stage = document.getElementById("stageInput").value,
+        value = "$" + document.getElementById("valueInput").value,
+        owner = document.getElementById("ownerInput").value,
+        updated = "Today";
+  if(editingRow){
+    editingRow.cells[0].innerText = deal;
+    editingRow.cells[1].innerText = stage;
+    editingRow.cells[2].innerText = value;
+    editingRow.cells[3].innerText = owner;
+    editingRow.cells[4].innerText = updated;
+  } else {
+    const row = table.insertRow();
+    row.innerHTML = `<td>${deal}</td><td>${stage}</td><td>${value}</td><td>${owner}</td><td>${updated}</td>
+      <td><button class="btn edit-btn">Edit</button></td>`;
+  }
+  attachEditButtons();
+  closeModal();
+};
 
 initDashboard();
 </script>
