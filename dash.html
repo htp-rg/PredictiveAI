@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GoHighLevel-Style Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+ 
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="logo">Ad</div>
+        <span>LGU 3 ADMIN SYSTEM</span>
+      </div>
+      <nav>
+        <div class="nav-group">
+          <div class="nav-label">Main</div>
+          <a href="#" class="nav-item active" data-route="dashboard">
+            <div class="icon"></div>
+            <span>Dashboard</span>
+          </a>
+          <a href="#" class="nav-item" data-route="contacts">
+            <div class="icon"></div>
+            <span>Contacts</span>
+          </a>
+          <a href="#" class="nav-item" data-route="opportunities">
+            <div class="icon"></div>
+            <span>Opportunities</span>
+          </a>
+          <a href="#" class="nav-item" data-route="marketing">
+            <div class="icon"></div>
+            <span>Marketing</span>
+          </a>
+          <a href="#" class="nav-item" data-route="automations">
+            <div class="icon"></div>
+            <span>Automations</span>
+          </a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-label">Assets</div>
+          <a href="#" class="nav-item" data-route="websites">
+            <div class="icon"></div>
+            <span>Websites</span>
+          </a>
+          <a href="#" class="nav-item" data-route="funnels">
+            <div class="icon"></div>
+            <span>Funnels</span>
+          </a>
+          <a href="#" class="nav-item" data-route="reporting">
+            <div class="icon"></div>
+            <span>Reporting</span>
+          </a>
+          <a href="#" class="nav-item" data-route="settings">
+            <div class="icon"></div>
+            <span>Settings</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+
+    <section class="main">
+      <header class="topbar">
+        <button class="btn menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+        <div class="search">
+          <span aria-hidden="true">🔎</span>
+          <input id="searchInput" type="search" placeholder="Search…" />
+        </div>
+        <div class="actions">
+          <button class="btn" id="newBtn">+ New</button>
+          <button class="btn" id="exportBtn">Export</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="breadcrumbs">Home / <span id="crumb">Dashboard</span></div>
+        <div class="page-title">
+          <h1 id="pageTitle">Dashboard</h1>
+          <div class="actions">
+            <button class="btn" id="refreshBtn">Refresh</button>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid" style="grid-template-columns: repeat(12, 1fr);">
+          <div class="card anim-pop" style="grid-column: span 3;">
+            <h3>Leads</h3>
+            <div class="kpi"><span class="value" id="kpiLeads">1,284</span><span class="delta" id="deltaLeads">+12% MoM</span></div>
+          </div>
+          <div class="card anim-pop" style="grid-column: span 3;">
+            <h3>Opportunities</h3>
+            <div class="kpi"><span class="value" id="kpiOpps">342</span><span class="delta" id="deltaOpps">+5% MoM</span></div>
+          </div>
+          <div class="card anim-pop" style="grid-column: span 3;">
+            <h3>Close Rate</h3>
+            <div class="kpi"><span class="value" id="kpiClose">28%</span><span class="delta" id="deltaClose">+2 pts</span></div>
+          </div>
+          <div class="card anim-pop" style="grid-column: span 3;">
+            <h3>Revenue</h3>
+            <div class="kpi"><span class="value" id="kpiRevenue">$48.3k</span><span class="delta" id="deltaRevenue">+9% MoM</span></div>
+          </div>
+        </div>
+
+        <!-- Chart & Table -->
+        <div class="grid" style="grid-template-columns: repeat(12, 1fr); margin-top:1rem;">
+          <div class="card anim-fade" style="grid-column: span 8;">
+            <h3>Pipeline (Last 6 Weeks)</h3>
+            <canvas id="pipelineChart" height="180"></canvas>
+            <div class="footer-note">All values are illustrative.</div>
+          </div>
+          <div class="card anim-fade" style="grid-column: span 4;">
+            <h3>Tasks</h3>
+            <ul id="taskList" class="task-list">
+              <li><label><input type="checkbox" /> Call new leads</label></li>
+              <li><label><input type="checkbox" checked /> Launch email campaign</label></li>
+              <li><label><input type="checkbox" /> Update funnel step</label></li>
+              <li><label><input type="checkbox" /> Review automation</label></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card anim-fade" style="margin-top:1rem;">
+          <h3>Recent Opportunities</h3>
+          <table class="table" id="oppsTable">
+            <thead>
+              <tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Website Redesign</td><td>Proposal</td><td>$8,400</td><td>Alex</td><td>Today</td></tr>
+              <tr><td>SEO Retainer</td><td>Negotiation</td><td>$2,100</td><td>Sam</td><td>Yesterday</td></tr>
+              <tr><td>Ads Package</td><td>Qualified</td><td>$3,600</td><td>Jamie</td><td>Aug 20</td></tr>
+              <tr><td>CRM Migration</td><td>Discovery</td><td>$5,200</td><td>Riley</td><td>Aug 17</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <script src="scrip.js"></script>
+</body>
+</html>
+
+
+
+
