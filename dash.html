@@ -43,22 +43,25 @@ th{font-size:.85rem;opacity:.7}
   <aside class="sidebar open" id="sidebar">
     <div class="brand">LGU 3 ADMIN SYSTEM</div>
     <nav>
-<a href="dash.html" class="nav-item active">Dashboard</a>
-<a href="contacts.html" class="nav-item">Contacts</a>
-<a href="opportunities.html" class="nav-item">Opportunities</a>
-<a href="marketing.html" class="nav-item">Marketing</a>
-<a href="automations.html" class="nav-item">Automations</a>
-<a href="websites.html" class="nav-item">Websites</a>
-<a href="funnels.html" class="nav-item">Funnels</a>
-<a href="reporting.html" class="nav-item">Reporting</a>
-<a href="settings.html" class="nav-item">Settings</a>
-  </nav>
-</aside>
+      <a href="dash.html" class="nav-item active">Dashboard</a>
+      <a href="contacts.html" class="nav-item">Contacts</a>
+      <a href="opportunities.html" class="nav-item">Opportunities</a>
+      <a href="marketing.html" class="nav-item">Marketing</a>
+      <a href="automations.html" class="nav-item">Automations</a>
+      <a href="websites.html" class="nav-item">Websites</a>
+      <a href="funnels.html" class="nav-item">Funnels</a>
+      <a href="reporting.html" class="nav-item">Reporting</a>
+      <a href="settings.html" class="nav-item">Settings</a>
+    </nav>
+  </aside>
 
   <section class="main">
     <header class="topbar">
-      <button class="btn" id="menuBtn">☰</button>
-      <div class="search">🔎 <input id="searchInput" type="search" placeholder="Search opportunities…"></div>
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <button class="btn" id="backBtn">← Back</button>
+        <button class="btn" id="menuBtn">☰</button>
+        <div class="search">🔎 <input id="searchInput" type="search" placeholder="Search opportunities…"></div>
+      </div>
       <div>
         <button class="btn" id="newBtn">+ New</button>
         <button class="btn" id="exportBtn">Export</button>
@@ -125,6 +128,8 @@ th{font-size:.85rem;opacity:.7}
 
 <script>
 
+document.getElementById("backBtn").onclick = () => { window.history.back(); };
+
 const overlay=document.getElementById("overlay"), saveBtn=document.getElementById("saveBtn"),
       table=document.querySelector("#oppsTable tbody"), searchInput=document.getElementById("searchInput"),
       revenueEl=document.getElementById("kpiRevenue"), oppsEl=document.getElementById("kpiOpps");
@@ -180,37 +185,3 @@ attachEditButtons();updateRevenue();
 
 document.getElementById("menuBtn").onclick=()=>{document.getElementById("sidebar").classList.toggle("open");};
 document.getElementById("exportBtn").onclick=()=>{
-  const blob=new Blob([document.documentElement.outerHTML],{type:"text/html"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="dash.html";a.click();
-};
-
-
-const ctx=document.getElementById("pipelineChart"), chart=new Chart(ctx,{type:"line",
-  data:{labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
-    datasets:[{label:"Opportunities",data:[10,15,8,20,18,25],
-      borderColor:"#0a53c1",backgroundColor:"rgba(10,83,193,0.2)",fill:true,tension:0.3}]}});
-setInterval(()=>{chart.data.datasets[0].data.push(Math.floor(Math.random()*30));chart.data.datasets[0].data.shift();chart.update();},3000);
-
-
-const taskList=document.getElementById("taskList"), addTaskBtn=document.getElementById("addTaskBtn");
-function attachTaskActions(){
-  document.querySelectorAll("#taskList li").forEach(li=>{
-    const editIcon=li.querySelector(".edit-icon"), deleteIcon=li.querySelector(".delete-icon");
-    editIcon.onclick=()=>{const newText=prompt("Edit Task", li.firstChild.textContent.trim()); if(newText) li.firstChild.textContent=newText+" ";};
-    deleteIcon.onclick=()=>{if(confirm("Delete this task?")) li.remove();};
-  });
-}
-addTaskBtn.onclick=()=>{
-  const taskName=prompt("Enter new task:");
-  if(taskName){
-    const li=document.createElement("li");
-    li.innerHTML=`<input type="checkbox" /> ${taskName} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
-    taskList.appendChild(li);
-    attachTaskActions();
-  }
-};
-attachTaskActions();
-
-</script>
-</body>
-</html>
