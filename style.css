@@ -1,0 +1,111 @@
+:root{
+  --text:#111111; /* BLACK FONT */
+  --blue:#0a53c1; /* accents */
+  --blue-600:#0c60db;
+  --ink-20:#f4f6f8; /* very light gray for subtle hovers */
+  --white:#ffffff;
+  --border:#e6e8eb;
+  --shadow:0 6px 24px rgba(0,0,0,.06);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background:var(--white);
+  color:var(--text);
+}
+
+/* Layout */
+.app{display:grid; grid-template-columns:280px 1fr; min-height:100vh}
+.sidebar{border-right:1px solid var(--border); background:var(--white)}
+.main{display:grid; grid-template-rows:64px 1fr; min-width:0}
+
+/* Sidebar */
+.brand{
+  display:flex; align-items:center; gap:.6rem; height:64px; padding:0 1rem; border-bottom:1px solid var(--border);
+  font-weight:800; letter-spacing:.3px; text-transform:uppercase
+}
+.brand .logo{
+  width:34px; height:34px; border-radius:8px; border:2px solid var(--text); display:grid; place-items:center; font-weight:800
+}
+
+nav{padding:1rem}
+.nav-group{margin:.75rem 0}
+.nav-label{font-size:.75rem; opacity:.7; margin:.75rem 1rem}
+.nav-item{
+  display:flex; align-items:center; gap:.75rem; padding:.65rem .9rem; border-radius:12px; text-decoration:none; color:var(--text);
+  border:1px solid transparent; transition:transform .18s ease, background-color .18s ease, border-color .18s ease;
+}
+.nav-item:hover{background:var(--ink-20); border-color:var(--border); transform:translateY(-1px)}
+.nav-item.active{background:var(--ink-20); border-color:var(--text)}
+.nav-item .icon{width:18px; height:18px; border:2px solid var(--text); border-radius:4px}
+
+/* Topbar */
+.topbar{
+  position:sticky; top:0; z-index:5;
+  display:flex; align-items:center; justify-content:space-between; padding:0 1rem; border-bottom:1px solid var(--border); background:var(--white);
+  backdrop-filter:saturate(1.2) blur(2px);
+}
+.search{
+  display:flex; align-items:center; gap:.5rem; border:1px solid var(--border); border-radius:12px; padding:.5rem .75rem; min-width:260px; transition:box-shadow .2s ease, border-color .2s ease
+}
+.search:focus-within{box-shadow:var(--shadow); border-color:var(--blue)}
+.search input{border:none; outline:none; background:transparent; color:var(--text); width:100%}
+.actions{display:flex; align-items:center; gap:.5rem}
+.btn{
+  background:transparent; color:var(--text); border:1px solid var(--text); padding:.5rem .9rem; border-radius:12px; cursor:pointer; font-weight:600; transition:transform .15s ease, box-shadow .15s ease, background-color .2s ease
+}
+.btn:hover{background:var(--ink-20); box-shadow:var(--shadow); transform:translateY(-1px)}
+.menu-btn{display:none}
+
+/* Content */
+.content{padding:1.25rem; overflow:auto}
+.breadcrumbs{font-size:.85rem; opacity:.8}
+.page-title{display:flex; align-items:end; justify-content:space-between; margin:.5rem 0 1rem}
+.page-title h1{margin:0; font-size:1.3rem}
+
+.grid{display:grid; gap:1rem; grid-template-columns:repeat(12,1fr)}
+.card{
+  background:var(--white); border:1px solid var(--border); border-radius:16px; padding:1rem; box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease
+}
+.card:hover{transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,.08)}
+.card h3{margin:.25rem 0 .75rem; font-size:1rem}
+
+.kpi{display:flex; align-items:center; justify-content:space-between}
+.kpi .value{font-size:1.8rem; font-weight:800}
+.kpi .delta{font-size:.8rem; opacity:.7}
+
+.table{width:100%; border-collapse:collapse; font-size:.95rem}
+.table th, .table td{border-bottom:1px solid var(--border); padding:.6rem .4rem; text-align:left}
+.table th{font-size:.8rem; opacity:.7}
+
+.footer-note{font-size:.8rem; opacity:.75; margin-top:.75rem}
+
+/* Animations */
+@keyframes fadeInUp{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+@keyframes popIn{from{opacity:0; transform:scale(.97)} to{opacity:1; transform:scale(1)}}
+.anim-fade{animation:fadeInUp .5s ease both}
+.anim-pop{animation:popIn .4s ease both}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{animation: none !important; transition: none !important}
+}
+
+/* Responsive */
+@media (max-width: 1024px){
+  .app{grid-template-columns:72px 1fr}
+  .brand span{display:none}
+  .nav-label{display:none}
+  .nav-item{justify-content:center}
+  .nav-item span{display:none}
+}
+@media (max-width: 720px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed; inset:0 auto 0 0; width:260px; transform:translateX(-100%); transition:transform .25s ease; z-index:20}
+  .sidebar.open{transform:translateX(0)}
+  .menu-btn{display:inline-flex}
+  .overlay{position:fixed; inset:0; background:rgba(0,0,0,.08); display:none}
+  .overlay.show{display:block}
+}
