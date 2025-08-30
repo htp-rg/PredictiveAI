@@ -218,4 +218,18 @@ const routes={
   marketing:"<h1>Marketing</h1><p>Marketing tools here.</p>",
   automations:"<h1>Automations</h1><p>Automation workflows.</p>",
   websites:"<h1>Websites</h1><p>Website builder content.</p>",
-  funnels:"<h1>Funnels</h1><p>Funnels info.<
+  funnels:"<h1>Funnels</h1><p>Funnels info.</p>",
+  reporting:"<h1>Reporting</h1><p>Reports & analytics.</p>",
+  settings:"<h1>Settings</h1><p>System settings here.</p>"
+};
+document.querySelectorAll(".nav-item").forEach(link=>{
+  link.onclick=(e)=>{e.preventDefault();
+    document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+    link.classList.add("active");
+    const route=link.dataset.route;
+    document.getElementById("contentArea").innerHTML=route==="dashboard"?document.getElementById("dashboardView").outerHTML:routes[route]||"";
+  };
+});
+</script>
+</body>
+</html>
