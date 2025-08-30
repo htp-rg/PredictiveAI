@@ -37,7 +37,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
 
   const password = document.getElementById("password").value;
   const codeInput = document.getElementById("codeInput").value.trim();
-  const correctPassword = "orariojames"; // Hardcoded for demo
+  const correctPassword = "orariojames"; 
 
   const now = new Date();
   if (!sentCode) {
