@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ADMIN</title>
   
-<style>
+  <style>
     body {
       font-family: Arial, sans-serif;
       background: #f2f2f2;
@@ -26,27 +26,44 @@
       color: #333;
     }
     input, button {
-      width: 100%;
       padding: 10px;
       margin: 8px 0;
       border-radius: 5px;
       border: 1px solid #ccc;
       box-sizing: border-box;
+      font-size: 14px;
+    }
+    input {
+      width: 60%;
     }
     button {
       cursor: pointer;
       border: none;
       color: #fff;
+      font-size: 14px;
     }
     #sendCodeBtn {
       background: #4285f4;
+      width: 35%;
+      margin-left: 5%;
     }
     #loginForm button[type="submit"] {
+      width: 100%;
       background: green;
+    }
+    #timer {
+      text-align: center;
+      margin-top: 5px;
+      font-size: 12px;
+      color: #555;
     }
     #message {
       text-align: center;
       margin-top: 10px;
+    }
+    .code-row {
+      display: flex;
+      align-items: center;
     }
   </style>
 
@@ -59,7 +76,6 @@
 </head>
 
 <body>
-  
   <h1>MARKET AND TRADE MONITORING SYSTEM</h1>
 
   <div class="container">
@@ -72,10 +88,11 @@
       <label>Password:</label>
       <input type="password" id="password" required placeholder="Enter your password">
 
-      <button type="button" id="sendCodeBtn">Send Code</button>
-
-      <label>Verification Code:</label>
-      <input type="text" id="codeInput" placeholder="Enter code">
+      <div class="code-row">
+        <input type="text" id="codeInput" placeholder="Enter code">
+        <button type="button" id="sendCodeBtn">Send Code</button>
+      </div>
+      <div id="timer"></div>
 
       <button type="submit">Login</button>
     </form>
