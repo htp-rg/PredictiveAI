@@ -10,7 +10,7 @@
   <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script type="text/javascript">
     (function() {
-      emailjs.init("YOUR_PUBLIC_KEY"); // <-- replace with your EmailJS public key
+      emailjs.init("2II4AMPOttKnz7x9J");
     })();
   </script>
 </head>
@@ -25,10 +25,10 @@
       <label>Password:</label>
       <input type="password" id="password" required placeholder="Enter your password" style="width:100%;padding:10px;margin:8px 0;">
 
-      <button type="button" id="sendCodeBtn" style="width:100%;padding:10px;background:#4285f4;color:#fff;border:none;border-radius:5px;margin:8px 0;cursor:pointer;">
+       <button type="button" id="sendCodeBtn" style="width:100%;padding:10px;background:#4285f4;color:#fff;border:none;border-radius:5px;margin:8px 0;cursor:pointer;">
         Send Code
       </button>
-
+      
       <label>Verification Code:</label>
       <input type="text" id="codeInput" placeholder="Enter code" style="width:100%;padding:10px;margin:8px 0;">
 
@@ -53,8 +53,8 @@
 
       sentCode = Math.floor(100000 + Math.random() * 900000); // 6-digit code
 
-      emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
-        to_email: "orariojames2@gmail.com",   //
+      emailjs.send("service_qvm338i", "template_koj1ggb", {
+        to_email: "orariojames2@gmail.com", 
         user_email: userEmail,
         verification_code: sentCode
       })
@@ -69,7 +69,7 @@
       });
     });
 
-    // Handle login
+ 
     document.getElementById("loginForm").addEventListener("submit", function(event) {
       event.preventDefault();
 
@@ -80,7 +80,7 @@
       const correctPassword = "orariojames"; // 
 
       if (password === correctPassword && codeInput == sentCode) {
-        window.location.href = "dash.html"; // redirect to dashboard
+        window.location.href = "dash.html"; 
       } else {
         document.getElementById("message").innerHTML =
           `<p style="color:red;">Invalid password or verification code ❌</p>`;
