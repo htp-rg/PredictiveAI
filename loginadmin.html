@@ -27,14 +27,13 @@
     }
     input, button {
       padding: 10px;
-      margin: 8px 0;
       border-radius: 5px;
       border: 1px solid #ccc;
-      box-sizing: border-box;
       font-size: 14px;
+      box-sizing: border-box;
     }
     input {
-      width: 60%;
+      width: 100%;
     }
     button {
       cursor: pointer;
@@ -42,14 +41,10 @@
       color: #fff;
       font-size: 14px;
     }
-    #sendCodeBtn {
-      background: #4285f4;
-      width: 35%;
-      margin-left: 5%;
-    }
     #loginForm button[type="submit"] {
       width: 100%;
       background: green;
+      margin-top: 10px;
     }
     #timer {
       text-align: center;
@@ -61,25 +56,22 @@
       text-align: center;
       margin-top: 10px;
     }
+
+   
     .code-row {
       display: flex;
-      align-items: center;
+      gap: 5px; 
+      margin-bottom: 8px;
     }
-    .code-row {
-  display: flex;
-  gap: 5px;           
-  margin-bottom: 8px; 
-}
-
-.code-row input {
-  flex: 2;             
-  min-width: 0;       
-}
-
-.code-row button {
-  flex: 1;            
-  margin: 0;           
-}
+    .code-row input {
+      flex: 2;   /
+      min-width: 0; 
+    }
+    .code-row button {
+      flex: 1;   
+      background: #4285f4;
+      margin: 0;
+    }
   </style>
 
   <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
@@ -103,11 +95,11 @@
       <label>Password:</label>
       <input type="password" id="password" required placeholder="Enter your password">
 
-<div class="code-row">
-  <input type="text" id="codeInput" placeholder="Enter code">
-  <button type="button" id="sendCodeBtn">Send Code</button>
-</div>
-<div id="timer"></div>
+      <div class="code-row">
+        <input type="text" id="codeInput" placeholder="Enter code">
+        <button type="button" id="sendCodeBtn">Send Code</button>
+      </div>
+      <div id="timer"></div>
 
       <button type="submit">Login</button>
     </form>
