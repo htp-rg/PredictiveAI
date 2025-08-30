@@ -43,15 +43,15 @@ th{font-size:.85rem;opacity:.7}
   <aside class="sidebar open" id="sidebar">
     <div class="brand">LGU 3 ADMIN SYSTEM</div>
     <nav>
-      <a href="dash.html" class="nav-item active">Dashboard</a>
-      <a href="contacts.html" class="nav-item">Contacts</a>
-      <a href="opportunities.html" class="nav-item">Opportunities</a>
-      <a href="marketing.html" class="nav-item">Marketing</a>
-      <a href="automations.html" class="nav-item">Automations</a>
-      <a href="websites.html" class="nav-item">Websites</a>
-      <a href="funnels.html" class="nav-item">Funnels</a>
-      <a href="reporting.html" class="nav-item">Reporting</a>
-      <a href="settings.html" class="nav-item">Settings</a>
+      <a href="dash.html" class="nav-item active" data-page="dashboard">Dashboard</a>
+      <a href="contacts.html" class="nav-item" data-page="contacts">Contacts</a>
+      <a href="opportunities.html" class="nav-item" data-page="opportunities">Opportunities</a>
+      <a href="marketing.html" class="nav-item" data-page="marketing">Marketing</a>
+      <a href="automations.html" class="nav-item" data-page="automations">Automations</a>
+      <a href="websites.html" class="nav-item" data-page="websites">Websites</a>
+      <a href="funnels.html" class="nav-item" data-page="funnels">Funnels</a>
+      <a href="reporting.html" class="nav-item" data-page="reporting">Reporting</a>
+      <a href="settings.html" class="nav-item" data-page="settings">Settings</a>
     </nav>
   </aside>
 
@@ -69,45 +69,7 @@ th{font-size:.85rem;opacity:.7}
     </header>
 
     <div class="content" id="contentArea">
-      <div id="dashboardView">
-        <h1>Dashboard</h1>
-        <div class="grid">
-          <div class="card"><h3>Leads</h3><p id="kpiLeads">1,284</p><small>+12% MoM</small></div>
-          <div class="card"><h3>Opportunities</h3><p id="kpiOpps">4</p><small>+5% MoM</small></div>
-          <div class="card"><h3>Close Rate</h3><p id="kpiClose">28%</p><small>+2 pts</small></div>
-          <div class="card"><h3>Revenue</h3><p id="kpiRevenue">$0</p><small>Auto</small></div>
-        </div>
-
-        <div class="grid">
-          <div class="card">
-            <h3>Pipeline (Last 6 Weeks)</h3>
-            <canvas id="pipelineChart" height="100"></canvas>
-          </div>
-          <div class="card" id="tasksCard">
-            <h3>Tasks</h3>
-            <ul id="taskList" style="list-style:none;padding:0;margin:0;">
-              <li><input type="checkbox" /> Call new leads <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
-              <li><input type="checkbox" checked /> Launch email campaign <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
-              <li><input type="checkbox" /> Update funnel step <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
-              <li><input type="checkbox" /> Review automation <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
-            </ul>
-            <button id="addTaskBtn" class="btn" style="margin-top:.5rem;">➕</button>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:1rem;">
-          <h3>Recent Opportunities</h3>
-          <table id="oppsTable">
-            <thead><tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th><th>Action</th></tr></thead>
-            <tbody>
-              <tr><td>Website Redesign</td><td>Proposal</td><td>$8400</td><td>Alex</td><td>Today</td><td><button class="btn edit-btn">Edit</button></td></tr>
-              <tr><td>SEO Retainer</td><td>Negotiation</td><td>$2100</td><td>Sam</td><td>Yesterday</td><td><button class="btn edit-btn">Edit</button></td></tr>
-              <tr><td>Ads Package</td><td>Qualified</td><td>$3600</td><td>Jamie</td><td>Aug 20</td><td><button class="btn edit-btn">Edit</button></td></tr>
-              <tr><td>CRM Migration</td><td>Discovery</td><td>$5200</td><td>Riley</td><td>Aug 17</td><td><button class="btn edit-btn">Edit</button></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <!-- Dynamic content will be loaded here -->
     </div>
   </section>
 </div>
@@ -127,15 +89,56 @@ th{font-size:.85rem;opacity:.7}
 </div>
 
 <script>
-document.getElementById("backBtn").onclick = () => { window.history.back(); };
+const overlay = document.getElementById("overlay");
+const contentArea = document.getElementById("contentArea");
+let editingRow = null;
+let pipelineChart = null;
 
-const overlay=document.getElementById("overlay"), saveBtn=document.getElementById("saveBtn"),
-      table=document.querySelector("#oppsTable tbody"), searchInput=document.getElementById("searchInput"),
-      revenueEl=document.getElementById("kpiRevenue"), oppsEl=document.getElementById("kpiOpps");
-let editingRow=null;
 
+const pages = {
+  dashboard: `
+    <h1>Dashboard</h1>
+    <div class="grid">
+      <div class="card"><h3>Leads</h3><p id="kpiLeads">1,284</p><small>+12% MoM</small></div>
+      <div class="card"><h3>Opportunities</h3><p id="kpiOpps">4</p><small>+5% MoM</small></div>
+      <div class="card"><h3>Close Rate</h3><p id="kpiClose">28%</p><small>+2 pts</small></div>
+      <div class="card"><h3>Revenue</h3><p id="kpiRevenue">$0</p><small>Auto</small></div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>Pipeline (Last 6 Weeks)</h3>
+        <canvas id="pipelineChart" height="100"></canvas>
+      </div>
+      <div class="card" id="tasksCard">
+        <h3>Tasks</h3>
+        <ul id="taskList" style="list-style:none;padding:0;margin:0;">
+          <li><input type="checkbox" /> Call new leads <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" checked /> Launch email campaign <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Update funnel step <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Review automation <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+        </ul>
+        <button id="addTaskBtn" class="btn" style="margin-top:.5rem;">➕</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:1rem;">
+      <h3>Recent Opportunities</h3>
+      <table id="oppsTable">
+        <thead><tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Website Redesign</td><td>Proposal</td><td>$8400</td><td>Alex</td><td>Today</td><td><button class="btn edit-btn">Edit</button></td></tr>
+          <tr><td>SEO Retainer</td><td>Negotiation</td><td>$2100</td><td>Sam</td><td>Yesterday</td><td><button class="btn edit-btn">Edit</button></td></tr>
+          <tr><td>Ads Package</td><td>Qualified</td><td>$3600</td><td>Jamie</td><td>Aug 20</td><td><button class="btn edit-btn">Edit</button></td></tr>
+          <tr><td>CRM Migration</td><td>Discovery</td><td>$5200</td><td>Riley</td><td>Aug 17</td><td><button class="btn edit-btn">Edit</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  `,
+};
+
+  
 function openModal(row=null){
-  overlay.style.display="flex"; editingRow=row;
+  overlay.style.display="flex"; 
+  editingRow=row;
   if(row){
     document.getElementById("modalTitle").innerText="Edit Opportunity";
     document.getElementById("dealInput").value=row.cells[0].innerText;
@@ -147,12 +150,93 @@ function openModal(row=null){
     document.querySelectorAll(".modal input").forEach(i=>i.value="");
   }
 }
-function closeModal(){overlay.style.display="none";}
-document.getElementById("newBtn").onclick=()=>openModal();
 
-saveBtn.onclick=()=>{
-  const deal=document.getElementById("dealInput").value, stage=document.getElementById("stageInput").value,
-        value="$"+document.getElementById("valueInput").value, owner=document.getElementById("ownerInput").value,
+function closeModal(){overlay.style.display="none";}
+
+function attachEditButtons(){
+  document.querySelectorAll(".edit-btn").forEach(b=>{
+    b.onclick=()=>openModal(b.closest("tr"));
+  });
+}
+
+function attachTaskActions(){
+  const taskList=document.getElementById("taskList"), addTaskBtn=document.getElementById("addTaskBtn");
+  if(!taskList) return;
+  document.querySelectorAll("#taskList li").forEach(li=>{
+    const editIcon=li.querySelector(".edit-icon"), deleteIcon=li.querySelector(".delete-icon");
+    editIcon.onclick=()=>{const newText=prompt("Edit Task", li.firstChild.textContent.trim()); if(newText) li.firstChild.textContent=newText+" ";};
+    deleteIcon.onclick=()=>{if(confirm("Delete this task?")) li.remove();};
+  });
+  addTaskBtn.onclick=()=>{
+    const taskName=prompt("Enter new task:");
+    if(taskName){
+      const li=document.createElement("li");
+      li.innerHTML=`<input type="checkbox" /> ${taskName} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
+      taskList.appendChild(li);
+      attachTaskActions();
+    }
+  };
+}
+
+function updateRevenue(){
+  const table=document.querySelector("#oppsTable tbody");
+  const revenueEl=document.getElementById("kpiRevenue"), oppsEl=document.getElementById("kpiOpps");
+  if(!table) return;
+  let total=0;
+  [...table.rows].forEach(r=>{total+=parseFloat(r.cells[2].innerText.replace(/\$/,""))||0});
+  revenueEl.innerText="$"+total.toLocaleString(); 
+  oppsEl.innerText=table.rows.length;
+}
+
+function initDashboard(){
+  const container = document.getElementById("contentArea");
+  container.innerHTML = pages.dashboard;
+  attachEditButtons();
+  attachTaskActions();
+  updateRevenue();
+
+  const ctx = document.getElementById("pipelineChart");
+  if(ctx){
+    pipelineChart = new Chart(ctx,{
+      type:"line",
+      data:{
+        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+        datasets:[{
+          label:"Opportunities",
+          data:[10,15,8,20,18,25],
+          borderColor:"#0a53c1",
+          backgroundColor:"rgba(10,83,193,0.2)",
+          fill:true,
+          tension:0.3
+        }]
+      }
+    });
+  }
+}
+
+
+document.querySelectorAll(".nav-item").forEach(link=>{
+  link.onclick=(e)=>{
+    e.preventDefault();
+    document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));
+    link.classList.add("active");
+    const page = link.dataset.page;
+    contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
+    if(page==="dashboard") initDashboard();
+  }
+});
+
+
+document.getElementById("backBtn").onclick = () => { window.history.back(); };
+document.getElementById("menuBtn").onclick=()=>{document.getElementById("sidebar").classList.toggle("open");};
+document.getElementById("newBtn").onclick=()=>openModal();
+document.getElementById("saveBtn").onclick=()=>{
+  const table=document.querySelector("#oppsTable tbody");
+  if(!table) return;
+  const deal=document.getElementById("dealInput").value,
+        stage=document.getElementById("stageInput").value,
+        value="$"+document.getElementById("valueInput").value,
+        owner=document.getElementById("ownerInput").value,
         updated="Today";
   if(editingRow){
     editingRow.cells[0].innerText=deal;
@@ -165,22 +249,28 @@ saveBtn.onclick=()=>{
     row.innerHTML=`<td>${deal}</td><td>${stage}</td><td>${value}</td><td>${owner}</td><td>${updated}</td>
       <td><button class="btn edit-btn">Edit</button></td>`;
   }
-  updateRevenue();attachEditButtons();closeModal();
+  attachEditButtons(); updateRevenue(); closeModal();
 };
 
-searchInput.onkeyup=()=>{
-  const q=searchInput.value.toLowerCase();
+
+document.getElementById("exportBtn").onclick = ()=>{
+  const blob = new Blob([document.documentElement.outerHTML],{type:"text/html"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download="dash.html";
+  a.click();
+};
+
+
+document.getElementById("searchInput").addEventListener("input",(e)=>{
+  const table = document.querySelector("#oppsTable tbody");
+  if(!table) return;
+  const q = e.target.value.toLowerCase();
   [...table.rows].forEach(r=>{r.style.display=r.innerText.toLowerCase().includes(q)?"":"none"});
-};
+});
 
-function updateRevenue(){
-  let total=0;
-  [...table.rows].forEach(r=>{total+=parseFloat(r.cells[2].innerText.replace(/\$/,""))||0});
-  revenueEl.innerText="$"+total.toLocaleString();oppsEl.innerText=table.rows.length;
-}
-function attachEditButtons(){document.querySelectorAll(".edit-btn").forEach(b=>b.onclick=()=>openModal(b.closest("tr")));}
 
-attachEditButtons();updateRevenue();
-
-document.getElementById("menuBtn").onclick=()=>{document.getElementById("sidebar").classList.toggle("open");};
-document.getElementById("exportBtn").onclick=()=>{
+initDashboard();
+</script>
+</body>
+</html>
