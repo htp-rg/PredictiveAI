@@ -1,23 +1,40 @@
 let sentCode = null;
 let otpExpiry = null;
+let countdownTimer = null;
 
-document.getElementById("sendCodeBtn").addEventListener("click", function() {
+const sendCodeBtn = document.getElementById("sendCodeBtn");
+
+sendCodeBtn.addEventListener("click", function() {
   const userEmail = document.getElementById("email").value.trim();
   if (!userEmail) {
     alert("Please enter your email first.");
     return;
   }
 
+ 
+  sendCodeBtn.disabled = true;
+  let timeLeft = 60; 
+  sendCodeBtn.textContent = `Wait ${timeLeft}s`;
 
-  sentCode = Math.floor(100000 + Math.random() * 900000);
+  countdownTimer = setInterval(() => {
+    timeLeft--;
+    sendCodeBtn.textContent = `Wait ${timeLeft}s`;
+    if (timeLeft <= 0) {
+      clearInterval(countdownTimer);
+      sendCodeBtn.disabled = false;
+      sendCodeBtn.textContent = "Send Code";
+    }
+  }, 1000);
 
  
-  const expiryTime = new Date(Date.now() + 15*60*1000);
+  sentCode = Math.floor(100000 + Math.random() * 900000);
+
+
+  const expiryTime = new Date(Date.now() + 15 * 60 * 1000);
   otpExpiry = expiryTime;
 
-
- emailjs.send("service_qvm338i","template_koj1ggb");
-    user_email: userEmail,
+emailjs.send("service_qvm338i","template_koj1ggb");
+    to_email: userEmail,
     passcode: sentCode,
     time: expiryTime.toLocaleTimeString()
   })
@@ -25,7 +42,8 @@ document.getElementById("sendCodeBtn").addEventListener("click", function() {
     document.getElementById("message").innerHTML =
       `<p style="color:green;">Verification code sent to ${userEmail} ✅</p>`;
     console.log("SUCCESS!", response.status, response.text);
-  }, function(error) {
+  })
+  .catch(function(error) {
     document.getElementById("message").innerHTML =
       `<p style="color:red;">Error sending email ❌</p>`;
     console.error("FAILED...", error);
@@ -35,11 +53,12 @@ document.getElementById("sendCodeBtn").addEventListener("click", function() {
 document.getElementById("loginForm").addEventListener("submit", function(event) {
   event.preventDefault();
 
-  const password = document.getElementById("password").value;
+  const password = document.getElementById("password").value.trim();
   const codeInput = document.getElementById("codeInput").value.trim();
-  const correctPassword = "orariojames"; 
+  const correctPassword = "orariojames";
 
   const now = new Date();
+
   if (!sentCode) {
     document.getElementById("message").innerHTML =
       `<p style="color:red;">Please request a verification code first ❌</p>`;
@@ -47,7 +66,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     document.getElementById("message").innerHTML =
       `<p style="color:red;">OTP expired! Please request a new code ❌</p>`;
   } else if (password === correctPassword && codeInput == sentCode) {
-    window.location.href = "dash.html"; 
+    window.location.href = "dash.html";
   } else {
     document.getElementById("message").innerHTML =
       `<p style="color:red;">Invalid password or verification code ❌</p>`;
