@@ -16,7 +16,7 @@ document.getElementById("sendCodeBtn").addEventListener("click", function() {
   otpExpiry = expiryTime;
 
 
-  emailjs.send("service_qvm338i", "template_koj1ggb", {
+ emailjs.send("service_qvm338i","template_koj1ggb");
     user_email: userEmail,
     passcode: sentCode,
     time: expiryTime.toLocaleTimeString()
