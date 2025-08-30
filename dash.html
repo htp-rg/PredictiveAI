@@ -1,151 +1,187 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GoHighLevel-Style Dashboard</title>
+  <title>Dashboard</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body { margin:0; font-family: system-ui, Arial; background:#f7f9fc; }
+    .app { display:flex; }
+    .sidebar { width:240px; background:#1f2937; color:white; min-height:100vh; padding:1rem 0; }
+    .sidebar .brand { padding:1rem; font-weight:bold; }
+    .nav-item { display:block; padding:0.75rem 1rem; color:#cbd5e1; text-decoration:none; }
+    .nav-item.active, .nav-item:hover { background:#374151; color:white; }
+    .main { flex:1; display:flex; flex-direction:column; }
+    .topbar { background:white; padding:0.5rem 1rem; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #e5e7eb; }
+    .search input { border:none; outline:none; padding:0.25rem 0.5rem; }
+    .btn { padding:0.4rem 0.8rem; border:none; background:#2563eb; color:white; border-radius:4px; cursor:pointer; }
+    .btn:hover { background:#1e40af; }
+    .content { padding:1rem; }
+    .grid { display:grid; gap:1rem; }
+    .card { background:white; border-radius:8px; padding:1rem; box-shadow:0 2px 5px rgba(0,0,0,0.05); }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:0.5rem; border-bottom:1px solid #e5e7eb; text-align:left; }
+    .overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; }
+    .modal { background:white; padding:1rem; border-radius:8px; width:320px; }
+    .modal h3 { margin-top:0; }
+    .modal input, .modal select { width:100%; padding:0.5rem; margin:0.25rem 0 0.75rem; }
+    .edit-btn { background:#10b981; }
+    .edit-btn:hover { background:#047857; }
+  </style>
 </head>
 <body>
   <div class="app">
- 
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <div class="logo">Ad</div>
-        <span>LGU 3 ADMIN SYSTEM</span>
-      </div>
-      <nav>
-        <div class="nav-group">
-          <div class="nav-label">Main</div>
-          <a href="#" class="nav-item active" data-route="dashboard">
-            <div class="icon"></div>
-            <span>Dashboard</span>
-          </a>
-          <a href="#" class="nav-item" data-route="contacts">
-            <div class="icon"></div>
-            <span>Contacts</span>
-          </a>
-          <a href="#" class="nav-item" data-route="opportunities">
-            <div class="icon"></div>
-            <span>Opportunities</span>
-          </a>
-          <a href="#" class="nav-item" data-route="marketing">
-            <div class="icon"></div>
-            <span>Marketing</span>
-          </a>
-          <a href="#" class="nav-item" data-route="automations">
-            <div class="icon"></div>
-            <span>Automations</span>
-          </a>
-        </div>
-        <div class="nav-group">
-          <div class="nav-label">Assets</div>
-          <a href="#" class="nav-item" data-route="websites">
-            <div class="icon"></div>
-            <span>Websites</span>
-          </a>
-          <a href="#" class="nav-item" data-route="funnels">
-            <div class="icon"></div>
-            <span>Funnels</span>
-          </a>
-          <a href="#" class="nav-item" data-route="reporting">
-            <div class="icon"></div>
-            <span>Reporting</span>
-          </a>
-          <a href="#" class="nav-item" data-route="settings">
-            <div class="icon"></div>
-            <span>Settings</span>
-          </a>
-        </div>
-      </nav>
+    <aside class="sidebar">
+      <div class="brand">LGU 3 ADMIN SYSTEM</div>
+      <a href="#" class="nav-item active" data-route="dashboard">Dashboard</a>
+      <a href="#" class="nav-item" data-route="contacts">Contacts</a>
+      <a href="#" class="nav-item" data-route="opportunities">Opportunities</a>
+      <a href="#" class="nav-item" data-route="marketing">Marketing</a>
+      <a href="#" class="nav-item" data-route="automations">Automations</a>
+      <a href="#" class="nav-item" data-route="websites">Websites</a>
+      <a href="#" class="nav-item" data-route="funnels">Funnels</a>
+      <a href="#" class="nav-item" data-route="reporting">Reporting</a>
+      <a href="#" class="nav-item" data-route="settings">Settings</a>
     </aside>
-
 
     <section class="main">
       <header class="topbar">
-        <button class="btn menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
         <div class="search">
-          <span aria-hidden="true">🔎</span>
-          <input id="searchInput" type="search" placeholder="Search…" />
+          🔎 <input id="searchInput" type="search" placeholder="Search…" />
         </div>
-        <div class="actions">
+        <div>
           <button class="btn" id="newBtn">+ New</button>
-          <button class="btn" id="exportBtn">Export</button>
+          <button class="btn">Export</button>
         </div>
       </header>
 
       <div class="content">
-        <div class="breadcrumbs">Home / <span id="crumb">Dashboard</span></div>
-        <div class="page-title">
-          <h1 id="pageTitle">Dashboard</h1>
-          <div class="actions">
-            <button class="btn" id="refreshBtn">Refresh</button>
-          </div>
-        </div>
-
+        <h1>Dashboard</h1>
+        
         <!-- KPI Cards -->
-        <div class="grid" style="grid-template-columns: repeat(12, 1fr);">
-          <div class="card anim-pop" style="grid-column: span 3;">
-            <h3>Leads</h3>
-            <div class="kpi"><span class="value" id="kpiLeads">1,284</span><span class="delta" id="deltaLeads">+12% MoM</span></div>
-          </div>
-          <div class="card anim-pop" style="grid-column: span 3;">
-            <h3>Opportunities</h3>
-            <div class="kpi"><span class="value" id="kpiOpps">342</span><span class="delta" id="deltaOpps">+5% MoM</span></div>
-          </div>
-          <div class="card anim-pop" style="grid-column: span 3;">
-            <h3>Close Rate</h3>
-            <div class="kpi"><span class="value" id="kpiClose">28%</span><span class="delta" id="deltaClose">+2 pts</span></div>
-          </div>
-          <div class="card anim-pop" style="grid-column: span 3;">
-            <h3>Revenue</h3>
-            <div class="kpi"><span class="value" id="kpiRevenue">$48.3k</span><span class="delta" id="deltaRevenue">+9% MoM</span></div>
-          </div>
+        <div class="grid" style="grid-template-columns:repeat(4,1fr);">
+          <div class="card"><h3>Leads</h3><p id="kpiLeads">1284</p></div>
+          <div class="card"><h3>Opportunities</h3><p id="kpiOpps">342</p></div>
+          <div class="card"><h3>Close Rate</h3><p id="kpiClose">28%</p></div>
+          <div class="card"><h3>Revenue</h3><p id="kpiRevenue">$0</p></div>
         </div>
 
-        <!-- Chart & Table -->
-        <div class="grid" style="grid-template-columns: repeat(12, 1fr); margin-top:1rem;">
-          <div class="card anim-fade" style="grid-column: span 8;">
-            <h3>Pipeline (Last 6 Weeks)</h3>
-            <canvas id="pipelineChart" height="180"></canvas>
-            <div class="footer-note">All values are illustrative.</div>
-          </div>
-          <div class="card anim-fade" style="grid-column: span 4;">
-            <h3>Tasks</h3>
-            <ul id="taskList" class="task-list">
-              <li><label><input type="checkbox" /> Call new leads</label></li>
-              <li><label><input type="checkbox" checked /> Launch email campaign</label></li>
-              <li><label><input type="checkbox" /> Update funnel step</label></li>
-              <li><label><input type="checkbox" /> Review automation</label></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="card anim-fade" style="margin-top:1rem;">
+        <!-- Opportunities Table -->
+        <div class="card" style="margin-top:1rem;">
           <h3>Recent Opportunities</h3>
-          <table class="table" id="oppsTable">
+          <table id="oppsTable">
             <thead>
-              <tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th></tr>
+              <tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th><th>Action</th></tr>
             </thead>
             <tbody>
-              <tr><td>Website Redesign</td><td>Proposal</td><td>$8,400</td><td>Alex</td><td>Today</td></tr>
-              <tr><td>SEO Retainer</td><td>Negotiation</td><td>$2,100</td><td>Sam</td><td>Yesterday</td></tr>
-              <tr><td>Ads Package</td><td>Qualified</td><td>$3,600</td><td>Jamie</td><td>Aug 20</td></tr>
-              <tr><td>CRM Migration</td><td>Discovery</td><td>$5,200</td><td>Riley</td><td>Aug 17</td></tr>
+              <tr>
+                <td>Website Redesign</td><td>Proposal</td><td>$8400</td><td>Alex</td><td>Today</td>
+                <td><button class="btn edit-btn">Edit</button></td>
+              </tr>
+              <tr>
+                <td>SEO Retainer</td><td>Negotiation</td><td>$2100</td><td>Sam</td><td>Yesterday</td>
+                <td><button class="btn edit-btn">Edit</button></td>
+              </tr>
             </tbody>
           </table>
         </div>
-
       </div>
     </section>
   </div>
 
-  <div class="overlay" id="overlay"></div>
+  <!-- Modal -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3 id="modalTitle">New Opportunity</h3>
+      <input id="dealInput" placeholder="Deal" />
+      <select id="stageInput">
+        <option>Discovery</option><option>Qualified</option><option>Proposal</option><option>Negotiation</option>
+      </select>
+      <input id="valueInput" placeholder="Value (e.g. 5000)" type="number" />
+      <input id="ownerInput" placeholder="Owner" />
+      <button class="btn" id="saveBtn">Save</button>
+      <button class="btn" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
 
-  <script src="scrip.js"></script>
+<script>
+  const newBtn = document.getElementById("newBtn");
+  const overlay = document.getElementById("overlay");
+  const saveBtn = document.getElementById("saveBtn");
+  const table = document.getElementById("oppsTable").querySelector("tbody");
+  const searchInput = document.getElementById("searchInput");
+  const revenueEl = document.getElementById("kpiRevenue");
+  const oppsEl = document.getElementById("kpiOpps");
+  let editingRow = null;
+
+  function openModal(editRow=null) {
+    overlay.style.display="flex";
+    editingRow = editRow;
+    if(editRow){
+      document.getElementById("modalTitle").innerText="Edit Opportunity";
+      document.getElementById("dealInput").value = editRow.cells[0].innerText;
+      document.getElementById("stageInput").value = editRow.cells[1].innerText;
+      document.getElementById("valueInput").value = editRow.cells[2].innerText.replace(/\$/,"");
+      document.getElementById("ownerInput").value = editRow.cells[3].innerText;
+    } else {
+      document.getElementById("modalTitle").innerText="New Opportunity";
+      document.querySelectorAll(".modal input").forEach(i=>i.value="");
+    }
+  }
+  function closeModal(){ overlay.style.display="none"; }
+
+  newBtn.onclick = ()=>openModal();
+
+  saveBtn.onclick = ()=>{
+    const deal = document.getElementById("dealInput").value;
+    const stage = document.getElementById("stageInput").value;
+    const value = "$"+document.getElementById("valueInput").value;
+    const owner = document.getElementById("ownerInput").value;
+    const updated = "Today";
+
+    if(editingRow){
+      editingRow.cells[0].innerText=deal;
+      editingRow.cells[1].innerText=stage;
+      editingRow.cells[2].innerText=value;
+      editingRow.cells[3].innerText=owner;
+      editingRow.cells[4].innerText=updated;
+    } else {
+      const row = table.insertRow();
+      row.innerHTML=`<td>${deal}</td><td>${stage}</td><td>${value}</td><td>${owner}</td><td>${updated}</td>
+        <td><button class="btn edit-btn">Edit</button></td>`;
+    }
+    updateRevenue();
+    attachEditButtons();
+    closeModal();
+  };
+
+  // Search filter
+  searchInput.addEventListener("keyup", ()=>{
+    const q = searchInput.value.toLowerCase();
+    [...table.rows].forEach(row=>{
+      row.style.display = row.innerText.toLowerCase().includes(q) ? "" : "none";
+    });
+  });
+
+  function updateRevenue(){
+    let total=0;
+    [...table.rows].forEach(r=>{
+      total += parseFloat(r.cells[2].innerText.replace(/\$/,""))||0;
+    });
+    revenueEl.innerText="$"+total.toLocaleString();
+    oppsEl.innerText=table.rows.length;
+  }
+
+  function attachEditButtons(){
+    document.querySelectorAll(".edit-btn").forEach(btn=>{
+      btn.onclick=()=>openModal(btn.closest("tr"));
+    });
+  }
+
+  attachEditButtons();
+  updateRevenue();
+</script>
 </body>
 </html>
-
-
-
-
