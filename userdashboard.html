@@ -116,6 +116,7 @@ const pages = {
         <button id="addTaskBtn" class="btn" style="margin-top:.5rem;">➕</button>
       </div>
       <div class="card">
+      
         <h3>Recent Opportunities</h3>
         <table id="oppsTable">
           <thead><tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th><th>Action</th></tr></thead>
@@ -131,20 +132,57 @@ const pages = {
   `,
 
   Vendor: `
+     Vendor: `
     <h1>Vendor Management</h1>
     <input type="text" id="vendorSearch" placeholder="Search Vendor…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
     <table id="vendorTable">
       <thead>
-        <tr><th>Type of Business</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th></tr>
+        <tr>
+          <th>Type of Business</th>
+          <th>Status</th>
+          <th>Owner</th>
+          <th>Due Date</th>
+          <th>Records of Payment</th>
+          <th>Rating</th>
+        </tr>
       </thead>
       <tbody>
-        <tr><td>Takoyaki store</td><td>✅ Completed</td><td>DesignEase</td><td>03 Sep 2025</td><td>3,785.00</td></tr>
-        <tr><td>Sound equipment</td><td>✏ In progress</td><td>Nina's Cute Cr…</td><td>04 Mar 2030</td><td></td></tr>
-        <tr><td>Tables and chairs</td><td>⏳ Not started</td><td></td><td>04 Mar 2030</td><td></td></tr>
-        <tr><td>Name tags</td><td>⛔ Blocked</td><td></td><td>12 Mar 2030</td><td></td></tr>
+        <tr>
+          <td>Takoyaki store</td>
+          <td>✅ Completed</td>
+          <td>DesignEase</td>
+          <td>03 Sep 2025</td>
+          <td>3,785.00</td>
+          <td>⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+          <td>Sound equipment</td>
+          <td>✏ In progress</td>
+          <td>Nina's Cute Cr…</td>
+          <td>04 Mar 2030</td>
+          <td></td>
+          <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+          <td>Tables and chairs</td>
+          <td>⏳ Not started</td>
+          <td></td>
+          <td>04 Mar 2030</td>
+          <td></td>
+          <td>⭐</td>
+        </tr>
+        <tr>
+          <td>Name tags</td>
+          <td>⛔ Blocked</td>
+          <td></td>
+          <td>12 Mar 2030</td>
+          <td></td>
+          <td>⭐⭐⭐⭐⭐</td>
+        </tr>
       </tbody>
     </table>
   `,
+
 
   Commodity: `<h1>Commodity and Price Monitoring</h1><p>Commodity content here...</p>`,
 
