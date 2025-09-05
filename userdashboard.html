@@ -30,11 +30,13 @@ nav{padding:1rem}
 .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem;box-shadow:var(--shadow)}
 table{width:100%;border-collapse:collapse}
-th,td{border-bottom:1px solid var(--border);padding:.6rem;text-align:left}
+th,td{border-bottom:1px solid var(--border);padding:.6rem;text-align:left;vertical-align:middle}
 th{font-size:.85rem;opacity:.7}
 .overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center}
 .modal{background:#fff;padding:1rem;border-radius:12px;min-width:300px}
 .modal input,.modal select{display:block;width:100%;margin:.5rem 0;padding:.4rem}
+.star{cursor:pointer;font-size:1.2rem;color:#ccc}
+.star.active{color:gold}
 .edit-icon, .delete-icon{cursor:pointer;margin-left:4px;}
 </style>
 </head>
@@ -115,24 +117,23 @@ const pages = {
         </ul>
         <button id="addTaskBtn" class="btn" style="margin-top:.5rem;">➕</button>
       </div>
-      <div class="card">
-      
-        <h3>Recent Opportunities</h3>
-        <table id="oppsTable">
-          <thead><tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th><th>Action</th></tr></thead>
-          <tbody>
-            <tr><td>Website Redesign</td><td>Proposal</td><td>$8400</td><td>Alex</td><td>Today</td><td><button class="btn edit-btn">Edit</button></td></tr>
-            <tr><td>SEO Retainer</td><td>Negotiation</td><td>$2100</td><td>Sam</td><td>Yesterday</td><td><button class="btn edit-btn">Edit</button></td></tr>
-            <tr><td>Ads Package</td><td>Qualified</td><td>$3600</td><td>Jamie</td><td>Aug 20</td><td><button class="btn edit-btn">Edit</button></td></tr>
-            <tr><td>CRM Migration</td><td>Discovery</td><td>$5200</td><td>Riley</td><td>Aug 17</td><td><button class="btn edit-btn">Edit</button></td></tr>
-          </tbody>
-        </table>
-      </div>
+    </div>
+    <!-- Recent Opportunities at bottom -->
+    <div class="card" style="margin-top:1rem;">
+      <h3>Recent Opportunities</h3>
+      <table id="oppsTable">
+        <thead><tr><th>Deal</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Website Redesign</td><td>Proposal</td><td>$8400</td><td>Alex</td><td>Today</td><td><button class="btn edit-btn">Edit</button></td></tr>
+          <tr><td>SEO Retainer</td><td>Negotiation</td><td>$2100</td><td>Sam</td><td>Yesterday</td><td><button class="btn edit-btn">Edit</button></td></tr>
+          <tr><td>Ads Package</td><td>Qualified</td><td>$3600</td><td>Jamie</td><td>Aug 20</td><td><button class="btn edit-btn">Edit</button></td></tr>
+          <tr><td>CRM Migration</td><td>Discovery</td><td>$5200</td><td>Riley</td><td>Aug 17</td><td><button class="btn edit-btn">Edit</button></td></tr>
+        </tbody>
+      </table>
     </div>
   `,
 
   Vendor: `
-     Vendor: `
     <h1>Vendor Management</h1>
     <input type="text" id="vendorSearch" placeholder="Search Vendor…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
     <table id="vendorTable">
@@ -148,41 +149,20 @@ const pages = {
       </thead>
       <tbody>
         <tr>
-          <td>Takoyaki store</td>
-          <td>✅ Completed</td>
-          <td>DesignEase</td>
-          <td>03 Sep 2025</td>
-          <td>3,785.00</td>
-          <td>⭐⭐⭐⭐</td>
+          <td>Takoyaki store</td><td>✅ Completed</td><td>DesignEase</td><td>03 Sep 2025</td><td>3,785.00</td><td data-stars="4"></td>
         </tr>
         <tr>
-          <td>Sound equipment</td>
-          <td>✏ In progress</td>
-          <td>Nina's Cute Cr…</td>
-          <td>04 Mar 2030</td>
-          <td></td>
-          <td>⭐⭐⭐</td>
+          <td>Sound equipment</td><td>✏ In progress</td><td>Nina's Cute Cr…</td><td>04 Mar 2030</td><td></td><td data-stars="3"></td>
         </tr>
         <tr>
-          <td>Tables and chairs</td>
-          <td>⏳ Not started</td>
-          <td></td>
-          <td>04 Mar 2030</td>
-          <td></td>
-          <td>⭐</td>
+          <td>Tables and chairs</td><td>⏳ Not started</td><td></td><td>04 Mar 2030</td><td></td><td data-stars="1"></td>
         </tr>
         <tr>
-          <td>Name tags</td>
-          <td>⛔ Blocked</td>
-          <td></td>
-          <td>12 Mar 2030</td>
-          <td></td>
-          <td>⭐⭐⭐⭐⭐</td>
+          <td>Name tags</td><td>⛔ Blocked</td><td></td><td>12 Mar 2030</td><td></td><td data-stars="5"></td>
         </tr>
       </tbody>
     </table>
   `,
-
 
   Commodity: `<h1>Commodity and Price Monitoring</h1><p>Commodity content here...</p>`,
 
@@ -208,11 +188,28 @@ const pages = {
   Settings: `<h1>Settings</h1><p>Settings content here...</p>`
 };
 
+
+function renderStars(td){
+  const rating=parseInt(td.dataset.stars)||0;
+  td.innerHTML="";
+  for(let i=1;i<=5;i++){
+    const star=document.createElement("span");
+    star.className="star"+(i<=rating?" active":"");
+    star.innerHTML="★";
+    star.onclick=()=>{
+      td.dataset.stars=i;
+      renderStars(td);
+    };
+    td.appendChild(star);
+  }
+}
+
 function makeTableEditable(tableId, searchId){
   const table=document.getElementById(tableId);
   if(!table) return;
 
-  table.querySelectorAll("td").forEach(td=>{
+  
+  table.querySelectorAll("td:not([data-stars])").forEach(td=>{
     td.onclick=()=>{
       if(td.querySelector("input")) return;
       const oldText=td.innerText;
@@ -226,6 +223,10 @@ function makeTableEditable(tableId, searchId){
     };
   });
 
+  
+  table.querySelectorAll("td[data-stars]").forEach(td=>renderStars(td));
+
+ 
   if(searchId){
     const search=document.getElementById(searchId);
     search.onkeyup=()=>{
@@ -237,7 +238,7 @@ function makeTableEditable(tableId, searchId){
   }
 }
 
-// Navigation
+
 document.querySelectorAll(".nav-item").forEach(link=>{
   if(!link.classList.contains("logout-btn")){
     link.onclick=(e)=>{
@@ -256,7 +257,7 @@ document.querySelectorAll(".nav-item").forEach(link=>{
 document.getElementById("backBtn").onclick=()=>{window.history.back();};
 document.getElementById("menuBtn").onclick=()=>{document.getElementById("sidebar").classList.toggle("open");};
 
-// Modal handling
+
 function openModal(row=null){
   overlay.style.display="flex"; 
   editingRow=row;
@@ -327,7 +328,8 @@ document.getElementById("saveBtn").onclick = () => {
   if(!table) return;
   const deal = document.getElementById("dealInput").value,
         stage = document.getElementById("stageInput").value,
-        value = "$" + document.getElementById("valueInput").value,
+        value = "$" + document.getElementById("valueInput").value
+        ,
         owner = document.getElementById("ownerInput").value,
         updated = "Today";
   if(editingRow){
@@ -344,6 +346,7 @@ document.getElementById("saveBtn").onclick = () => {
   attachEditButtons();
   closeModal();
 };
+
 
 initDashboard();
 </script>
