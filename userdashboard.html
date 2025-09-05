@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,8 +94,7 @@ let editingRow = null;
 let pipelineChart = null;
 
 const pages = {
-  dashboard: `
-    <h1>Dashboard</h1>
+  dashboard: ` <h1>Dashboard</h1>
     <div class="grid">
       <div class="card"><h3>Price Variance / Cost Savings</h3><p>₱12,500</p><small>+8% vs last month</small></div>
       <div class="card"><h3>On-Time Delivery Rate</h3><p>92%</p><small>+3 pts</small></div>
@@ -154,90 +152,47 @@ const pages = {
       </tbody>
     </table>
   `,
-
   Supply: `
   <h1>Supply Monitoring</h1>
 <input type="text" id="supplySearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
 <table id="supplyTable">
-  <thead>
-    <tr>
-      <th>Ref No.</th>
-      <th>Business Name</th>
-      <th>Business Category</th>
-      <th>Supplier</th>
-      <th>Pick-up</th>
-      <th>Drop-off</th>
-      <th>Delivery Time</th>
-      <th>Report</th>
-      <th>Contact No.</th>
-      <th>Item Value</th>
-      <th>Quality</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><a href="#" class="ref-link">RPT-001</a></td>
-      <td>Daisy Poultry</td>
-      <td>MEAT SHOP</td>
-      <td>James</td>
-      <td>Quezon City</td>
-      <td>Las Piñas</td>
-      <td>12:00 am - 2:00 pm</td>
-      <td>Filed</td>
-      <td>0970-567-1136</td>
-      <td>₱4,000.00</td>
-      <td data-stars="3"></td>
-      <td>⛔ Delayed</td>
-    </tr>
-    <tr>
-      <td><a href="#" class="ref-link">RPT-002</a></td>
-      <td>Takoyaki Supplier</td>
-      <td>SUPPLIES SHOP</td>
-      <td>Maria</td>
-      <td>Makati</td>
-      <td>Pasig</td>
-      <td>7:00 am - 9:00 am</td>
-      <td>None</td>
-      <td>0917-888-9999</td>
-      <td>₱2,500.00</td>
-      <td data-stars="5"></td>
-      <td>✅ Completed</td>
-    </tr>
-    <tr>
-      <td><a href="#" class="ref-link">RPT-003</a></td>
-      <td>Catering Supplies</td>
-      <td>CATERING</td>
-      <td>Sofia</td>
-      <td>Taguig</td>
-      <td>Alabang</td>
-      <td>10:00 am - 12:00 pm</td>
-      <td>None</td>
-      <td>0920-555-4444</td>
-      <td>₱3,200.00</td>
-      <td data-stars="4"></td>
-      <td>✏ In progress</td>
-    </tr>
-    <tr>
-      <td><a href="#" class="ref-link">RPT-004</a></td>
-      <td>Party Rental</td>
-      <td>RENTAL SHOP</td>
-      <td>Ramon</td>
-      <td>Manila</td>
-      <td>Mandaluyong</td>
-      <td>3:00 am - 5:00 am</td>
-      <td>None</td>
-      <td>0998-222-3333</td>
-      <td>₱5,000.00</td>
-      <td data-stars="5"></td>
-      <td>✅ Completed</td>
-    </tr>
-  </tbody>
+<thead>
+<tr>
+<th>Ref No.</th><th>Business Name</th><th>Business Category</th><th>Supplier</th>
+<th>Pick-up</th><th>Drop-off</th><th>Delivery Time</th><th>Report</th>
+<th>Contact No.</th><th>Item Value</th><th>Quality</th><th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#" class="ref-link">RPT-001</a></td>
+<td>Daisy Poultry</td><td>MEAT SHOP</td><td>James</td><td>Quezon City</td>
+<td>Las Piñas</td><td>12:00 am - 2:00 pm</td><td>Filed</td>
+<td>0970-567-1136</td><td>₱4,000.00</td><td>★★★★★</td><td>⛔ Delayed</td>
+</tr>
+<tr>
+<td><a href="#" class="ref-link">RPT-002</a></td>
+<td>Takoyaki Supplier</td><td>SUPPLIES SHOP</td><td>Maria</td><td>Makati</td>
+<td>Pasig</td><td>7:00 am - 9:00 am</td><td>None</td>
+<td>0917-888-9999</td><td>₱2,500.00</td><td>★★★★★</td><td>✅ Completed</td>
+</tr>
+<tr>
+<td><a href="#" class="ref-link">RPT-003</a></td>
+<td>Catering Supplies</td><td>CATERING</td><td>Sofia</td><td>Taguig</td>
+<td>Alabang</td><td>10:00 am - 12:00 pm</td><td>None</td>
+<td>0920-555-4444</td><td>₱3,200.00</td><td>★★★★★</td><td>✏ In progress</td>
+</tr>
+<tr>
+<td><a href="#" class="ref-link">RPT-004</a></td>
+<td>Party Rental</td><td>RENTAL SHOP</td><td>Ramon</td><td>Manila</td>
+<td>Mandaluyong</td><td>3:00 am - 5:00 am</td><td>None</td>
+<td>0998-222-3333</td><td>₱5,000.00</td><td>★★★★★</td><td>✅ Completed</td>
+</tr>
+</tbody>
 </table>
-
-  Commodity: `<h1>Commodity and Price Monitoring</h1><p>Commodity content here...</p>`,
-  Inspection: `<h1>Inspection and compliance</h1><p>Inspection content here...</p>`,
-  Reports: `   <h1>Reports and Dashboard with AI Analytic</h1>
+`,
+  Reports: `
+    <h1>Reports and Dashboard with AI Analytic</h1>
     <div class="grid">
       <div class="card">
         <h3>Vendor Performance Dashboard</h3>
@@ -245,9 +200,9 @@ const pages = {
       </div>
       <div class="card">
         <h3>Recent Complaints</h3>
-        <ul>
-          <li>Vendor delayed chicken delivery (Ref: RPT-001)</li>
-          <li>Incomplete Takoyaki supplies (Ref: RPT-002)</li>
+        <ul id="complaintsList">
+          <li data-ref="RPT-001">Vendor delayed chicken delivery (Ref: RPT-001)</li>
+          <li data-ref="RPT-002">Incomplete Takoyaki supplies (Ref: RPT-002)</li>
         </ul>
       </div>
       <div class="card">
@@ -256,102 +211,54 @@ const pages = {
         <div id="chatboxContainer"></div>
       </div>
     </div>
-  `
-};
+  `,
+
   Settings: `<h1>Settings</h1><p>Settings content here...</p>`
 };
+
+
+function attachRefLinks(){
+  document.querySelectorAll(".ref-link").forEach(link=>{
+    link.onclick=(e)=>{
+      e.preventDefault();
+      const ref = link.textContent;
+      renderPage("Reports", ref);
+    };
+  });
+}
+
 function initReports(refNo){
-  // Vendor Performance Chart
   const ctx=document.getElementById("vendorChart");
   if(ctx){
     new Chart(ctx,{
       type:"bar",
       data:{
-        labels:["Vendor A","Vendor B","Vendor C"],
-        datasets:[{label:"Performance Score",data:[87,75,92],backgroundColor:"#0a53c1"}]
+        labels:["Takoyaki","Meat Shop","Catering","Rental"],
+        datasets:[{label:"Performance",data:[87,65,72,90],backgroundColor:"#0a53c1"}]
       }
     });
   }
-
-  // Chat support button
+  if(refNo){
+    document.querySelectorAll("#complaintsList li").forEach(li=>{
+      li.style.fontWeight=(li.dataset.ref===refNo)?"bold":"normal";
+      li.style.background=(li.dataset.ref===refNo)?"#fce8b2":"transparent";
+    });
+  }
   const chatBtn=document.getElementById("chatNowBtn");
   if(chatBtn){
     chatBtn.onclick=()=>{
-      const container=document.getElementById("chatboxContainer");
-      container.innerHTML=`
-        <div class="chatbox">
-          <div class="chat-messages" id="chatMessages">Welcome! How can I help you?</div>
-          <div class="chat-input">
-            <input type="text" id="chatInput" placeholder="Type a message..." />
-            <button class="btn" id="sendBtn">Send</button>
-          </div>
-        </div>`;
-      document.getElementById("sendBtn").onclick=()=>{
-        const input=document.getElementById("chatInput");
-        const msg=input.value.trim();
-        if(msg){
-          const chat=document.getElementById("chatMessages");
-          chat.innerHTML+=`<div><b>You:</b> ${msg}</div>`;
-          chat.innerHTML+=`<div><b>AI:</b> I'll analyze your request: '${msg}'</div>`;
-          input.value="";
-          chat.scrollTop=chat.scrollHeight;
-        }
-      };
-    };
-  }
-
-  // Highlight complaint if refNo is passed
-  if(refNo){
-    const complaintsList = document.querySelector(".card ul");
-    if(complaintsList){
-      [...complaintsList.children].forEach(item=>{
-        if(item.textContent.includes(refNo)){
-          item.style.background="yellow";
-          item.style.fontWeight="bold";
-        }
-      });
-    }
-  }
-}
-
-function renderStars(td){
-  const rating=parseInt(td.dataset.stars)||0;
-  td.innerHTML="";
-  for(let i=1;i<=5;i++){
-    const star=document.createElement("span");
-    star.className="star"+(i<=rating?" active":"");
-    star.innerHTML="★";
-    star.onclick=()=>{td.dataset.stars=i;renderStars(td);};
-    td.appendChild(star);
-  }
-}
-
-
-function makeTableEditable(tableId, searchId){
-  const table=document.getElementById(tableId);
-  if(!table) return;
-  table.querySelectorAll("td:not([data-stars])").forEach(td=>{
-    td.onclick=()=>{
-      if(td.querySelector("input")) return;
-      const old=td.innerText;
-      const input=document.createElement("input");
-      input.value=old;
-      td.innerHTML=""; td.appendChild(input); input.focus();
-      input.onblur=()=>{td.innerText=input.value||old;};
-      input.onkeydown=(e)=>{if(e.key==="Enter"){input.blur();}};
-    };
-  });
-  table.querySelectorAll("td[data-stars]").forEach(td=>renderStars(td));
-  if(searchId){
-    document.getElementById(searchId).onkeyup=(e)=>{
-      const term=e.target.value.toLowerCase();
-      table.querySelectorAll("tbody tr").forEach(row=>{
-        row.style.display=row.innerText.toLowerCase().includes(term)?"":"none";
-      });
+      document.getElementById("chatboxContainer").innerHTML='<div style="border:1px solid #ccc;padding:10px;border-radius:8px;">🤖 Hello! How can I assist you with vendor reports today?</div>';
     };
   }
 }
 
+function renderPage(page, refNo=null){
+  contentArea.innerHTML=pages[page]||`<h1>${page}</h1>`;
+  if(page==="dashboard") initDashboard();
+  if(page==="Vendor") makeTableEditable("vendorTable","vendorSearch");
+  if(page==="Supply"){ makeTableEditable("supplyTable","supplySearch"); attachRefLinks(); }
+  if(page==="Reports") initReports(refNo);
+}
 
 document.querySelectorAll(".nav-item").forEach(link=>{
   if(!link.classList.contains("logout-btn")){
@@ -359,110 +266,13 @@ document.querySelectorAll(".nav-item").forEach(link=>{
       e.preventDefault();
       document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));
       link.classList.add("active");
-      const page=link.dataset.page;
-      contentArea.innerHTML=pages[page]||`<h1>${page}</h1>`;
-      if(page==="dashboard") initDashboard();
-      if(page==="Vendor") makeTableEditable("vendorTable","vendorSearch");
-      if(page==="Supply") makeTableEditable("supplyTable","supplySearch");
+      renderPage(link.dataset.page);
     };
   }
 });
 
 document.getElementById("backBtn").onclick=()=>window.history.back();
 document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
-
-
-function openModal(row=null){
-  overlay.style.display="flex"; editingRow=row;
-  if(row){
-    document.getElementById("modalTitle").innerText="Edit Vendor Engagement";
-    document.getElementById("dealInput").value=row.cells[0].innerText;
-    document.getElementById("stageInput").value=row.cells[1].innerText;
-    document.getElementById("valueInput").value=row.cells[4].innerText;
-    document.getElementById("ownerInput").value=row.cells[2].innerText;
-  } else {
-    document.getElementById("modalTitle").innerText="New Vendor Engagement";
-    document.querySelectorAll(".modal input").forEach(i=>i.value="");
-  }
-}
-function closeModal(){overlay.style.display="none";}
-
-
-function attachTaskActions(){
-  const taskList=document.getElementById("taskList"), addTaskBtn=document.getElementById("addTaskBtn");
-  if(!taskList) return;document.querySelectorAll("#taskList li").forEach(li=>{
-    const editIcon=li.querySelector(".edit-icon"),
-          deleteIcon=li.querySelector(".delete-icon");
-    editIcon.onclick=()=>{
-      const newText=prompt("Edit Task", li.firstChild.textContent.trim());
-      if(newText) li.firstChild.textContent=newText+" ";
-    };
-    deleteIcon.onclick=()=>{
-      if(confirm("Delete this task?")) li.remove();
-    };
-  });
-  addTaskBtn.onclick=()=>{
-    const taskName=prompt("Enter new task:");
-    if(taskName){
-      const li=document.createElement("li");
-      li.innerHTML=`<input type="checkbox" /> ${taskName} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
-      taskList.appendChild(li);
-      attachTaskActions();
-    }
-  };
-}
-
-
-function initDashboard(){
-  const container=document.getElementById("contentArea");
-  container.innerHTML=pages.dashboard;
-  attachTaskActions();
-  makeTableEditable("vendorEngagementsTable");
-
-  const ctx=document.getElementById("pipelineChart");
-  if(ctx){
-    pipelineChart=new Chart(ctx,{
-      type:"line",
-      data:{
-        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
-        datasets:[{
-          label:"Supply Chain Flow",
-          data:[10,15,8,20,18,25],
-          borderColor:"#0a53c1",
-          backgroundColor:"rgba(10,83,193,0.2)",
-          fill:true,
-          tension:0.3
-        }]
-      }
-    });
-  }
-}
-
-
-document.getElementById("newBtn").onclick=()=>openModal();
-document.getElementById("saveBtn").onclick=()=>{
-  const table=document.querySelector("#vendorEngagementsTable tbody");
-  if(!table) return;
-  const deal=document.getElementById("dealInput").value,
-        stage=document.getElementById("stageInput").value,
-        value=document.getElementById("valueInput").value,
-        owner=document.getElementById("ownerInput").value,
-        due="Today";
-
-  if(editingRow){
-    editingRow.cells[0].innerText=deal;
-    editingRow.cells[1].innerText=stage;
-    editingRow.cells[2].innerText=owner;
-    editingRow.cells[3].innerText=due;
-    editingRow.cells[4].innerText=value;
-  } else {
-    const row=table.insertRow();
-    row.innerHTML=`<td>${deal}</td><td>${stage}</td><td>${owner}</td><td>${due}</td><td>${value}</td><td data-stars="5"></td>`;
-    renderStars(row.cells[5]);
-  }
-  closeModal();
-};
-
 
 initDashboard();
 </script>
