@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,13 +89,12 @@ th{font-size:.85rem;opacity:.7}
 </div>
 
 <script>
-const overlay=document.getElementById("overlay");
-const contentArea=document.getElementById("contentArea");
-let editingRow=null;
-let pipelineChart=null;
-let reportCounter=1;
+const overlay = document.getElementById("overlay");
+const contentArea = document.getElementById("contentArea");
+let editingRow = null;
+let pipelineChart = null;
 
-const pages={
+const pages = {
   dashboard: `
     <h1>Dashboard</h1>
     <div class="grid">
@@ -124,7 +124,11 @@ const pages={
     <div class="card" style="margin-top:1rem;">
       <h3>Recent Vendor Engagements</h3>
       <table id="vendorEngagementsTable">
-        <thead><tr><th>Type of Business</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Type of Business</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th>
+          </tr>
+        </thead>
         <tbody>
           <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>3,785.00</td><td data-stars="5"></td></tr>
           <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>2,345</td><td data-stars="5"></td></tr>
@@ -134,58 +138,145 @@ const pages={
       </table>
     </div>
   `,
+
   Vendor: `
     <h1>Vendor Management</h1>
     <input type="text" id="vendorSearch" placeholder="Search Vendor…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
     <table id="vendorTable">
-      <thead><tr><th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th></tr></thead>
+      <thead>
+        <tr><th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th></tr>
+      </thead>
       <tbody>
         <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>3,785</td><td data-stars="5"></td></tr>
-        <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>2,345</td><td data-stars="5"></td></tr>
-        <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>5,199</td><td data-stars="5"></td></tr>
-        <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>1,870</td><td data-stars="5"></td></tr>
+          <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>2,345</td><td data-stars="5"></td></tr>
+          <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>5,199</td><td data-stars="5"></td></tr>
+          <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>1,870</td><td data-stars="5"></td></tr>
       </tbody>
     </table>
   `,
+
   Supply: `
     <h1>Supply Monitoring</h1>
     <input type="text" id="supplySearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
     <table id="supplyTable">
-      <thead><tr><th>Business Name</th><th>Business Category</th><th>Supplier</th><th>Pick-up</th><th>Drop-off</th><th>Delivery Time</th><th>Report</th><th>Contact No.</th><th>Item Value</th><th>Quality</th><th>Status</th></tr></thead>
+      <thead>
+        <tr><th>Business Name</th><th>Business Category</th><th>Supplier</th><th>Pick-up</th><th>Drop-off</th><th>Delivery Time</th><th>Report</th><th>Contact No.</th><th>Item Value</th><th>Quality</th><th>Status</th></tr>
+      </thead>
       <tbody>
-        <tr><td>Daisy Poultry</td><td>MEAT SHOP</td><td>James</td><td>Quezon City</td><td>Las Piñas</td><td>12:00 am - 2:00 pm</td><td>filed</td><td>0970-567-1136</td><td>₱4,000.00</td><td data-stars="3"></td><td>⛔ Delayed</td></tr>
+        <tr><td>Daisy Poultry</td><td>MEAT SHOP</td><td>James</td><td>Quezon City</td><td>Las Piñas</td><td>12:00 am - 2:00 pm</td><td>Filed</td><td>0970-567-1136</td><td>₱4,000.00</td><td data-stars="3"></td><td>⛔ Delayed</td></tr>
         <tr><td>Takoyaki Supplier</td><td>SUPPLIES SHOP</td><td>Maria</td><td>Makati</td><td>Pasig</td><td>7:00 am - 9:00 am</td><td>None</td><td>0917-888-9999</td><td>₱2,500.00</td><td data-stars="5"></td><td>✅ Completed</td></tr>
         <tr><td>Catering Supplies</td><td>CATERING</td><td>Sofia</td><td>Taguig</td><td>Alabang</td><td>10:00 am - 12:00 pm</td><td>None</td><td>0920-555-4444</td><td>₱3,200.00</td><td data-stars="4"></td><td>✏ In progress</td></tr>
         <tr><td>Party Rental</td><td>RENTAL SHOP</td><td>Ramon</td><td>Manila</td><td>Mandaluyong</td><td>3:00 am - 5:00 am</td><td>None</td><td>0998-222-3333</td><td>₱5,000.00</td><td data-stars="5"></td><td>✅ Completed</td></tr>
-      </tbody>
+        </tbody>
     </table>
   `,
+
   Commodity: `<h1>Commodity and Price Monitoring</h1><p>Commodity content here...</p>`,
   Inspection: `<h1>Inspection and compliance</h1><p>Inspection content here...</p>`,
-  Reports: `
-    <h1>Reports and Dashboard with AI analytic</h1>
-    <table id="reportsTable">
-      <thead><tr><th>Reference No.</th><th>Business Name</th><th>Category</th><th>Status</th><th>Complaint</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  `,
+  Reports: `<h1>Reports and Dashboard with AI analytic</h1><p>Reports content here...</p>`,
   Settings: `<h1>Settings</h1><p>Settings content here...</p>`
 };
 
-function renderStars(td){const rating=parseInt(td.dataset.stars)||0;td.innerHTML="";for(let i=1;i<=5;i++){const star=document.createElement("span");star.className="star"+(i<=rating?" active":"");star.innerHTML="★";star.onclick=()=>{td.dataset.stars=i;renderStars(td);};td.appendChild(star);}}
 
-function makeTableEditable(tableId,searchId){const table=document.getElementById(tableId);if(!table)return;table.querySelectorAll("td:not([data-stars])").forEach(td=>{td.onclick=()=>{if(td.querySelector("input"))return;const old=td.innerText;const input=document.createElement("input");input.value=old;td.innerHTML="";td.appendChild(input);input.focus();input.onblur=()=>{td.innerText=input.value||old;};input.onkeydown=(e)=>{if(e.key==="Enter"){input.blur();}};};});table.querySelectorAll("td[data-stars]").forEach(td=>renderStars(td));if(searchId){document.getElementById(searchId).onkeyup=(e)=>{const term=e.target.value.toLowerCase();table.querySelectorAll("tbody tr").forEach(row=>{row.style.display=row.innerText.toLowerCase().includes(term)?"":"none";});};}}
+function renderStars(td){
+  const rating=parseInt(td.dataset.stars)||0;
+  td.innerHTML="";
+  for(let i=1;i<=5;i++){
+    const star=document.createElement("span");
+    star.className="star"+(i<=rating?" active":"");
+    star.innerHTML="★";
+    star.onclick=()=>{td.dataset.stars=i;renderStars(td);};
+    td.appendChild(star);
+  }
+}
 
-document.querySelectorAll(".nav-item").forEach(link=>{if(!link.classList.contains("logout-btn")){link.onclick=(e)=>{e.preventDefault();document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));link.classList.add("active");const page=link.dataset.page;contentArea.innerHTML=pages[page]||`<h1>${page}</h1>`;if(page==="dashboard")initDashboard();if(page==="Vendor")makeTableEditable("vendorTable","vendorSearch");if(page==="Supply"){makeTableEditable("supplyTable","supplySearch");checkFiledReports();}if(page==="Reports"){checkFiledReports();}}}});
+
+function makeTableEditable(tableId, searchId){
+  const table=document.getElementById(tableId);
+  if(!table) return;
+  table.querySelectorAll("td:not([data-stars])").forEach(td=>{
+    td.onclick=()=>{
+      if(td.querySelector("input")) return;
+      const old=td.innerText;
+      const input=document.createElement("input");
+      input.value=old;
+      td.innerHTML=""; td.appendChild(input); input.focus();
+      input.onblur=()=>{td.innerText=input.value||old;};
+      input.onkeydown=(e)=>{if(e.key==="Enter"){input.blur();}};
+    };
+  });
+  table.querySelectorAll("td[data-stars]").forEach(td=>renderStars(td));
+  if(searchId){
+    document.getElementById(searchId).onkeyup=(e)=>{
+      const term=e.target.value.toLowerCase();
+      table.querySelectorAll("tbody tr").forEach(row=>{
+        row.style.display=row.innerText.toLowerCase().includes(term)?"":"none";
+      });
+    };
+  }
+}
+
+
+document.querySelectorAll(".nav-item").forEach(link=>{
+  if(!link.classList.contains("logout-btn")){
+    link.onclick=(e)=>{
+      e.preventDefault();
+      document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));
+      link.classList.add("active");
+      const page=link.dataset.page;
+      contentArea.innerHTML=pages[page]||`<h1>${page}</h1>`;
+      if(page==="dashboard") initDashboard();
+      if(page==="Vendor") makeTableEditable("vendorTable","vendorSearch");
+      if(page==="Supply") makeTableEditable("supplyTable","supplySearch");
+    };
+  }
+});
 
 document.getElementById("backBtn").onclick=()=>window.history.back();
 document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
 
-function openModal(row=null){overlay.style.display="flex";editingRow=row;if(row){document.getElementById("modalTitle").innerText="Edit Vendor Engagement";document.getElementById("dealInput").value=row.cells[0].innerText;document.getElementById("stageInput").value=row.cells[1].innerText;document.getElementById("valueInput").value=row.cells[4].innerText;document.getElementById("ownerInput").value=row.cells[2].innerText;}else{document.getElementById("modalTitle").innerText="New Vendor Engagement";document.querySelectorAll(".modal input").forEach(i=>i.value="");}}function closeModal(){overlay.style.display="none";}
 
-function attachTaskActions(){const taskList=document.getElementById("taskList"),addTaskBtn=document.getElementById("addTaskBtn");if(!taskList)return;document.querySelectorAll("#taskList li").forEach(li=>{const editIcon=li.querySelector(".edit-icon"),deleteIcon=li.querySelector(".delete-icon");editIcon.onclick=()=>{const newText=prompt("Edit Task",li.firstChild.textContent.trim());if(newText)li.firstChild.textContent=newText+" ";};deleteIcon.onclick=()=>{if(confirm("Delete this task?"))li.remove();};});addTaskBtn.onclick=()=>{const taskName=prompt("Enter new task:");if(taskName){const li=document.createElement("li");li.innerHTML=`<input type="checkbox" /> ${taskName} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;taskList.appendChild(li);attachTaskActions();}};}
+function openModal(row=null){
+  overlay.style.display="flex"; editingRow=row;
+  if(row){
+    document.getElementById("modalTitle").innerText="Edit Vendor Engagement";
+    document.getElementById("dealInput").value=row.cells[0].innerText;
+    document.getElementById("stageInput").value=row.cells[1].innerText;
+    document.getElementById("valueInput").value=row.cells[4].innerText;
+    document.getElementById("ownerInput").value=row.cells[2].innerText;
+  } else {
+    document.getElementById("modalTitle").innerText="New Vendor Engagement";
+    document.querySelectorAll(".modal input").forEach(i=>i.value="");
+  }
+}
+function closeModal(){overlay.style.display="none";}
 
-function initDashboard(){const container=document.getElementById("contentArea");container.inner
+
+function attachTaskActions(){
+  const taskList=document.getElementById("taskList"), addTaskBtn=document.getElementById("addTaskBtn");
+  if(!taskList) return;document.querySelectorAll("#taskList li").forEach(li=>{
+    const editIcon=li.querySelector(".edit-icon"),
+          deleteIcon=li.querySelector(".delete-icon");
+    editIcon.onclick=()=>{
+      const newText=prompt("Edit Task", li.firstChild.textContent.trim());
+      if(newText) li.firstChild.textContent=newText+" ";
+    };
+    deleteIcon.onclick=()=>{
+      if(confirm("Delete this task?")) li.remove();
+    };
+  });
+  addTaskBtn.onclick=()=>{
+    const taskName=prompt("Enter new task:");
+    if(taskName){
+      const li=document.createElement("li");
+      li.innerHTML=`<input type="checkbox" /> ${taskName} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
+      taskList.appendChild(li);
+      attachTaskActions();
+    }
+  };
+}
+
+
 function initDashboard(){
   const container=document.getElementById("contentArea");
   container.innerHTML=pages.dashboard;
@@ -211,49 +302,31 @@ function initDashboard(){
   }
 }
 
-function checkFiledReports(){
-  const supplyTable=document.querySelector("#supplyTable tbody");
-  const reportsTable=document.querySelector("#reportsTable tbody");
-  if(!supplyTable||!reportsTable)return;
-
-  reportsTable.innerHTML=""; 
-  supplyTable.querySelectorAll("tr").forEach(row=>{
-    const reportCell=row.cells[6]; 
-    if(reportCell && reportCell.innerText.toLowerCase()==="filed"){
-      const refNo="REP-"+String(reportCounter).padStart(4,"0");
-      reportCounter++;
-      const business=row.cells[0].innerText;
-      const category=row.cells[1].innerText;
-      const status=row.cells[10].innerText;
-      const complaint="Delivery delay caused stock shortage"; 
-      const newRow=reportsTable.insertRow();
-      newRow.innerHTML=`<td>${refNo}</td><td>${business}</td><td>${category}</td><td>${status}</td><td>${complaint}</td>`;
-      reportCell.innerText=refNo; 
-  });
-}
 
 document.getElementById("newBtn").onclick=()=>openModal();
 document.getElementById("saveBtn").onclick=()=>{
   const table=document.querySelector("#vendorEngagementsTable tbody");
-  if(!table)return;
+  if(!table) return;
   const deal=document.getElementById("dealInput").value,
         stage=document.getElementById("stageInput").value,
         value=document.getElementById("valueInput").value,
         owner=document.getElementById("ownerInput").value,
         due="Today";
+
   if(editingRow){
     editingRow.cells[0].innerText=deal;
     editingRow.cells[1].innerText=stage;
     editingRow.cells[2].innerText=owner;
     editingRow.cells[3].innerText=due;
     editingRow.cells[4].innerText=value;
-  }else{
+  } else {
     const row=table.insertRow();
     row.innerHTML=`<td>${deal}</td><td>${stage}</td><td>${owner}</td><td>${due}</td><td>${value}</td><td data-stars="5"></td>`;
     renderStars(row.cells[5]);
   }
   closeModal();
 };
+
 
 initDashboard();
 </script>
