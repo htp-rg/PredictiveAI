@@ -216,7 +216,155 @@ const pages = {
   Settings: `<h1>Settings</h1><p>Settings content here...</p>`
 };
 
+function renderStars(td){
+  const rating=parseInt(td.dataset.stars)||0;
+  td.innerHTML="";
+  for(let i=1;i<=5;i++){
+    const star=document.createElement("span");
+    star.className="star"+(i<=rating?" active":"");
+    star.innerHTML="★";
+    star.onclick=()=>{td.dataset.stars=i;renderStars(td);};
+    td.appendChild(star);
+  }
+}
 
+
+function makeTableEditable(tableId, searchId){
+  const table=document.getElementById(tableId);
+  if(!table) return;
+  table.querySelectorAll("td:not([data-stars])").forEach(td=>{
+    td.onclick=()=>{
+      if(td.querySelector("input")) return;
+      const old=td.innerText;
+      const input=document.createElement("input");
+      input.value=old;
+      td.innerHTML=""; td.appendChild(input); input.focus();
+      input.onblur=()=>{td.innerText=input.value||old;};
+      input.onkeydown=(e)=>{if(e.key==="Enter"){input.blur();}};
+    };
+  });
+  table.querySelectorAll("td[data-stars]").forEach(td=>renderStars(td));
+  if(searchId){
+    document.getElementById(searchId).onkeyup=(e)=>{
+      const term=e.target.value.toLowerCase();
+      table.querySelectorAll("tbody tr").forEach(row=>{
+        row.style.display=row.innerText.toLowerCase().includes(term)?"":"none";
+      });
+    };
+  }
+}
+
+
+document.querySelectorAll(".nav-item").forEach(link=>{
+  if(!link.classList.contains("logout-btn")){
+    link.onclick=(e)=>{
+      e.preventDefault();
+      document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));
+      link.classList.add("active");
+      const page=link.dataset.page;
+      contentArea.innerHTML=pages[page]||`<h1>${page}</h1>`;
+      if(page==="dashboard") initDashboard();
+      if(page==="Vendor") makeTableEditable("vendorTable","vendorSearch");
+      if(page==="Supply") makeTableEditable("supplyTable","supplySearch");
+    };
+  }
+});
+
+document.getElementById("backBtn").onclick=()=>window.history.back();
+document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
+
+
+function openModal(row=null){
+  overlay.style.display="flex"; editingRow=row;
+  if(row){
+    document.getElementById("modalTitle").innerText="Edit Vendor Engagement";
+    document.getElementById("dealInput").value=row.cells[0].innerText;
+    document.getElementById("stageInput").value=row.cells[1].innerText;
+    document.getElementById("valueInput").value=row.cells[4].innerText;
+    document.getElementById("ownerInput").value=row.cells[2].innerText;
+  } else {
+    document.getElementById("modalTitle").innerText="New Vendor Engagement";
+    document.querySelectorAll(".modal input").forEach(i=>i.value="");
+  }
+}
+function closeModal(){overlay.style.display="none";}
+
+
+function attachTaskActions(){
+  const taskList=document.getElementById("taskList"), addTaskBtn=document.getElementById("addTaskBtn");
+  if(!taskList) return;document.querySelectorAll("#taskList li").forEach(li=>{
+    const editIcon=li.querySelector(".edit-icon"),
+          deleteIcon=li.querySelector(".delete-icon");
+    editIcon.onclick=()=>{
+      const newText=prompt("Edit Task", li.firstChild.textContent.trim());
+      if(newText) li.firstChild.textContent=newText+" ";
+    };
+    deleteIcon.onclick=()=>{
+      if(confirm("Delete this task?")) li.remove();
+    };
+  });
+  addTaskBtn.onclick=()=>{
+    const taskName=prompt("Enter new task:");
+    if(taskName){
+      const li=document.createElement("li");
+      li.innerHTML=`<input type="checkbox" /> ${taskName} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
+      taskList.appendChild(li);
+      attachTaskActions();
+    }
+  };
+}
+
+
+function initDashboard(){
+  const container=document.getElementById("contentArea");
+  container.innerHTML=pages.dashboard;
+  attachTaskActions();
+  makeTableEditable("vendorEngagementsTable");
+
+  const ctx=document.getElementById("pipelineChart");
+  if(ctx){
+    pipelineChart=new Chart(ctx,{
+      type:"line",
+      data:{
+        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+        datasets:[{
+          label:"Supply Chain Flow",
+          data:[10,15,8,20,18,25],
+          borderColor:"#0a53c1",
+          backgroundColor:"rgba(10,83,193,0.2)",
+          fill:true,
+          tension:0.3
+        }]
+      }
+    });
+  }
+}
+
+
+document.getElementById("newBtn").onclick=()=>openModal();
+document.getElementById("saveBtn").onclick=()=>{
+  const table=document.querySelector("#vendorEngagementsTable tbody");
+  if(!table) return;
+  const deal=document.getElementById("dealInput").value,
+        stage=document.getElementById("stageInput").value,
+        value=document.getElementById("valueInput").value,
+        owner=document.getElementById("ownerInput").value,
+        due="Today";
+
+  if(editingRow){
+    editingRow.cells[0].innerText=deal;
+    editingRow.cells[1].innerText=stage;
+    editingRow.cells[2].innerText=owner;
+    editingRow.cells[3].innerText=due;
+    editingRow.cells[4].innerText=value;
+  } else {
+    const row=table.insertRow();
+    row.innerHTML=`<td>${deal}</td><td>${stage}</td><td>${owner}</td><td>${due}</td><td>${value}</td><td data-stars="5"></td>`;
+    renderStars(row.cells[5]);
+  }
+  closeModal();
+};
+  
 function attachRefLinks(){
   document.querySelectorAll(".ref-link").forEach(link=>{
     link.onclick=(e)=>{
