@@ -61,7 +61,7 @@ th{font-size:.85rem;opacity:.7}
       <div style="display:flex; align-items:center; gap:0.5rem;">
         <button class="btn" id="backBtn">← Back</button>
         <button class="btn" id="menuBtn">☰</button>
-        <div class="search">🔎 <input id="searchInput" type="search" placeholder="Search opportunities…"></div>
+        <div class="search">🔎 <input id="searchInput" type="search" placeholder="Search…"></div>
       </div>
       <div>
         <button class="btn" id="newBtn">+ New</button>
@@ -75,12 +75,12 @@ th{font-size:.85rem;opacity:.7}
 
 <div class="overlay" id="overlay">
   <div class="modal">
-    <h3 id="modalTitle">New Opportunity</h3>
-    <input id="dealInput" placeholder="Deal" />
+    <h3 id="modalTitle">New Vendor Engagement</h3>
+    <input id="dealInput" placeholder="Business Name" />
     <select id="stageInput">
-      <option>Discovery</option><option>Qualified</option><option>Proposal</option><option>Negotiation</option>
+      <option>✅ Completed</option><option>✏ In progress</option><option>⏳ Not started</option><option>⛔ Blocked</option>
     </select>
-    <input id="valueInput" placeholder="Value (e.g. 5000)" type="number" />
+    <input id="valueInput" placeholder="Records of Payment" type="text" />
     <input id="ownerInput" placeholder="Owner" />
     <button class="btn" id="saveBtn">Save</button>
     <button class="btn" onclick="closeModal()">Cancel</button>
@@ -96,222 +96,82 @@ let pipelineChart = null;
 const pages = {
   dashboard: `
     <h1>Dashboard</h1>
-  <div class="grid">
-    <div class="card"><h3>Price Variance / Cost Savings</h3><p id="kpiSavings">₱12,500</p><small>+8% vs last month</small></div>
-    <div class="card"><h3>On-Time Delivery Rate</h3><p id="kpiDelivery">92%</p><small>+3 pts</small></div>
-    <div class="card"><h3>Defect Rate / Compliance Score</h3><p id="kpiDefects">2%</p><small>-1 pt</small></div>
-    <div class="card"><h3>Vendor Performance Score</h3><p id="kpiVendor">87/100</p><small>Stable</small></div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <h3>Supply Chain Flow (Last 6 Weeks)</h3>
-      <canvas id="pipelineChart" height="100"></canvas>
+    <div class="grid">
+      <div class="card"><h3>Price Variance / Cost Savings</h3><p>₱12,500</p><small>+8% vs last month</small></div>
+      <div class="card"><h3>On-Time Delivery Rate</h3><p>92%</p><small>+3 pts</small></div>
+      <div class="card"><h3>Defect Rate / Compliance Score</h3><p>2%</p><small>-1 pt</small></div>
+      <div class="card"><h3>Vendor Performance Score</h3><p>87/100</p><small>Stable</small></div>
     </div>
-    <div class="card" id="tasksCard">
-      <h3>Tasks</h3>
-      <ul id="taskList" style="list-style:none;padding:0;margin:0;">
-        <li><input type="checkbox" /> Review vendor contracts <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
-        <li><input type="checkbox" checked /> Monitor deliveries <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
-        <li><input type="checkbox" /> Update compliance checklist <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
-        <li><input type="checkbox" /> Evaluate supplier pricing <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
-      </ul>
-      <button id="addTaskBtn" class="btn" style="margin-top:.5rem;">➕</button>
-    </div>
-  </div>
 
- 
-  <div class="card" style="margin-top:1rem;">
-  <h3>Recent Vendor Engagements</h3>
-  <table id="vendorEngagementsTable">
-    <thead>
-      <tr>
-        <th>Type of Business</th>
-        <th>Status</th>
-        <th>Owner</th>
-        <th>Due Date</th>
-        <th>Records of Payment</th>
-        <th>Rating</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Takoyaki store</td>
-        <td>✅ Completed</td>
-        <td>Gacusan, Aira Jane</td>
-        <td>03 Sep 2025</td>
-        <td>3,785.00</td>
-        <td data-stars="5"></td>
-      </tr>
-      <tr>
-        <td>Sound equipment</td>
-        <td>✏ In progress</td>
-        <td>Furigay, Neri Jane</td>
-        <td>10 Sep 2025</td>
-        <td>2,345</td>
-        <td data-stars="5"></td>
-      </tr>
-      <tr>
-        <td>Tables and chairs</td>
-        <td>⏳ Not started</td>
-        <td>Pena, Rona Mae</td>
-        <td>04 Nov 2025</td>
-        <td>5,199</td>
-        <td data-stars="5"></td>
-      </tr>
-      <tr>
-        <td>Atan's Meat Shop</td>
-        <td>⛔ Blocked</td>
-        <td>Dacoco, Jonathan</td>
-        <td>12 Mar 2025</td>
-        <td>1,870</td>
-        <td data-stars="5"></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+    <div class="grid">
+      <div class="card">
+        <h3>Supply Chain Flow (Last 6 Weeks)</h3>
+        <canvas id="pipelineChart" height="100"></canvas>
+      </div>
+      <div class="card" id="tasksCard">
+        <h3>Tasks</h3>
+        <ul id="taskList" style="list-style:none;padding:0;margin:0;">
+          <li><input type="checkbox" /> Review vendor contracts <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" checked /> Monitor deliveries <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Update compliance checklist <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Evaluate supplier pricing <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+        </ul>
+        <button id="addTaskBtn" class="btn" style="margin-top:.5rem;">➕</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <h3>Recent Vendor Engagements</h3>
+      <table id="vendorEngagementsTable">
+        <thead>
+          <tr>
+            <th>Type of Business</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>3,785.00</td><td data-stars="5"></td></tr>
+          <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>2,345</td><td data-stars="5"></td></tr>
+          <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>5,199</td><td data-stars="5"></td></tr>
+          <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>1,870</td><td data-stars="5"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  `,
+
   Vendor: `
     <h1>Vendor Management</h1>
-  <input type="text" id="vendorSearch" placeholder="Search Vendor…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
-  <table id="vendorTable">
-    <thead>
-      <tr>
-        <th>Business Name</th>
-        <th>Status</th>
-        <th>Owner</th>
-        <th>Due Date</th>
-        <th>Records of Payment</th>
-        <th>Rating</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Takoyaki store</td>
-        <td>✅ Completed</td>
-        <td>Gacusan, Aira Jane</td>
-        <td>03 Sep 2025</td>
-        <td>3,785.00</td>
-        <td data-stars="5"></td>
-      </tr>
-      <tr>
-        <td>Sound equipment</td>
-        <td>✏ In progress</td>
-        <td>Furigay, Neri Jane</td>
-        <td>10 Sep 2025</td>
-        <td></td>
-        <td data-stars="5"></td>
-      </tr>
-      <tr>
-        <td>Tables and chairs</td>
-        <td>⏳ Not started</td>
-        <td>Pena, Rona Mae</td>
-        <td>04 Nov 2025</td>
-        <td></td>
-        <td data-stars="5"></td>
-      </tr>
-      <tr>
-        <td>Atan's Meat Shop</td>
-        <td>⛔ Blocked</td>
-        <td>Dacoco, Jonathan</td>
-        <td>12 Mar 2025</td>
-        <td></td>
-        <td data-stars="5"></td>
-      </tr>
-    </tbody>
-  </table>
-`,
-  
-  Commodity: `<h1>Commodity and Price Monitoring</h1><p>Commodity content here...</p>`,
+    <input type="text" id="vendorSearch" placeholder="Search Vendor…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+    <table id="vendorTable">
+      <thead>
+        <tr><th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>3,785.00</td><td data-stars="5"></td></tr>
+        <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td></td><td data-stars="5"></td></tr>
+        <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td></td><td data-stars="5"></td></tr>
+        <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td></td><td data-stars="5"></td></tr>
+      </tbody>
+    </table>
+  `,
 
   Supply: `
-     <h1>Supply Monitoring</h1>
-  <input type="text" id="supplySearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
-  <table id="supplyTable">
-    <thead>
-      <tr>
-        <th>Business Name</th>
-        <th>Business Category</th>
-        <th>Supplier</th>
-        <th>Pick-up</th>
-        <th>Drop-off</th>
-        <th>Delivery Time</th>
-        <th>Supplier</th>
-        <th>Contact No.</th>
-        <th>Item Value</th>
-        <th>Quality</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Atan's Meat Shop</td>
-        <td>MEAT SHOP</td>
-        <td>James</td>
-        <td>Quezon City</td>
-        <td>Las Piñas</td>
-        <td>12:00 am - 2:00 pm</td>
-        <td>Francis</td>
-        <td>0970-567-1136</td>
-        <td>₱4,000.00</td>
-        <td data-stars="5"></td>
-        <td>⛔ Delayed</td>
-      </tr>
-      <tr>
-        <td>The Daily Grind</td>
-        <td>COFFEE SHOP</td>
-        <td>Maria</td>
-        <td>Makati</td>
-        <td>Pasig</td>
-        <td>7:00 am - 9:00 am</td>
-        <td>Kape Roasters</td>
-        <td>0917-888-9999</td>
-        <td>₱2,500.00</td>
-        <td data-stars="5"></td>
-        <td>✅ Completed</td>
-      </tr>
-      <tr>
-        <td>Floral Haven</td>
-        <td>FLOWER SHOP</td>
-        <td>Sofia</td>
-        <td>Taguig</td>
-        <td>Alabang</td>
-        <td>10:00 am - 12:00 pm</td>
-        <td>Bloom & Petal Farms</td>
-        <td>0920-555-4444</td>
-        <td>₱3,200.00</td>
-        <td data-stars="4"></td>
-        <td>✏ In progress</td>
-      </tr>
-      <tr>
-        <td>Baker's Delight</td>
-        <td>BAKERY</td>
-        <td>Ramon</td>
-        <td>Manila</td>
-        <td>Mandaluyong</td>
-        <td>3:00 am - 5:00 am</td>
-        <td>Flour Millers Inc.</td>
-        <td>0998-222-3333</td>
-        <td>₱5,000.00</td>
-        <td data-stars="5"></td>
-        <td>✅ Completed</td>
-      </tr>
-      <tr>
-        <td>Gadget Hub</td>
-        <td>ELECTRONICS</td>
-        <td>David</td>
-        <td>Pasay</td>
-        <td>San Juan</td>
-        <td>1:00 pm - 3:00 pm</td>
-        <td>Tech Wholesalers</td>
-        <td>0977-111-2222</td>
-        <td>₱8,500.00</td>
-        <td data-stars="4"></td>
-        <td>⏳ Not started</td>
-      </tr>
-    </tbody>
-  </table>
-`,
+    <h1>Supply Monitoring</h1>
+    <input type="text" id="supplySearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+    <table id="supplyTable">
+      <thead>
+        <tr><th>Business Name</th><th>Business Category</th><th>Client</th><th>Pick-up</th><th>Drop-off</th><th>Delivery Time</th><th>Supplier</th><th>Contact No.</th><th>Item Value</th><th>Quality</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Atan's Meat Shop</td><td>MEAT SHOP</td><td>James</td><td>Quezon City</td><td>Las Piñas</td><td>12:00 am - 2:00 pm</td><td>Francis</td><td>0970-567-1136</td><td>₱4,000.00</td><td data-stars="5"></td><td>⛔ Delayed</td></tr>
+        <tr><td>The Daily Grind</td><td>COFFEE SHOP</td><td>Maria</td><td>Makati</td><td>Pasig</td><td>7:00 am - 9:00 am</td><td>Kape Roasters</td><td>0917-888-9999</td><td>₱2,500.00</td><td data-stars="5"></td><td>✅ Completed</td></tr>
+        <tr><td>Floral Haven</td><td>FLOWER SHOP</td><td>Sofia</td><td>Taguig</td><td>Alabang</td><td>10:00 am - 12:00 pm</td><td>Bloom & Petal Farms</td><td>0920-555-4444</td><td>₱3,200.00</td><td data-stars="4"></td><td>✏ In progress</td></tr>
+        <tr><td>Baker's Delight</td><td>BAKERY</td><td>Ramon</td><td>Manila</td><td>Mandaluyong</td><td>3:00 am - 5:00 am</td><td>Flour Millers Inc.</td><td>0998-222-3333</td><td>₱5,000.00</td><td data-stars="5"></td><td>✅ Completed</td></tr>
+        <tr><td>Gadget Hub</td><td>ELECTRONICS</td><td>David</td><td>Pasay</td><td>San Juan</td><td>1:00 pm - 3:00 pm</td><td>Tech Wholesalers</td><td>0977-111-2222</td><td>₱8,500.00</td><td data-stars="4"></td><td>⏳ Not started</td></tr>
+      </tbody>
+    </table>
+  `,
 
+  Commodity: `<h1>Commodity and Price Monitoring</h1><p>Commodity content here...</p>`,
   Inspection: `<h1>Inspection and compliance</h1><p>Inspection content here...</p>`,
   Reports: `<h1>Reports and Dashboard with AI analytic</h1><p>Reports content here...</p>`,
   Settings: `<h1>Settings</h1><p>Settings content here...</p>`
@@ -325,41 +185,30 @@ function renderStars(td){
     const star=document.createElement("span");
     star.className="star"+(i<=rating?" active":"");
     star.innerHTML="★";
-    star.onclick=()=>{
-      td.dataset.stars=i;
-      renderStars(td);
-    };
+    star.onclick=()=>{td.dataset.stars=i;renderStars(td);};
     td.appendChild(star);
   }
 }
 
+
 function makeTableEditable(tableId, searchId){
   const table=document.getElementById(tableId);
   if(!table) return;
-
-  
   table.querySelectorAll("td:not([data-stars])").forEach(td=>{
     td.onclick=()=>{
       if(td.querySelector("input")) return;
-      const oldText=td.innerText;
+      const old=td.innerText;
       const input=document.createElement("input");
-      input.value=oldText;
-      td.innerHTML="";
-      td.appendChild(input);
-      input.focus();
-      input.onblur=()=>{td.innerText=input.value || oldText;};
+      input.value=old;
+      td.innerHTML=""; td.appendChild(input); input.focus();
+      input.onblur=()=>{td.innerText=input.value||old;};
       input.onkeydown=(e)=>{if(e.key==="Enter"){input.blur();}};
     };
   });
-
-  
   table.querySelectorAll("td[data-stars]").forEach(td=>renderStars(td));
-
- 
   if(searchId){
-    const search=document.getElementById(searchId);
-    search.onkeyup=()=>{
-      const term=search.value.toLowerCase();
+    document.getElementById(searchId).onkeyup=(e)=>{
+      const term=e.target.value.toLowerCase();
       table.querySelectorAll("tbody tr").forEach(row=>{
         row.style.display=row.innerText.toLowerCase().includes(term)?"":"none";
       });
@@ -375,109 +224,34 @@ document.querySelectorAll(".nav-item").forEach(link=>{
       document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));
       link.classList.add("active");
       const page=link.dataset.page;
-      contentArea.innerHTML=pages[page] || `<h1>${page}</h1>`;
+      contentArea.innerHTML=pages[page]||`<h1>${page}</h1>`;
       if(page==="dashboard") initDashboard();
       if(page==="Vendor") makeTableEditable("vendorTable","vendorSearch");
       if(page==="Supply") makeTableEditable("supplyTable","supplySearch");
-    }
+    };
   }
 });
 
-document.getElementById("backBtn").onclick=()=>{window.history.back();};
-document.getElementById("menuBtn").onclick=()=>{document.getElementById("sidebar").classList.toggle("open");};
+document.getElementById("backBtn").onclick=()=>window.history.back();
+document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
 
 
 function openModal(row=null){
-  overlay.style.display="flex"; 
-  editingRow=row;
+  overlay.style.display="flex"; editingRow=row;
   if(row){
-    document.getElementById("modalTitle").innerText="Edit Opportunity";
+    document.getElementById("modalTitle").innerText="Edit Vendor Engagement";
     document.getElementById("dealInput").value=row.cells[0].innerText;
     document.getElementById("stageInput").value=row.cells[1].innerText;
-    document.getElementById("valueInput").value=row.cells[2].innerText.replace(/\$/,"");
-    document.getElementById("ownerInput").value=row.cells[3].innerText;
+    document.getElementById("valueInput").value=row.cells[4].innerText;
+    document.getElementById("ownerInput").value=row.cells[2].innerText;
   } else {
-    document.getElementById("modalTitle").innerText="New Opportunity";
+    document.getElementById("modalTitle").innerText="New Vendor Engagement";
     document.querySelectorAll(".modal input").forEach(i=>i.value="");
   }
 }
 function closeModal(){overlay.style.display="none";}
-function attachEditButtons(){
-  document.querySelectorAll(".edit-btn").forEach(b=>{
-    b.onclick=()=>openModal(b.closest("tr"));
-  });
-}
+
+
 function attachTaskActions(){
   const taskList=document.getElementById("taskList"), addTaskBtn=document.getElementById("addTaskBtn");
   if(!taskList) return;
-  document.querySelectorAll("#taskList li").forEach(li=>{
-    const editIcon=li.querySelector(".edit-icon"), deleteIcon=li.querySelector(".delete-icon");
-    editIcon.onclick=()=>{const newText=prompt("Edit Task", li.firstChild.textContent.trim()); if(newText) li.firstChild.textContent=newText+" ";};
-    deleteIcon.onclick=()=>{if(confirm("Delete this task?")) li.remove();};
-  });
-  addTaskBtn.onclick=()=>{
-    const taskName=prompt("Enter new task:");
-    if(taskName){
-      const li=document.createElement("li");
-      li.innerHTML=`<input type="checkbox" /> ${taskName} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
-      taskList.appendChild(li);
-      attachTaskActions();
-    }
-  };
-}
-
-function initDashboard(){
-  const container = document.getElementById("contentArea");
-  container.innerHTML = pages.dashboard;
-  attachEditButtons();
-  attachTaskActions();
-
-  const ctx = document.getElementById("pipelineChart");
-  if(ctx){ 
-    pipelineChart = new Chart(ctx,{ 
-      type:"line", 
-      data:{
-        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
-        datasets:[{ 
-          label:"Opportunities", 
-          data:[10,15,8,20,18,25], 
-          borderColor:"#0a53c1",
-          backgroundColor:"rgba(10,83,193,0.2)", 
-          fill:true, 
-          tension:0.3 
-        }]
-      } 
-    }); 
-  } 
-}
-
-document.getElementById("newBtn").onclick = () => openModal();
-document.getElementById("saveBtn").onclick = () => {
-  const table = document.querySelector("#oppsTable tbody");
-  if(!table) return;
-  const deal = document.getElementById("dealInput").value,
-        stage = document.getElementById("stageInput").value,
-        value = "$" + document.getElementById("valueInput").value
-        ,
-        owner = document.getElementById("ownerInput").value,
-        updated = "Today";
-  if(editingRow){
-    editingRow.cells[0].innerText = deal;
-    editingRow.cells[1].innerText = stage;
-    editingRow.cells[2].innerText = value;
-    editingRow.cells[3].innerText = owner;
-    editingRow.cells[4].innerText = updated;
-  } else {
-    const row = table.insertRow();
-    row.innerHTML = `<td>${deal}</td><td>${stage}</td><td>${value}</td><td>${owner}</td><td>${updated}</td>
-      <td><button class="btn edit-btn">Edit</button></td>`;
-  }
-  attachEditButtons();
-  closeModal();
-};
-
-
-initDashboard();
-</script>
-</body>
-</html>
