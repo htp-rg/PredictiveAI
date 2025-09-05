@@ -187,21 +187,93 @@ const pages = {
   Commodity: `<h1>Commodity and Price Monitoring</h1><p>Commodity content here...</p>`,
 
   Supply: `
-    <h1>Supply Monitoring</h1>
-    <input type="text" id="supplySearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
-    <table id="supplyTable">
-      <thead>
-        <tr>
-          <th>Type of Business</th><th>Client</th><th>Pick-up</th><th>Drop-off</th>
-          <th>Delivery Time</th><th>Supplier</th><th>Contact No.</th>
-          <th>Item Value</th><th>Quality</th><th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>MEAT SHOP</td><td>JAMES</td><td>QUEZON CITY</td><td>LASPIÑAS</td><td>12:00 am - 2:00 pm</td><td>FRANCIS</td><td>0970-567-1136</td><td>4,000.00</td><td>⭐⭐⭐⭐⭐</td><td>⛔Delayed</td></tr>
-      </tbody>
-    </table>
-  `,
+     <h1>Supply Monitoring</h1>
+  <input type="text" id="supplySearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+  <table id="supplyTable">
+    <thead>
+      <tr>
+        <th>Business Name</th>
+        <th>Type of Business</th>
+        <th>Client</th>
+        <th>Pick-up</th>
+        <th>Drop-off</th>
+        <th>Delivery Time</th>
+        <th>Supplier</th>
+        <th>Contact No.</th>
+        <th>Item Value</th>
+        <th>Quality</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Atan's Meat Shop</td>
+        <td>MEAT SHOP</td>
+        <td>James</td>
+        <td>Quezon City</td>
+        <td>Las Piñas</td>
+        <td>12:00 am - 2:00 pm</td>
+        <td>Francis</td>
+        <td>0970-567-1136</td>
+        <td>₱4,000.00</td>
+        <td data-stars="5"></td>
+        <td>⛔ Delayed</td>
+      </tr>
+      <tr>
+        <td>The Daily Grind</td>
+        <td>COFFEE SHOP</td>
+        <td>Maria</td>
+        <td>Makati</td>
+        <td>Pasig</td>
+        <td>7:00 am - 9:00 am</td>
+        <td>Kape Roasters</td>
+        <td>0917-888-9999</td>
+        <td>₱2,500.00</td>
+        <td data-stars="5"></td>
+        <td>✅ Completed</td>
+      </tr>
+      <tr>
+        <td>Floral Haven</td>
+        <td>FLOWER SHOP</td>
+        <td>Sofia</td>
+        <td>Taguig</td>
+        <td>Alabang</td>
+        <td>10:00 am - 12:00 pm</td>
+        <td>Bloom & Petal Farms</td>
+        <td>0920-555-4444</td>
+        <td>₱3,200.00</td>
+        <td data-stars="4"></td>
+        <td>✏ In progress</td>
+      </tr>
+      <tr>
+        <td>Baker's Delight</td>
+        <td>BAKERY</td>
+        <td>Ramon</td>
+        <td>Manila</td>
+        <td>Mandaluyong</td>
+        <td>3:00 am - 5:00 am</td>
+        <td>Flour Millers Inc.</td>
+        <td>0998-222-3333</td>
+        <td>₱5,000.00</td>
+        <td data-stars="5"></td>
+        <td>✅ Completed</td>
+      </tr>
+      <tr>
+        <td>Gadget Hub</td>
+        <td>ELECTRONICS</td>
+        <td>David</td>
+        <td>Pasay</td>
+        <td>San Juan</td>
+        <td>1:00 pm - 3:00 pm</td>
+        <td>Tech Wholesalers</td>
+        <td>0977-111-2222</td>
+        <td>₱8,500.00</td>
+        <td data-stars="4"></td>
+        <td>⏳ Not started</td>
+      </tr>
+    </tbody>
+  </table>
+`,
 
   Inspection: `<h1>Inspection and compliance</h1><p>Inspection content here...</p>`,
   Reports: `<h1>Reports and Dashboard with AI analytic</h1><p>Reports content here...</p>`,
