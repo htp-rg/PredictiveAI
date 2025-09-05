@@ -254,4 +254,81 @@ function closeModal(){overlay.style.display="none";}
 
 function attachTaskActions(){
   const taskList=document.getElementById("taskList"), addTaskBtn=document.getElementById("addTaskBtn");
-  if(!taskList) return;
+  if(!taskList) return;document.querySelectorAll("#taskList li").forEach(li=>{
+    const editIcon=li.querySelector(".edit-icon"),
+          deleteIcon=li.querySelector(".delete-icon");
+    editIcon.onclick=()=>{
+      const newText=prompt("Edit Task", li.firstChild.textContent.trim());
+      if(newText) li.firstChild.textContent=newText+" ";
+    };
+    deleteIcon.onclick=()=>{
+      if(confirm("Delete this task?")) li.remove();
+    };
+  });
+  addTaskBtn.onclick=()=>{
+    const taskName=prompt("Enter new task:");
+    if(taskName){
+      const li=document.createElement("li");
+      li.innerHTML=`<input type="checkbox" /> ${taskName} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
+      taskList.appendChild(li);
+      attachTaskActions();
+    }
+  };
+}
+
+
+function initDashboard(){
+  const container=document.getElementById("contentArea");
+  container.innerHTML=pages.dashboard;
+  attachTaskActions();
+  makeTableEditable("vendorEngagementsTable");
+
+  const ctx=document.getElementById("pipelineChart");
+  if(ctx){
+    pipelineChart=new Chart(ctx,{
+      type:"line",
+      data:{
+        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+        datasets:[{
+          label:"Supply Chain Flow",
+          data:[10,15,8,20,18,25],
+          borderColor:"#0a53c1",
+          backgroundColor:"rgba(10,83,193,0.2)",
+          fill:true,
+          tension:0.3
+        }]
+      }
+    });
+  }
+}
+
+
+document.getElementById("newBtn").onclick=()=>openModal();
+document.getElementById("saveBtn").onclick=()=>{
+  const table=document.querySelector("#vendorEngagementsTable tbody");
+  if(!table) return;
+  const deal=document.getElementById("dealInput").value,
+        stage=document.getElementById("stageInput").value,
+        value=document.getElementById("valueInput").value,
+        owner=document.getElementById("ownerInput").value,
+        due="Today";
+
+  if(editingRow){
+    editingRow.cells[0].innerText=deal;
+    editingRow.cells[1].innerText=stage;
+    editingRow.cells[2].innerText=owner;
+    editingRow.cells[3].innerText=due;
+    editingRow.cells[4].innerText=value;
+  } else {
+    const row=table.insertRow();
+    row.innerHTML=`<td>${deal}</td><td>${stage}</td><td>${owner}</td><td>${due}</td><td>${value}</td><td data-stars="5"></td>`;
+    renderStars(row.cells[5]);
+  }
+  closeModal();
+};
+
+
+initDashboard();
+</script>
+</body>
+</html>
