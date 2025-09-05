@@ -186,13 +186,90 @@ const pages = {
     </div>
   `,
 
-  Vendor: `<h1>Vendor Management</h1><p>Vendor content here...</p>`,
+  Vendor: ` <h1>Vendor Management - Page 1</h1>
+  <input type="text" id="vendorSearch" placeholder="Search Vendor…" class="search" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+  <table id="vendorTable">
+    <thead>
+      <tr>
+        <th>Type of Business</th><th>Status</th><th>Owner</th>
+        <th>Due Date</th><th>Records of Payment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Takoyaki store</td><td>✅ Completed</td><td>DesignEase</td><td>03 Sep 2025</td><td>3,785.00</td></tr>
+      <tr><td>Sound equipment</td><td>✏ In progress</td><td>Nina's Cute Cr…</td><td>04 Mar 2030</td><td></td></tr>
+      <tr><td>Tables and chairs</td><td>⏳ Not started</td><td></td><td>04 Mar 2030</td><td></td></tr>
+      <tr><td>Name tags</td><td>⛔ Blocked</td><td></td><td>12 Mar 2030</td><td></td></tr>
+    </tbody>
+  </table>
+`;
   Commodity: `<h1>Commodity and Price Monitoring</h1><p>Commodity content here...</p>`,
-  Supply: `<h1>Supply Monitoring</h1><p>Supply content here...</p>`,
+  Supply:  <h1>Supply Monitoring</h1>
+  <input type="text" id="supplySearch" placeholder="Search Supply…" class="search" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+  <table id="supplyTable">
+    <thead>
+      <tr>
+        <th>Type of Business</th><th>Client</th><th>Pick-up</th><th>Drop-off</th>
+        <th>Delivery Time</th><th>Supplier</th><th>Contact No.</th>
+        <th>Item Value</th><th>Quality</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>MEAT SHOP</td><td>JAMES</td><td>QUEZON CITY</td><td>LASPIÑAS</td><td>12:00 am - 2:00 pm</td><td>FRANCIS</td><td>0970-567-1136</td><td>4,000.00</td><td>⭐⭐⭐⭐⭐</td><td>⛔Delayed</td></tr>
+    </tbody>
+  </table>
+`;
   Inspection: `<h1>Inspection and compliance</h1><p>Inspection content here...</p>`,
   Reports: `<h1>Reports and Dashboard with AI analytic</h1><p>Reports content here...</p>`,
   Settings: `<h1>Settings</h1><p>Settings content here...</p>`
 };
+
+function makeTableEditable(tableId, searchId){
+  const table=document.getElementById(tableId);
+  if(!table) return;
+
+  table.querySelectorAll("td").forEach(td=>{
+    td.onclick=()=>{
+      if(td.querySelector("input")) return;
+      const oldText=td.innerText;
+      const input=document.createElement("input");
+      input.value=oldText;
+      td.innerHTML="";
+      td.appendChild(input);
+      input.focus();
+      input.onblur=()=>{td.innerText=input.value || oldText;};
+      input.onkeydown=(e)=>{if(e.key==="Enter"){input.blur();}};
+    };
+  });
+
+  if(searchId){
+    const search=document.getElementById(searchId);
+    search.onkeyup=()=>{
+      const term=search.value.toLowerCase();
+      table.querySelectorAll("tbody tr").forEach(row=>{
+        row.style.display=row.innerText.toLowerCase().includes(term)?"":"none";
+      });
+    };
+  }
+}
+
+document.querySelectorAll(".nav-item").forEach(link=>{
+  if(!link.classList.contains("logout-btn")){
+    link.onclick=(e)=>{
+      e.preventDefault();
+      document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));
+      link.classList.add("active");
+      const page=link.dataset.page;
+      contentArea.innerHTML=pages[page] || `<h1>${page}</h1>`;
+      if(page==="dashboard") initDashboard();
+      if(page==="VendorPage1") makeTableEditable("vendorTable","vendorSearch");
+      if(page==="SupplyPage") makeTableEditable("supplyTable","supplySearch");
+    }
+  }
+});
+
+document.getElementById("backBtn").onclick=()=>{window.history.back();};
+document.getElementById("menuBtn").onclick=()=>{document.getElementById("sidebar").classList.toggle("open");};
 
 function openModal(row=null){
   overlay.style.display="flex"; 
