@@ -3,60 +3,85 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>User Dashboard</title>
+<title>LGU Admin Dashboard</title>
+<!-- Tailwind CSS for modern, responsive styling -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Chart.js for data visualization -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-:root{
-  --text:#111111; --blue:#0a53c1; --ink-20:#f4f6f8;
-  --white:#ffffff; --border:#e6e8eb;
-  --shadow:0 6px 24px rgba(0,0,0,.06);
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--white);color:var(--text);}
-.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
-.sidebar{border-right:1px solid var(--border);background:var(--white);}
-.brand{font-weight:800;text-transform:uppercase;padding:1rem;border-bottom:1px solid var(--border);}
-nav{padding:1rem}
-.nav-item{display:block;padding:.6rem;border-radius:8px;text-decoration:none;color:var(--text);}
-.nav-item:hover,.nav-item.active{background:var(--ink-20)}
-.main{display:grid;grid-template-rows:64px 1fr;min-width:0}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 1rem;border-bottom:1px solid var(--border);}
-.search{display:flex;align-items:center;border:1px solid var(--border);border-radius:12px;padding:.4rem .7rem}
-.search input{border:none;outline:none}
-.btn{border:1px solid var(--text);background:transparent;padding:.4rem .8rem;border-radius:8px;cursor:pointer}
-.content{padding:1rem;overflow:auto}
-.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem;box-shadow:var(--shadow)}
-table{width:100%;border-collapse:collapse}
-th,td{border-bottom:1px solid var(--border);padding:.6rem;text-align:left;vertical-align:middle}
-th{font-size:.85rem;opacity:.7}
-.star{font-size:1.2rem;color:gold}
-#complaintForm {display:none;flex-direction:column;gap:.5rem;margin-top:1rem;}
-#complaintForm textarea {width:100%;padding:.5rem;border:1px solid var(--border);border-radius:8px;}
+  :root {
+    --text: #111111; --blue: #0a53c1; --ink-20: #f4f6f8;
+    --white: #ffffff; --border: #e6e8eb;
+    --shadow: 0 6px 24px rgba(0, 0, 0, .06);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Inter, system-ui, sans-serif; background: var(--white); color: var(--text); }
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  .sidebar { border-right: 1px solid var(--border); background: var(--white); transition: transform .3s; }
+  .sidebar.open { transform: translateX(0); }
+  @media (max-width: 768px) {
+    .sidebar { position: fixed; z-index: 100; transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .app { grid-template-columns: 1fr; }
+    .topbar .btn:not(#menuBtn) { display: none; }
+  }
+  .brand { font-weight: 800; text-transform: uppercase; padding: 1rem; border-bottom: 1px solid var(--border); }
+  nav { padding: 1rem; }
+  .nav-item { display: block; padding: .6rem; border-radius: 8px; text-decoration: none; color: var(--text); }
+  .nav-item:hover, .nav-item.active { background: var(--ink-20); }
+  .main { display: grid; grid-template-rows: 64px 1fr; min-width: 0; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; border-bottom: 1px solid var(--border); }
+  .search { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 12px; padding: .4rem .7rem; }
+  .search input { border: none; outline: none; background: transparent; }
+  .btn { border: 1px solid var(--text); background: transparent; padding: .4rem .8rem; border-radius: 8px; cursor: pointer; }
+  .content { padding: 1rem; overflow-y: auto; }
+  .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 1rem; box-shadow: var(--shadow); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border-bottom: 1px solid var(--border); padding: .6rem; text-align: left; vertical-align: middle; }
+  th { font-size: .85rem; opacity: .7; }
+  .overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, .5); align-items: center; justify-content: center; z-index: 200; }
+  .modal { background: #fff; padding: 1rem; border-radius: 12px; min-width: 300px; max-width: 90%; }
+  .modal input, .modal select, .modal textarea { display: block; width: 100%; margin: .5rem 0; padding: .4rem; border-radius: 6px; border: 1px solid #ccc; }
+  .star { cursor: pointer; font-size: 1.2rem; color: #ccc; }
+  .star.active { color: gold; }
+  .edit-icon, .delete-icon { cursor: pointer; margin-left: 4px; }
+  .view-btn {
+    background: black;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    margin-top: 6px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .view-btn:hover { opacity: 0.8; }
 </style>
 </head>
 <body>
 <div class="app">
-  <aside class="sidebar open" id="sidebar">
-    <div class="brand">LGU 3 USER SYSTEM</div>
-   <nav>
-    <a href="#" class="nav-item active" data-page="dashboard">Dashboard</a>
-    <a href="#" class="nav-item" data-page="Vendor">Vendor Management</a>
-    <a href="#" class="nav-item" data-page="Supply">Supply Monitoring</a>
-    <a href="#" class="nav-item" data-page="Reports">Reports and Dashboard with AI analytic</a>
-    <a href="#" class="nav-item" data-page="Settings">Settings</a>
-    <a href="main.html" class="nav-item logout-btn" style="margin-top: 2rem; font-weight: bold;">Logout</a>
-  </nav>
-</aside>
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">LGU 3 ADMIN SYSTEM</div>
+    <nav>
+      <a href="#" class="nav-item active" data-page="dashboard">Dashboard</a>
+      <a href="#" class="nav-item" data-page="Vendor">Vendor Management</a>
+      <a href="#" class="nav-item" data-page="Commodity">Commodity and Price Monitoring</a>
+      <a href="#" class="nav-item" data-page="Supply">Supply Monitoring</a>
+      <a href="#" class="nav-item" data-page="Inspection">Inspection and compliance</a>
+      <a href="#" class="nav-item" data-page="Reports">Reports and Dashboard with AI analytic</a>
+      <a href="#" class="nav-item" data-page="Settings">Settings</a>
+      <a href="#" class="nav-item logout-btn" style="margin-top: 2rem; font-weight: bold;">Logout</a>
+    </nav>
+  </aside>
 
   <section class="main">
     <header class="topbar">
-      <div style="display:flex; align-items:center; gap:0.5rem;">
-        <button class="btn" id="backBtn">← Back</button>
-        <button class="btn" id="menuBtn">☰</button>
+      <div class="flex items-center gap-2">
+        <button class="btn md:hidden" id="menuBtn">☰</button>
         <div class="search">🔎 <input id="searchInput" type="search" placeholder="Search…"></div>
       </div>
       <div>
+        <button class="btn" id="newBtn">+ New</button>
         <button class="btn" id="exportBtn">Export</button>
       </div>
     </header>
@@ -65,121 +90,665 @@ th{font-size:.85rem;opacity:.7}
   </section>
 </div>
 
-<script>
-const contentArea = document.getElementById("contentArea");
 
-const pages = {
-  dashboard: `<h1>Dashboard</h1>
-    <div class="grid">
-      <div class="card"><h3>Price Variance / Cost Savings</h3><p>₱12,500</p><small>+8% vs last month</small></div>
-      <div class="card"><h3>On-Time Delivery Rate</h3><p>92%</p><small>+3 pts</small></div>
-      <div class="card"><h3>Defect Rate / Compliance Score</h3><p>2%</p><small>-1 pt</small></div>
-      <div class="card"><h3>Vendor Performance Score</h3><p>87/100</p><small>Stable</small></div>
+<div class="overlay" id="messageModal">
+  <div class="modal">
+    <h3 id="messageTitle" class="text-lg font-semibold"></h3>
+    <p id="messageContent" class="my-4"></p>
+    <div class="flex justify-end gap-2">
+      <button class="btn" id="messageOkBtn">OK</button>
+      <button class="btn" id="messageCancelBtn" style="display:none;">Cancel</button>
     </div>
-  `,
+  </div>
+</div>
 
-  Vendor: `<h1>Vendor Management</h1><p>Vendor list here...</p>`,
 
-  Supply: `<h1>Supply Monitoring</h1><p>Supply details here...</p>`,
-
-  Reports: `
-    <h1>Reports and Dashboard with AI Analytic</h1>
-    <div class="grid">
-      <div class="card">
-        <h3>Vendor Performance Dashboard</h3>
-        <canvas id="vendorChart" height="120"></canvas>
-      </div>
-      <div class="card">
-        <h3>Recent Complaints</h3>
-        <ul id="reportComplaints"></ul>
-        <button class="btn" onclick="toggleComplaintForm()">➕ Make a Complaint</button>
-        <div id="complaintForm">
-          <textarea id="complaintText" placeholder="Enter your complaint..."></textarea>
-          <button class="btn" onclick="submitComplaint()">Submit Complaint</button>
-        </div>
-      </div>
-      <div class="card">
-        <h3>AI Chat Support</h3>
-        <div style="border:1px solid #ccc;padding:10px;border-radius:8px;">
-          🤖 Hello! This is a read-only view of reports.
-        </div>
-      </div>
+<div class="overlay" id="vendorModal">
+  <div class="modal">
+    <h3 id="modalTitle" class="text-lg font-semibold">New Vendor Engagement</h3>
+    <input id="businessNameInput" placeholder="Business Name" />
+    <select id="stageInput" class="rounded-md">
+      <option value="✅ Completed">✅ Completed</option>
+      <option value="✏ In progress">✏ In progress</option>
+      <option value="⏳ Not started">⏳ Not started</option>
+      <option value="⛔ Blocked">⛔ Blocked</option>
+    </select>
+    <input id="ownerInput" placeholder="Owner" />
+    <input id="valueInput" placeholder="Records of Payment" type="text" />
+    <input id="dueDateInput" type="date" />
+    <div class="flex justify-end gap-2 mt-4">
+      <button class="btn bg-blue-500 text-white border-blue-500 hover:bg-blue-600" id="saveVendorBtn">Save</button>
+      <button class="btn" onclick="closeModal('vendorModal')">Cancel</button>
     </div>
-  `,
+  </div>
+</div>
 
-  Settings: `<h1>Settings</h1><p>Settings content here...</p>`
-};
+<!-- Data Modal for Commodity Prices -->
+<div id="dataModal" class="overlay">
+  <div class="modal max-w-lg w-full">
+    <span class="close float-right cursor-pointer text-xl" onclick="closeDataModal()">&times;</span>
+    <h3 id="lineChartTitle" class="text-lg font-semibold mb-4"></h3>
+    <canvas id="lineChart" width="500" height="250"></canvas>
+  </div>
+</div>
 
-function renderPage(page){
-  contentArea.innerHTML = pages[page]||`<h1>${page}</h1>`;
-  if(page==="Reports") {
-    initReports();
-    loadComplaints();
+<script type="module">
+  // Firebase SDK imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+ 
+  let auth, db, userId;
+  let pipelineChart = null;
+  let pieChart = null;
+  let lineChart = null;
+  const overlay = document.getElementById("overlay");
+  const contentArea = document.getElementById("contentArea");
+
+  
+  const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+  const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+  const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+  
+  async function initFirebase() {
+    try {
+      const app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      db = getFirestore(app);
+
+      if (initialAuthToken) {
+        await signInWithCustomToken(auth, initialAuthToken);
+      } else {
+        await signInAnonymously(auth);
+      }
+      userId = auth.currentUser?.uid || 'anonymous';
+      console.log('Firebase initialized. User ID:', userId);
+      renderPage("dashboard");
+    } catch (e) {
+      console.error("Error during Firebase initialization or sign-in:", e);
+      showMessage("Error", "Failed to connect to the database. Please try again later.", true);
+    }
   }
-}
 
-function initReports(){
-  const ctx=document.getElementById("vendorChart");
-  if(ctx){
-    new Chart(ctx,{
-      type:"bar",
-      data:{
-        labels:["Takoyaki","Meat Shop","Catering","Rental"],
-        datasets:[{label:"Performance",data:[87,65,72,90],backgroundColor:"#0a53c1"}]
+
+  const data = {
+    vendors: [],
+    commodities: [],
+    supply: [],
+    tasks: []
+  };
+
+  const getCollectionPath = (collectionName) => {
+    // Public data for shared apps, assuming this is a shared dashboard
+    return `artifacts/${appId}/public/data/${collectionName}`;
+  };
+
+
+  function setupDataListeners() {
+
+    onSnapshot(collection(db, getCollectionPath("vendorEngagements")), (snapshot) => {
+      data.vendors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      updateUI('Vendor');
+      updateUI('dashboard');
+    });
+
+   
+    onSnapshot(collection(db, getCollectionPath("commodities")), (snapshot) => {
+      data.commodities = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      updateUI('Commodity');
+    });
+
+
+    onSnapshot(collection(db, getCollectionPath("supply")), (snapshot) => {
+      data.supply = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      updateUI('Supply');
+    });
+
+   
+    onSnapshot(collection(db, getCollectionPath("tasks")), (snapshot) => {
+      data.tasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      updateUI('dashboard');
+    });
+  }
+
+ 
+  const pages = {
+    dashboard: () => {
+      const vendorEngagementsHtml = data.vendors.map(v => `
+        <tr>
+          <td>${v.businessName}</td>
+          <td>${v.status}</td>
+          <td>${v.owner}</td>
+          <td>${v.dueDate || ''}</td>
+          <td>${v.recordsOfPayment}</td>
+          <td data-stars="${v.rating}"></td>
+        </tr>
+      `).join('');
+
+      const tasksHtml = data.tasks.map(t => `
+        <li>
+          <input type="checkbox" data-id="${t.id}" ${t.completed ? 'checked' : ''} />
+          <span>${t.task}</span>
+          <span class="edit-icon cursor-pointer ml-1" data-id="${t.id}">✏️</span>
+          <span class="delete-icon cursor-pointer ml-1" data-id="${t.id}">🗑️</span>
+        </li>
+      `).join('');
+
+      return `
+        <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <div class="card p-4 rounded-xl shadow-md"><h3>Price Variance / Cost Savings</h3><p>₱12,500</p><small class="text-green-500">+8% vs last month</small></div>
+          <div class="card p-4 rounded-xl shadow-md"><h3>On-Time Delivery Rate</h3><p>92%</p><small class="text-green-500">+3 pts</small></div>
+          <div class="card p-4 rounded-xl shadow-md"><h3>Defect Rate / Compliance Score</h3><p>2%</p><small class="text-red-500">-1 pt</small></div>
+          <div class="card p-4 rounded-xl shadow-md"><h3>Vendor Performance Score</h3><p>87/100</p><small class="text-gray-500">Stable</small></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+          <div class="card p-4 rounded-xl shadow-md">
+            <h3 class="text-lg font-semibold">Supply Chain Flow (Last 6 Weeks)</h3>
+            <canvas id="pipelineChart" height="150"></canvas>
+          </div>
+          <div class="card p-4 rounded-xl shadow-md">
+            <h3 class="text-lg font-semibold">Tasks</h3>
+            <ul id="taskList" class="list-none p-0 m-0 space-y-2">
+              ${tasksHtml}
+            </ul>
+            <button id="addTaskBtn" class="btn mt-2 bg-gray-200 hover:bg-gray-300">➕ Add Task</button>
+          </div>
+        </div>
+        <div class="card p-4 rounded-xl shadow-md">
+          <h3 class="text-lg font-semibold">Recent Vendor Engagements</h3>
+          <table id="vendorEngagementsTable" class="w-full">
+            <thead>
+              <tr>
+                <th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${vendorEngagementsHtml}
+            </tbody>
+          </table>
+        </div>
+      `;
+    },
+    Vendor: () => {
+      const vendorTableHtml = data.vendors.map(v => `
+        <tr data-id="${v.id}">
+          <td>${v.businessName}</td>
+          <td>${v.status}</td>
+          <td>${v.owner}</td>
+          <td>${v.dueDate || ''}</td>
+          <td>${v.recordsOfPayment}</td>
+          <td data-stars="${v.rating}"></td>
+        </tr>
+      `).join('');
+      return `
+        <h1 class="text-3xl font-bold mb-4">Vendor Management</h1>
+        <input type="text" id="vendorSearch" placeholder="Search Vendor…" class="mb-4 w-full p-2 border rounded-md">
+        <table id="vendorTable" class="w-full">
+          <thead>
+            <tr><th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th></tr>
+          </thead>
+          <tbody>
+            ${vendorTableHtml}
+          </tbody>
+        </table>
+      `;
+    },
+    Commodity: () => {
+      const commodityTableHtml = data.commodities.map(c => `
+        <tr data-id="${c.id}">
+          <td class="px-2 py-1">${c.businessName}</td>
+          <td class="px-2 py-1">${c.previousPrice}</td>
+          <td class="px-2 py-1">${c.currentPrice}</td>
+          <td class="px-2 py-1">${c.status}</td>
+        </tr>
+      `).join('');
+      return `
+        <h1 class="text-3xl font-bold mb-4">Commodity and Price Monitoring</h1>
+        <table id="commodityTable" class="w-full mb-4">
+          <thead>
+            <tr>
+              <th>Type of Business</th>
+              <th>Previous Price</th>
+              <th>Current Price</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${commodityTableHtml}
+          </tbody>
+        </table>
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+          <div class="w-full md:w-1/3">
+            <canvas id="pieChart" class="w-full h-auto"></canvas>
+          </div>
+          <div class="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${data.commodities.map(c => `
+              <div class="card p-4 rounded-xl shadow-md cursor-pointer" onclick="openDataModal('${c.businessName}')">
+                ${c.businessName}<br>
+                <button class="view-btn">View Data</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    },
+    Supply: () => {
+      const supplyTableHtml = data.supply.map(s => `
+        <tr data-id="${s.id}">
+          <td><a href="#" class="ref-link" data-ref="${s.refNo}">${s.refNo}</a></td>
+          <td>${s.businessName}</td><td>${s.category}</td><td>${s.supplier}</td>
+          <td>${s.pickup}</td><td>${s.dropoff}</td><td>${s.deliveryTime}</td><td>${s.report}</td>
+          <td>${s.contactNo}</td><td>${s.itemValue}</td><td>${s.quality}</td><td>${s.status}</td>
+        </tr>
+      `).join('');
+      return `
+        <h1 class="text-3xl font-bold mb-4">Supply Monitoring</h1>
+        <input type="text" id="supplySearch" placeholder="Search Supply…" class="mb-4 w-full p-2 border rounded-md">
+        <table id="supplyTable" class="w-full">
+          <thead>
+            <tr>
+              <th>Ref No.</th><th>Business Name</th><th>Business Category</th><th>Supplier</th>
+              <th>Pick-up</th><th>Drop-off</th><th>Delivery Time</th><th>Report</th>
+              <th>Contact No.</th><th>Item Value</th><th>Quality</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${supplyTableHtml}
+          </tbody>
+        </table>
+      `;
+    },
+    Reports: (refNo) => {
+      const complaints = {
+        "RPT-001": "Vendor delayed chicken delivery",
+        "RPT-002": "Incomplete Takoyaki supplies",
+        "RPT-003": "Catering delivery arrived late",
+        "RPT-004": "Rental items missing on arrival"
+      };
+      return `
+        <h1 class="text-3xl font-bold mb-4">Reports and Dashboard with AI Analytic</h1>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="card p-4 rounded-xl shadow-md">
+            <h3 class="text-lg font-semibold">Vendor Performance Dashboard</h3>
+            <canvas id="vendorChart" height="120"></canvas>
+          </div>
+          <div class="card p-4 rounded-xl shadow-md">
+            <h3 class="text-lg font-semibold">Recent Complaints</h3>
+            <div id="complaintsContainer" class="p-2 bg-yellow-100 rounded-md mt-2 ${refNo ? '' : 'hidden'}">
+              <p id="complaintMessage" class="text-sm">${refNo ? `(${refNo}) ${complaints[refNo]}` : ''}</p>
+            </div>
+            <select id="complaintSelect" class="mt-2 w-full p-2 border rounded-md">
+              <option value="">-- Select Complaint Ref No. --</option>
+              ${Object.keys(complaints).map(key => `<option value="${key}" ${key === refNo ? 'selected' : ''}>${key}</option>`).join('')}
+            </select>
+            <button id="viewComplaintBtn" class="btn mt-2 bg-gray-200 hover:bg-gray-300 w-full">View Complaint</button>
+          </div>
+          <div class="card p-4 rounded-xl shadow-md">
+            <h3 class="text-lg font-semibold">AI Chat Support</h3>
+            <div id="chatboxContainer" class="border border-gray-300 p-2 rounded-md h-48 overflow-y-auto mb-2"></div>
+            <div class="flex gap-2">
+              <input id="chatInput" type="text" placeholder="Type your question..." class="flex-1 p-2 border rounded-md">
+              <button id="chatSendBtn" class="btn bg-blue-500 text-white border-blue-500 hover:bg-blue-600">Send</button>
+            </div>
+          </div>
+        </div>
+      `;
+    },
+    Settings: () => `
+      <h1 class="text-3xl font-bold mb-4">Settings</h1>
+      <h2 class="text-xl font-semibold mt-6 mb-2">Account Center</h2>
+      <button class="btn w-full text-left bg-gray-200 hover:bg-gray-300 mb-2" onclick="openModal('messageModal', 'Delete Account', 'Are you sure you want to delete your account? This action cannot be undone.', true, () => deleteAccount())">Delete Account</button>
+      <h2 class="text-xl font-semibold mt-6 mb-2">Community Standard</h2>
+      <button class="btn w-full text-left bg-gray-200 hover:bg-gray-300 mb-2" onclick="showMessage('Terms of Service', 'By using this system, you agree to follow all applicable rules and guidelines. The system ensures data privacy, fair use, and accountability. Misuse or unauthorized access may result in account termination.', false)">Terms of Service</button>
+      <button class="btn w-full text-left bg-gray-200 hover:bg-gray-300 mb-2" onclick="showMessage('Report a Problem', 'Describe your issue in the chatbox on the reports page. Thank you!', false)">Report a Problem</button>
+    `
+  };
+
+  function updateUI(pageName) {
+    if (document.getElementById("contentArea").innerHTML !== pages[pageName]()) {
+      contentArea.innerHTML = pages[pageName]();
+    }
+    attachEventListeners(pageName);
+  }
+
+  function renderPage(page, refNo = null) {
+    contentArea.innerHTML = pages[page](refNo);
+    attachEventListeners(page, refNo);
+  }
+
+  function attachEventListeners(page, refNo = null) {
+    if (page === "dashboard") {
+      initDashboard();
+      document.querySelectorAll('#taskList input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', async (e) => {
+          const taskId = e.target.dataset.id;
+          const completed = e.target.checked;
+          const taskRef = doc(db, getCollectionPath("tasks"), taskId);
+          try {
+            await setDoc(taskRef, { completed }, { merge: true });
+          } catch (e) {
+            console.error("Error updating task status: ", e);
+            showMessage("Error", "Could not update task status.", true);
+          }
+        });
+      });
+    }
+    if (page === "Vendor") makeTableSearchable("vendorTable", "vendorSearch");
+    if (page === "Supply") {
+      makeTableSearchable("supplyTable", "supplySearch");
+      attachRefLinks();
+    }
+    if (page === "Commodity") initCommodity();
+    if (page === "Reports") initReports(refNo);
+  }
+
+  
+  const messageModal = document.getElementById('messageModal');
+  const messageTitle = document.getElementById('messageTitle');
+  const messageContent = document.getElementById('messageContent');
+  const messageOkBtn = document.getElementById('messageOkBtn');
+  const messageCancelBtn = document.getElementById('messageCancelBtn');
+
+  function showMessage(title, message, isConfirm, onConfirm) {
+    messageTitle.textContent = title;
+    messageContent.textContent = message;
+    messageOkBtn.style.display = 'inline-block';
+    messageCancelBtn.style.display = isConfirm ? 'inline-block' : 'none';
+    messageModal.style.display = 'flex';
+
+    messageOkBtn.onclick = () => {
+      if (!isConfirm && onConfirm) onConfirm();
+      messageModal.style.display = 'none';
+    };
+    messageCancelBtn.onclick = () => {
+      messageModal.style.display = 'none';
+    };
+    if (isConfirm && onConfirm) {
+      messageOkBtn.onclick = () => {
+        onConfirm();
+        messageModal.style.display = 'none';
+      };
+    }
+  }
+
+  function deleteAccount() {
+    showMessage("Success", "Your account has been deleted (demo only).", false, () => {
+      window.location.href = 'main.html';
+    });
+  }
+
+  function attachRefLinks() {
+    document.querySelectorAll(".ref-link").forEach(link => {
+      link.onclick = (e) => {
+        e.preventDefault();
+        const ref = link.dataset.ref;
+        renderPage("Reports", ref);
+      };
+    });
+  }
+
+  function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
+  function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+  function closeDataModal() { closeModal("dataModal"); }
+
+  document.querySelectorAll(".nav-item").forEach(link => {
+    if (!link.classList.contains("logout-btn")) {
+      link.onclick = (e) => {
+        e.preventDefault();
+        document.querySelectorAll(".nav-item").forEach(l => l.classList.remove("active"));
+        link.classList.add("active");
+        renderPage(link.dataset.page);
+      };
+    }
+  });
+
+  document.getElementById("menuBtn").onclick = () => document.getElementById("sidebar").classList.toggle("open");
+  document.getElementById("newBtn").onclick = () => {
+    document.getElementById("vendorModal").style.display = "flex";
+    document.getElementById("modalTitle").textContent = "New Vendor Engagement";
+    document.getElementById("businessNameInput").value = "";
+    document.getElementById("ownerInput").value = "";
+    document.getElementById("valueInput").value = "";
+    document.getElementById("dueDateInput").value = "";
+  };
+  
+  
+  document.getElementById("saveVendorBtn").onclick = async () => {
+    const businessName = document.getElementById("businessNameInput").value;
+    const status = document.getElementById("stageInput").value;
+    const owner = document.getElementById("ownerInput").value;
+    const recordsOfPayment = document.getElementById("valueInput").value;
+    const dueDate = document.getElementById("dueDateInput").value;
+    if (!businessName || !owner) {
+      showMessage("Error", "Business name and owner are required.", true);
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, getCollectionPath("vendorEngagements")), {
+        businessName, status, owner, recordsOfPayment, dueDate, rating: 5
+      });
+      showMessage("Success", "Vendor engagement saved successfully!", false);
+      closeModal('vendorModal');
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      showMessage("Error", "Failed to save data. Please try again.", true);
+    }
+  };
+
+  
+  function makeTableSearchable(tableId, searchId) {
+    const table = document.getElementById(tableId);
+    const search = document.getElementById(searchId);
+    if (search && table) {
+      search.oninput = () => {
+        const val = search.value.toLowerCase();
+        Array.from(table.tBodies[0].rows).forEach(r => {
+          r.style.display = r.innerText.toLowerCase().includes(val) ? "" : "none";
+        });
+      };
+    }
+  }
+
+
+  function initDashboard() {
+    const ctx = document.getElementById('pipelineChart');
+    if (ctx) {
+      if (pipelineChart) pipelineChart.destroy();
+      const labels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"];
+      const data = {
+        labels: labels,
+        datasets: [{
+          label: 'Incoming Supplies',
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          borderColor: 'rgb(54, 162, 235)',
+          data: [120, 150, 130, 180, 160, 200],
+        }]
+      };
+      pipelineChart = new Chart(ctx, { type: 'bar', data: data });
+    }
+    
+  
+    const taskList = document.getElementById('taskList');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    if (addTaskBtn) {
+      addTaskBtn.onclick = async () => {
+        const newTask = prompt("Enter a new task:");
+        if (newTask) {
+          try {
+            await addDoc(collection(db, getCollectionPath("tasks")), {
+              task: newTask,
+              completed: false,
+              createdAt: new Date()
+            });
+          } catch (e) {
+            console.error("Error adding new task: ", e);
+            showMessage("Error", "Could not add task.", true);
+          }
+        }
+      };
+    }
+  }
+
+  function initCommodity() {
+    const ctx = document.getElementById('pieChart');
+    if (!ctx) return;
+    if (pieChart) pieChart.destroy();
+
+    const getPieData = () => {
+      const statuses = data.commodities.map(c => c.status);
+      let counts = { High: 0, Low: 0, Stable: 0 };
+      statuses.forEach(status => { if (counts[status] !== undefined) counts[status]++; });
+      return {
+        labels: ['High', 'Low', 'Stable'],
+        datasets: [{
+          data: [counts.High, counts.Low, counts.Stable],
+          backgroundColor: ['#ff4d4d', '#9fff80', '#ffd966']
+        }]
+      };
+    };
+    pieChart = new Chart(ctx, {
+      type: 'pie',
+      data: getPieData(),
+      options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+  }
+
+  function openDataModal(businessName) {
+    document.getElementById('lineChartTitle').innerText = businessName + ' - Past 6 Months';
+    document.getElementById('dataModal').style.display = 'flex';
+    const ctxLine = document.getElementById('lineChart');
+    if (lineChart) lineChart.destroy();
+
+    const commodity = data.commodities.find(c => c.businessName === businessName);
+    const prev = commodity ? parseFloat(commodity.previousPrice) || 0 : 0;
+    const curr = commodity ? parseFloat(commodity.currentPrice) || 0 : 0;
+    const exampleLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+    const exampleData = [prev, prev + ((curr - prev) / 5), prev + ((curr - prev) / 3), (prev + curr) / 2, curr - ((curr - prev) / 5), curr];
+
+    lineChart = new Chart(ctxLine, {
+      type: "line",
+      data: {
+        labels: exampleLabels,
+        datasets: [{
+          label: businessName + " Prices",
+          data: exampleData,
+          borderColor: "black",
+          backgroundColor: "rgba(0,0,0,0.1)",
+          fill: false,
+          tension: 0.2
+        }]
       }
     });
   }
-}
 
 
-function toggleComplaintForm(){
-  const form=document.getElementById("complaintForm");
-  form.style.display = form.style.display==="flex" ? "none" : "flex";
-}
+  function initReports(refNo) {
+    const ctx = document.getElementById("vendorChart");
+    if (ctx) {
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Takoyaki", "Meat Shop", "Catering", "Rental"],
+          datasets: [{ label: "Performance", data: [87, 65, 72, 90], backgroundColor: "#0a53c1" }]
+        }
+      });
+    }
 
-function submitComplaint(){
-  let text=document.getElementById("complaintText").value.trim();
-  if(!text){alert("Please enter a complaint");return;}
-  let complaints=JSON.parse(localStorage.getItem("complaints"))||[];
-  complaints.push(text);
-  localStorage.setItem("complaints",JSON.stringify(complaints));
-  document.getElementById("complaintText").value="";
-  toggleComplaintForm();
-  loadComplaints();
-}
-
-function loadComplaints(){
-  let complaints=JSON.parse(localStorage.getItem("complaints"))||[];
-  let list=document.getElementById("reportComplaints");
-  if(!list) return;
-  list.innerHTML="";
-  if(complaints.length===0){
-    list.innerHTML="<li>No complaints yet</li>";
-  } else {
-    complaints.forEach((c,i)=>{
-      let li=document.createElement("li");
-      li.textContent=`${i+1}. ${c}`;
-      list.appendChild(li);
-    });
-  }
-}
-
-
-document.querySelectorAll(".nav-item").forEach(link=>{
-  if(!link.classList.contains("logout-btn")){
-    link.onclick=(e)=>{
-      e.preventDefault();
-      document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));
-      link.classList.add("active");
-      renderPage(link.dataset.page);
+    const complaints = {
+      "RPT-001": "Vendor delayed chicken delivery",
+      "RPT-002": "Incomplete Takoyaki supplies",
+      "RPT-003": "Catering delivery arrived late",
+      "RPT-004": "Rental items missing on arrival"
     };
+
+    const container = document.getElementById("complaintsContainer");
+    const message = document.getElementById("complaintMessage");
+    const select = document.getElementById("complaintSelect");
+    const viewBtn = document.getElementById("viewComplaintBtn");
+    const chatBox = document.getElementById("chatboxContainer");
+    const chatInput = document.getElementById("chatInput");
+    const chatSendBtn = document.getElementById("chatSendBtn");
+
+    if (viewBtn) {
+      viewBtn.onclick = () => {
+        const ref = select.value;
+        if (ref && complaints[ref]) {
+          container.classList.remove('hidden');
+          message.textContent = `(${ref}) ${complaints[ref]}`;
+        } else {
+          showMessage("Error", "Please select a complaint Ref No. first.", true);
+        }
+      };
+    }
+
+    if (refNo && complaints[refNo]) {
+      container.classList.remove('hidden');
+      message.textContent = `(${refNo}) ${complaints[refNo]}`;
+      select.value = refNo;
+    }
+
+    function addMessage(sender, text, isUser) {
+      const div = document.createElement("div");
+      div.style.margin = "4px 0";
+      div.className = isUser ? "text-right" : "text-left";
+      div.innerHTML = `<span class="inline-block p-2 rounded-lg ${isUser ? 'bg-blue-500 text-white' : 'bg-gray-200'}">${text}</span>`;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function getGeminiResponse(userQuery) {
+      const payload = {
+        contents: [{ parts: [{ text: userQuery }] }],
+        tools: [{ "google_search": {} }],
+        systemInstruction: {
+          parts: [{ text: "You are an AI assistant for a local government unit's supply chain and vendor management system. Provide concise and helpful answers based on the provided dashboard data. Do not make up information." }]
+        }
+      };
+      
+      const apiKey = "";
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+        return text || "I'm sorry, I couldn't process that request.";
+      } catch (error) {
+        console.error("Gemini API error:", error);
+        return "Sorry, I am having trouble connecting to the AI. Please try again later.";
+      }
+    }
+
+    if (chatSendBtn) {
+      chatSendBtn.onclick = async () => {
+        const text = chatInput.value.trim();
+        if (text) {
+          addMessage("You", text, true);
+          chatInput.value = "";
+          chatInput.disabled = true;
+          chatSendBtn.disabled = true;
+
+          const botResponse = await getGeminiResponse(text);
+          addMessage("Bot", botResponse, false);
+
+          chatInput.disabled = false;
+          chatSendBtn.disabled = false;
+          chatInput.focus();
+        }
+      };
+    }
   }
-});
 
-document.getElementById("backBtn").onclick=()=>window.history.back();
-document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
 
-renderPage("dashboard");
+  initFirebase();
 </script>
 </body>
 </html>
