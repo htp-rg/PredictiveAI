@@ -165,7 +165,7 @@ const pages = {
     </table>
   `,
 
- Commodity: `
+Commodity: `
   <h1>COMMODITY AND PRICE MONITORING</h1>
   <table id="commodityTable">
     <thead>
@@ -206,12 +206,11 @@ const pages = {
 
   <div style="display:flex;gap:2rem;margin-top:1rem;align-items:flex-start;">
     
-   
     <div style="flex:0 0 auto;">
-      <canvas id="pieChart" style="width:300px;height:300px;"></canvas>
+      <canvas id="pieChart" width="300" height="300"></canvas>
     </div>
 
-
+   
     <div class="card-container" style="display:flex;gap:1rem;flex-wrap:wrap;flex:1;">
       <div class="card" onclick="openDataModal('Takoyaki store')">
         Takoyaki store<br>
@@ -225,19 +224,22 @@ const pages = {
         Tables and chairs<br>
         <button class="view-btn">View Data</button>
       </div>
-      <div class="card" onclick="openDataModal('Atan\\'s Meat Shop')">
+      <div class="card" onclick="openDataModal('Atan\'s Meat Shop')">
         Atan's Meat Shop<br>
         <button class="view-btn">View Data</button>
       </div>
     </div>
   </div>
- 
+
+  
   <div id="dataModal" class="overlay" style="display:none;justify-content:center;align-items:center;">
     <div class="modal" style="background:#fff;padding:1rem;border-radius:8px;max-width:600px;width:90%;">
       <span class="close" onclick="closeDataModal()" style="float:right;cursor:pointer;font-size:20px;">&times;</span>
       <h3 id="modalTitle"></h3>
       <canvas id="lineChart" width="500" height="250"></canvas>
-      `,
+    </div>
+  </div>
+ `,
   
   Supply: `
   <h1>Supply Monitoring</h1>
@@ -324,6 +326,9 @@ function attachRefLinks(){
   });
 }
 
+let pieChart = null;
+let lineChart = null;
+
 function initCommodity(){
   const ctx = document.getElementById('pieChart');
   if(!ctx) return;
@@ -331,15 +336,10 @@ function initCommodity(){
   pieChart = new Chart(ctx, {
     type: 'pie',
     data: getPieData(),
-    options: {
-      responsive: false,
-      plugins: {
-        legend: { position: 'bottom' }
-      }
-    }
+    options: { responsive: false, plugins: { legend: { position: 'bottom' } } }
   });
 
- 
+
   document.querySelectorAll('#commodityTable td').forEach(cell => {
     cell.addEventListener('input', () => {
       pieChart.data = getPieData();
@@ -355,13 +355,9 @@ function getPieData() {
   statuses.forEach(status => { if (counts[status] !== undefined) counts[status]++; });
   return {
     labels: ['High', 'Low', 'Stable'],
-    datasets: [{
-      data: [counts.High, counts.Low, counts.Stable],
-      backgroundColor: ['#9fff80', '#ff4d4d', '#ffd966']
-    }]
+    datasets: [{ data: [counts.High, counts.Low, counts.Stable], backgroundColor: ['#ff4d4d','#9fff80','#ffd966'] }]
   };
 }
-
 
 function openDataModal(businessName) {
   document.getElementById('modalTitle').innerText = businessName + ' - Past 6 Months';
@@ -370,56 +366,22 @@ function openDataModal(businessName) {
   const ctxLine = document.getElementById('lineChart').getContext('2d');
   if (lineChart) lineChart.destroy();
 
-  
-  let row = [...document.querySelectorAll('#commodityTable tbody tr')]
-              .find(r => r.cells[0].innerText.trim() === businessName);
-
+  let row = [...document.querySelectorAll('#commodityTable tbody tr')].find(r => r.cells[0].innerText.trim() === businessName);
   let prev = row ? parseFloat(row.cells[1].innerText) || 0 : 0;
   let curr = row ? parseFloat(row.cells[2].innerText) || 0 : 0;
 
-  
   const exampleLabels = ["Jan","Feb","Mar","Apr","May","Jun"];
   const exampleData = [prev, prev+((curr-prev)/5), prev+((curr-prev)/3), (prev+curr)/2, curr-((curr-prev)/5), curr];
 
   lineChart = new Chart(ctxLine, {
     type: "line",
-    data: {
-      labels: exampleLabels,
-      datasets: [{
-        label: businessName + " Prices",
-        data: exampleData,
-        borderColor: "black",
-        backgroundColor: "rgba(0,0,0,0.1)",
-        fill: false,
-        tension: 0.2
-      }]
-    }
+    data: { labels: exampleLabels, datasets: [{ label: businessName + " Prices", data: exampleData, borderColor: "black", backgroundColor: "rgba(0,0,0,0.1)", fill: false, tension: 0.2 }] }
   });
-}
-
-  function initCommodityPipeline(){
-  const ctx = document.getElementById("commodityPipelineChart");
-  if(ctx){
-    new Chart(ctx,{
-      type:"line",
-      data:{
-        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
-        datasets:[{
-          label:"Commodity Flow",
-          data:[10,15,8,12,9,14],
-          borderColor:"#0a53c1",
-          fill:false,
-          tension:0.3
-        }]
-      }
-    });
-  }
 }
 
 function closeDataModal() {
   document.getElementById("dataModal").style.display = "none";
 }
-
   
 function initReports(refNo){
   const ctx=document.getElementById("vendorChart");
@@ -510,10 +472,7 @@ function renderPage(page, refNo=null){
   if(page==="Vendor") makeTableEditable("vendorTable","vendorSearch");
   if(page==="Supply"){ makeTableEditable("supplyTable","supplySearch"); attachRefLinks(); }
   if(page==="Reports") initReports(refNo);
-  if(page==="Commodity") { 
-  initCommodity();   
-  initCommodityPipeline(); 
-}
+  if(page==="Commodity") {initCommodity(); 
 }
 
 document.querySelectorAll(".nav-item").forEach(link=>{
