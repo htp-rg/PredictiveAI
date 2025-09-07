@@ -123,7 +123,7 @@
   </div>
 </div>
 
-<!-- Data Modal for Commodity Prices -->
+
 <div id="dataModal" class="overlay">
   <div class="modal max-w-lg w-full">
     <span class="close float-right cursor-pointer text-xl" onclick="closeDataModal()">&times;</span>
@@ -133,7 +133,7 @@
 </div>
 
 <script type="module">
-  // Firebase SDK imports
+
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
   import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
   import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -181,7 +181,7 @@
   };
 
   const getCollectionPath = (collectionName) => {
-    // Public data for shared apps, assuming this is a shared dashboard
+   
     return `artifacts/${appId}/public/data/${collectionName}`;
   };
 
@@ -215,152 +215,262 @@
 
  
   const pages = {
-    dashboard: () => {
-      const vendorEngagementsHtml = data.vendors.map(v => `
-        <tr>
-          <td>${v.businessName}</td>
-          <td>${v.status}</td>
-          <td>${v.owner}</td>
-          <td>${v.dueDate || ''}</td>
-          <td>${v.recordsOfPayment}</td>
-          <td data-stars="${v.rating}"></td>
-        </tr>
-      `).join('');
+  dashboard: () => {
+    // dynamic vendors
+    const vendorEngagementsHtml = data.vendors.map(v => `
+      <tr>
+        <td>${v.businessName}</td>
+        <td>${v.status}</td>
+        <td>${v.owner}</td>
+        <td>${v.dueDate || ''}</td>
+        <td>${v.recordsOfPayment}</td>
+        <td data-stars="${v.rating}"></td>
+      </tr>
+    `).join('');
 
-      const tasksHtml = data.tasks.map(t => `
-        <li>
-          <input type="checkbox" data-id="${t.id}" ${t.completed ? 'checked' : ''} />
-          <span>${t.task}</span>
-          <span class="edit-icon cursor-pointer ml-1" data-id="${t.id}">✏️</span>
-          <span class="delete-icon cursor-pointer ml-1" data-id="${t.id}">🗑️</span>
-        </li>
-      `).join('');
+    const staticVendorsHtml = `
+      <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>3,785</td><td data-stars="5"></td></tr>
+      <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>2,345</td><td data-stars="5"></td></tr>
+      <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>5,199</td><td data-stars="5"></td></tr>
+      <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>1,870</td><td data-stars="5"></td></tr>
+    `;
 
-      return `
-        <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-          <div class="card p-4 rounded-xl shadow-md"><h3>Price Variance / Cost Savings</h3><p>₱12,500</p><small class="text-green-500">+8% vs last month</small></div>
-          <div class="card p-4 rounded-xl shadow-md"><h3>On-Time Delivery Rate</h3><p>92%</p><small class="text-green-500">+3 pts</small></div>
-          <div class="card p-4 rounded-xl shadow-md"><h3>Defect Rate / Compliance Score</h3><p>2%</p><small class="text-red-500">-1 pt</small></div>
-          <div class="card p-4 rounded-xl shadow-md"><h3>Vendor Performance Score</h3><p>87/100</p><small class="text-gray-500">Stable</small></div>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-          <div class="card p-4 rounded-xl shadow-md">
-            <h3 class="text-lg font-semibold">Supply Chain Flow (Last 6 Weeks)</h3>
-            <canvas id="pipelineChart" height="150"></canvas>
-          </div>
-          <div class="card p-4 rounded-xl shadow-md">
-            <h3 class="text-lg font-semibold">Tasks</h3>
-            <ul id="taskList" class="list-none p-0 m-0 space-y-2">
-              ${tasksHtml}
-            </ul>
-            <button id="addTaskBtn" class="btn mt-2 bg-gray-200 hover:bg-gray-300">➕ Add Task</button>
-          </div>
+    const tasksHtml = data.tasks.map(t => `
+      <li>
+        <input type="checkbox" data-id="${t.id}" ${t.completed ? 'checked' : ''} />
+        <span>${t.task}</span>
+        <span class="edit-icon cursor-pointer ml-1" data-id="${t.id}">✏️</span>
+        <span class="delete-icon cursor-pointer ml-1" data-id="${t.id}">🗑️</span>
+      </li>
+    `).join('');
+
+    return `
+      <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div class="card p-4 rounded-xl shadow-md"><h3>Price Variance / Cost Savings</h3><p>₱12,500</p><small class="text-green-500">+8% vs last month</small></div>
+        <div class="card p-4 rounded-xl shadow-md"><h3>On-Time Delivery Rate</h3><p>92%</p><small class="text-green-500">+3 pts</small></div>
+        <div class="card p-4 rounded-xl shadow-md"><h3>Defect Rate / Compliance Score</h3><p>2%</p><small class="text-red-500">-1 pt</small></div>
+        <div class="card p-4 rounded-xl shadow-md"><h3>Vendor Performance Score</h3><p>87/100</p><small class="text-gray-500">Stable</small></div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+        <div class="card p-4 rounded-xl shadow-md">
+          <h3 class="text-lg font-semibold">Supply Chain Flow (Last 6 Weeks)</h3>
+          <canvas id="pipelineChart" height="150"></canvas>
         </div>
         <div class="card p-4 rounded-xl shadow-md">
-          <h3 class="text-lg font-semibold">Recent Vendor Engagements</h3>
-          <table id="vendorEngagementsTable" class="w-full">
-            <thead>
-              <tr>
-                <th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${vendorEngagementsHtml}
-            </tbody>
-          </table>
+          <h3 class="text-lg font-semibold">Tasks</h3>
+          <ul id="taskList" class="list-none p-0 m-0 space-y-2">
+            ${tasksHtml}
+          </ul>
+          <button id="addTaskBtn" class="btn mt-2 bg-gray-200 hover:bg-gray-300">➕ Add Task</button>
         </div>
-      `;
-    },
-    Vendor: () => {
-      const vendorTableHtml = data.vendors.map(v => `
-        <tr data-id="${v.id}">
-          <td>${v.businessName}</td>
-          <td>${v.status}</td>
-          <td>${v.owner}</td>
-          <td>${v.dueDate || ''}</td>
-          <td>${v.recordsOfPayment}</td>
-          <td data-stars="${v.rating}"></td>
-        </tr>
-      `).join('');
-      return `
-        <h1 class="text-3xl font-bold mb-4">Vendor Management</h1>
-        <input type="text" id="vendorSearch" placeholder="Search Vendor…" class="mb-4 w-full p-2 border rounded-md">
-        <table id="vendorTable" class="w-full">
-          <thead>
-            <tr><th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th></tr>
-          </thead>
-          <tbody>
-            ${vendorTableHtml}
-          </tbody>
-        </table>
-      `;
-    },
-    Commodity: () => {
-      const commodityTableHtml = data.commodities.map(c => `
-        <tr data-id="${c.id}">
-          <td class="px-2 py-1">${c.businessName}</td>
-          <td class="px-2 py-1">${c.previousPrice}</td>
-          <td class="px-2 py-1">${c.currentPrice}</td>
-          <td class="px-2 py-1">${c.status}</td>
-        </tr>
-      `).join('');
-      return `
-        <h1 class="text-3xl font-bold mb-4">Commodity and Price Monitoring</h1>
-        <table id="commodityTable" class="w-full mb-4">
+      </div>
+
+      <div class="card p-4 rounded-xl shadow-md">
+        <h3 class="text-lg font-semibold">Recent Vendor Engagements</h3>
+        <table id="vendorEngagementsTable" class="w-full">
           <thead>
             <tr>
-              <th>Type of Business</th>
-              <th>Previous Price</th>
-              <th>Current Price</th>
+              <th>Business Name</th>
               <th>Status</th>
+              <th>Owner</th>
+              <th>Due Date</th>
+              <th>Records of Payment</th>
+              <th>Rating</th>
             </tr>
           </thead>
           <tbody>
-            ${commodityTableHtml}
+            ${staticVendorsHtml}
+            ${vendorEngagementsHtml}
           </tbody>
         </table>
-        <div class="flex flex-col md:flex-row gap-8 items-start">
-          <div class="w-full md:w-1/3">
-            <canvas id="pieChart" class="w-full h-auto"></canvas>
-          </div>
-          <div class="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
-            ${data.commodities.map(c => `
-              <div class="card p-4 rounded-xl shadow-md cursor-pointer" onclick="openDataModal('${c.businessName}')">
-                ${c.businessName}<br>
-                <button class="view-btn">View Data</button>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
-    },
-    Supply: () => {
-      const supplyTableHtml = data.supply.map(s => `
-        <tr data-id="${s.id}">
-          <td><a href="#" class="ref-link" data-ref="${s.refNo}">${s.refNo}</a></td>
-          <td>${s.businessName}</td><td>${s.category}</td><td>${s.supplier}</td>
-          <td>${s.pickup}</td><td>${s.dropoff}</td><td>${s.deliveryTime}</td><td>${s.report}</td>
-          <td>${s.contactNo}</td><td>${s.itemValue}</td><td>${s.quality}</td><td>${s.status}</td>
+      </div>
+    `;
+  }
+};
+ Vendor: () => {
+  const vendorTableHtml = data.vendors.map(v => `
+    <tr data-id="${v.id}">
+      <td>${v.businessName}</td>
+      <td>${v.status}</td>
+      <td>${v.owner}</td>
+      <td>${v.dueDate || ''}</td>
+      <td>${v.recordsOfPayment}</td>
+      <td data-stars="${v.rating}"></td>
+    </tr>
+  `).join('');
+
+  return `
+    <h1 class="text-3xl font-bold mb-4">Vendor Management</h1>
+    <input type="text" id="vendorSearch" placeholder="Search Vendor…" class="mb-4 w-full p-2 border rounded-md">
+    <table id="vendorTable" class="w-full">
+      <thead>
+        <tr>
+          <th>Business Name</th>
+          <th>Status</th>
+          <th>Owner</th>
+          <th>Due Date</th>
+          <th>Records of Payment</th>
+          <th>Rating</th>
         </tr>
-      `).join('');
-      return `
-        <h1 class="text-3xl font-bold mb-4">Supply Monitoring</h1>
-        <input type="text" id="supplySearch" placeholder="Search Supply…" class="mb-4 w-full p-2 border rounded-md">
-        <table id="supplyTable" class="w-full">
-          <thead>
-            <tr>
-              <th>Ref No.</th><th>Business Name</th><th>Business Category</th><th>Supplier</th>
-              <th>Pick-up</th><th>Drop-off</th><th>Delivery Time</th><th>Report</th>
-              <th>Contact No.</th><th>Item Value</th><th>Quality</th><th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${supplyTableHtml}
-          </tbody>
-        </table>
+      </thead>
+      <tbody>
+        ${vendorTableHtml}
+      </tbody>
+    </table>
       `;
     },
+     Commodity: () => {
+  const commodityTableHtml = data.commodities.map(c => `
+    <tr data-id="${c.id}">
+      <td contenteditable="true" class="px-2 py-1">${c.businessName}</td>
+      <td contenteditable="true" class="px-2 py-1">${c.previousPrice}</td>
+      <td contenteditable="true" class="px-2 py-1">${c.currentPrice}</td>
+      <td contenteditable="true" class="px-2 py-1">${c.status}</td>
+    </tr>
+  `).join('');
+
+  return `
+    <h1 class="text-3xl font-bold mb-4">Commodity and Price Monitoring</h1>
+    <table id="commodityTable" class="w-full mb-4">
+      <thead>
+        <tr>
+          <th>Type of Business</th>
+          <th>Previous Price</th>
+          <th>Current Price</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${commodityTableHtml}
+      </tbody>
+    </table>
+
+    <div class="flex flex-col md:flex-row gap-8 items-start">
+      <div class="w-full md:w-1/3">
+        <canvas id="pieChart" width="300" height="300"></canvas>
+      </div>
+
+      <div class="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+        ${data.commodities.map(c => `
+          <div class="card p-4 rounded-xl shadow-md cursor-pointer" onclick="openDataModal('${c.businessName}')">
+            ${c.businessName}<br>
+            <button class="view-btn bg-black text-white px-3 py-1 rounded-md mt-2">View Data</button>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div id="dataModal" class="overlay fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center">
+      <div class="modal bg-white p-4 rounded-xl max-w-lg w-11/12">
+        <span class="close cursor-pointer float-right text-xl" onclick="closeDataModal()">&times;</span>
+        <h3 id="modalTitle" class="mb-2 text-lg font-semibold"></h3>
+        <canvas id="lineChart" width="500" height="250"></canvas>
+      </div>
+    </div>
+  `;
+},
+    Supply: () => {
+  const data = {
+    supply: [
+      {
+        id: 1,
+        refNo: "RPT-001",
+        businessName: "Daisy Poultry",
+        category: "MEAT SHOP",
+        supplier: "James",
+        pickup: "Quezon City",
+        dropoff: "Muñoz",
+        deliveryTime: "12:00 am - 2:00 pm",
+        report: "Filed",
+        contactNo: "0970-567-1136",
+        itemValue: "₱4,000.00",
+        quality: "★★★★★",
+        status: "⛔ Delayed"
+      },
+      {
+        id: 2,
+        refNo: "RPT-002",
+        businessName: "Takoyaki Supplier",
+        category: "SUPPLIES SHOP",
+        supplier: "Maria",
+        pickup: "Makati",
+        dropoff: "Muñoz",
+        deliveryTime: "7:00 am - 9:00 am",
+        report: "None",
+        contactNo: "0917-888-9999",
+        itemValue: "₱2,500.00",
+        quality: "★★★★★",
+        status: "✅ Completed"
+      },
+      {
+        id: 3,
+        refNo: "RPT-003",
+        businessName: "Catering Supplies",
+        category: "CATERING",
+        supplier: "Sofia",
+        pickup: "Taguig",
+        dropoff: "Muñoz",
+        deliveryTime: "10:00 am - 12:00 pm",
+        report: "None",
+        contactNo: "0920-555-4444",
+        itemValue: "₱3,200.00",
+        quality: "★★★★★",
+        status: "✏ In progress"
+      },
+      {
+        id: 4,
+        refNo: "RPT-004",
+        businessName: "Party Rental",
+        category: "RENTAL SHOP",
+        supplier: "Ramon",
+        pickup: "Manila",
+        dropoff: "Muñoz",
+        deliveryTime: "3:00 am - 5:00 am",
+        report: "None",
+        contactNo: "0998-222-3333",
+        itemValue: "₱5,000.00",
+        quality: "★★★★★",
+        status: "✅ Completed"
+      }
+    ]
+  };
+
+  const supplyTableHtml = data.supply.map(s => `
+    <tr data-id="${s.id}">
+      <td><a href="#" class="ref-link" data-ref="${s.refNo}">${s.refNo}</a></td>
+      <td>${s.businessName}</td>
+      <td>${s.category}</td>
+      <td>${s.supplier}</td>
+      <td>${s.pickup}</td>
+      <td>${s.dropoff}</td>
+      <td>${s.deliveryTime}</td>
+      <td>${s.report}</td>
+      <td>${s.contactNo}</td>
+      <td>${s.itemValue}</td>
+      <td>${s.quality}</td>
+      <td>${s.status}</td>
+    </tr>
+  `).join('');
+
+  return `
+    <h1 class="text-3xl font-bold mb-4">Supply Monitoring</h1>
+    <input type="text" id="supplySearch" placeholder="Search Supply…" class="mb-4 w-full p-2 border rounded-md">
+    <table id="supplyTable" class="w-full">
+      <thead>
+        <tr>
+          <th>Ref No.</th><th>Business Name</th><th>Business Category</th><th>Supplier</th>
+          <th>Pick-up</th><th>Drop-off</th><th>Delivery Time</th><th>Report</th>
+          <th>Contact No.</th><th>Item Value</th><th>Quality</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${supplyTableHtml}
+      </tbody>
+    </table>
+  `;
     Reports: (refNo) => {
       const complaints = {
         "RPT-001": "Vendor delayed chicken delivery",
