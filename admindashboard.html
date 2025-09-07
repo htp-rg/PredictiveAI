@@ -424,9 +424,6 @@ Inspection: `
     </div>
   `
 };
-const inspectionTable = document.getElementById('inspectionTable');
-const inspectionSearch = document.getElementById('inspectionSearch');
-
 inspectionSearch.addEventListener('input', () => {
   const val = inspectionSearch.value.toLowerCase();
   Array.from(inspectionTable.tBodies[0].rows).forEach(row => {
