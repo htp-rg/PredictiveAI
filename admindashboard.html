@@ -312,9 +312,84 @@ Reports: `
   </div>
 `,
   
-  Settings: `<h1>Settings</h1><p>Settings content here...</p>`
-};
+  Settings: `
+   <h1>Settings</h1>
+  <h2>Account Center</h2>
+  <button class="settings-btn" onclick="openModal('personalModal')">Personal Details</button>
+  <button class="settings-btn" onclick="openModal('passwordModal')">Password & Security</button>
+  <button class="settings-btn" onclick="confirmDelete()">Delete Account</button>
 
+  <h2>Community Standard</h2>
+  <button class="settings-btn" onclick="openModal('termsModal')">Terms of Service</button>
+  <button class="settings-btn" onclick="openModal('reportModal')">Report a Problem</button>
+
+  <!-- Personal Details Modal -->
+  <div class="overlay modal" id="personalModal">
+    <div class="modal-content" style="background:#fff;padding:1rem;border-radius:8px;max-width:400px;width:90%;">
+      <span class="close" onclick="closeModal('personalModal')">&times;</span>
+      <h3>Personal Details</h3>
+      <form>
+        <input type="text" placeholder="Username">
+        <input type="text" placeholder="Full Name">
+        <input type="date" placeholder="Birthday">
+        <input type="email" placeholder="Email">
+        <button type="submit">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Password Modal -->
+  <div class="overlay modal" id="passwordModal">
+    <div class="modal-content" style="background:#fff;padding:1rem;border-radius:8px;max-width:400px;width:90%;">
+      <span class="close" onclick="closeModal('passwordModal')">&times;</span>
+      <h3>Password & Security</h3>
+      <form>
+        <input type="password" placeholder="Current Password">
+        <input type="password" placeholder="New Password">
+        <input type="password" placeholder="Confirm New Password">
+        <button type="submit">Change Password</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Terms Modal -->
+  <div class="overlay modal" id="termsModal">
+    <div class="modal-content" style="background:#fff;padding:1rem;border-radius:8px;max-width:500px;width:90%;">
+      <span class="close" onclick="closeModal('termsModal')">&times;</span>
+      <h3>Terms of Service</h3>
+      <p>
+        By using this system, you agree to follow all applicable rules and guidelines. 
+        The system ensures data privacy, fair use, and accountability. 
+        Misuse or unauthorized access may result in account termination.
+      </p>
+    </div>
+  </div>
+
+  <!-- Report Modal -->
+  <div class="overlay modal" id="reportModal">
+    <div class="modal-content" style="background:#fff;padding:1rem;border-radius:8px;max-width:500px;width:90%;">
+      <span class="close" onclick="closeModal('reportModal')">&times;</span>
+      <h3>Report a Problem</h3>
+      <form>
+        <textarea rows="5" placeholder="Describe your issue..." style="width:100%;"></textarea>
+        <button type="submit">Submit Report</button>
+      </form>
+    </div>
+  </div>
+`,
+<script>
+    function openModal(id) {
+  document.getElementById(id).style.display = 'flex';
+}
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+function confirmDelete() {
+  if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+    alert("Your account has been deleted (demo only).");
+  }
+}
+  
 function attachRefLinks(){
   document.querySelectorAll(".ref-link").forEach(link=>{
     link.onclick=(e)=>{
