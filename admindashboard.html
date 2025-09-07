@@ -153,7 +153,7 @@ const pages = {
     </table>
   `,
 
-    Commidity: `
+    Commodity: `
     <h1>COMMODITY AND PRICE MONITORING</h1>
     <table id="commodityTable">
       <thead>
@@ -441,7 +441,7 @@ function renderPage(page, refNo=null){
   if(page==="Vendor") makeTableEditable("vendorTable","vendorSearch");
   if(page==="Supply"){ makeTableEditable("supplyTable","supplySearch"); attachRefLinks(); }
   if(page==="Reports") initReports(refNo);
-  if(page==="Commidity") initCommodity();   
+  if(page==="Commodity") initCommodity();   
 }
 
 document.querySelectorAll(".nav-item").forEach(link=>{
