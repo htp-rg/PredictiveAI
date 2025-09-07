@@ -397,6 +397,24 @@ function openDataModal(businessName) {
   });
 }
 
+  function initCommodityPipeline(){
+  const ctx = document.getElementById("commodityPipelineChart");
+  if(ctx){
+    new Chart(ctx,{
+      type:"line",
+      data:{
+        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+        datasets:[{
+          label:"Commodity Flow",
+          data:[10,15,8,12,9,14],
+          borderColor:"#0a53c1",
+          fill:false,
+          tension:0.3
+        }]
+      }
+    });
+  }
+}
 
 function closeDataModal() {
   document.getElementById("dataModal").style.display = "none";
@@ -492,7 +510,10 @@ function renderPage(page, refNo=null){
   if(page==="Vendor") makeTableEditable("vendorTable","vendorSearch");
   if(page==="Supply"){ makeTableEditable("supplyTable","supplySearch"); attachRefLinks(); }
   if(page==="Reports") initReports(refNo);
-  if(page==="Commodity") initCommodity();   
+  if(page==="Commodity") { 
+  initCommodity();   
+  initCommodityPipeline(); 
+}
 }
 
 document.querySelectorAll(".nav-item").forEach(link=>{
