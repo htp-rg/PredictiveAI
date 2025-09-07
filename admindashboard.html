@@ -623,7 +623,7 @@ function initReports(refNo){
 
 function renderPage(page, refNo=null){
   contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
-  
+
   if(page === "dashboard") initDashboard();
   if(page === "Vendor") makeTableEditable("vendorTable","vendorSearch");
   if(page === "Supply") { 
@@ -633,6 +633,18 @@ function renderPage(page, refNo=null){
   if(page === "Reports") initReports(refNo);
   if(page === "Commodity") { 
     initCommodity(); 
+  }
+  if(page === "Inspection"){
+    const inspectionTable = document.getElementById('inspectionTable');
+    const inspectionSearch = document.getElementById('inspectionSearch');
+    if(inspectionSearch && inspectionTable){
+      inspectionSearch.addEventListener('input', () => {
+        const val = inspectionSearch.value.toLowerCase();
+        Array.from(inspectionTable.tBodies[0].rows).forEach(row => {
+          row.style.display = row.cells[0].innerText.toLowerCase().includes(val) ? '' : 'none';
+        });
+      });
+    }
   }
 }
 
