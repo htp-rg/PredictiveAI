@@ -206,6 +206,7 @@ const pages = {
           <li data-ref="RPT-003">Catering delivery arrived late (Ref: RPT-003)</li>
           <li data-ref="RPT-004">Rental items missing on arrival (Ref: RPT-004)</li>
         </ul>
+        <button id="viewComplaintBtn" class="btn" style="margin-top:.5rem;">View Complaint</button>
       </div>
       <div class="card">
         <h3>AI Chat Support</h3>
@@ -244,6 +245,15 @@ function initReports(refNo){
       li.style.fontWeight=(li.dataset.ref===refNo)?"bold":"normal";
       li.style.background=(li.dataset.ref===refNo)?"#fce8b2":"transparent";
     });
+  }
+  const viewBtn=document.getElementById("viewComplaintBtn");
+  if(viewBtn){
+    viewBtn.onclick=()=>{
+      const ref=prompt("Enter Report Ref No. (e.g., RPT-001):");
+      if(ref){
+        renderPage("Reports", ref.trim().toUpperCase());
+      }
+    };
   }
   const chatBtn=document.getElementById("chatNowBtn");
   if(chatBtn){
