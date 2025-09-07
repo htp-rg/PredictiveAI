@@ -257,10 +257,10 @@ Commodity: `
         Tables and chairs<br>
         <button class="view-btn">View Data</button>
       </div>
-      <div class="card" onclick="openDataModal('Atan's Meat Shop')">
-        Atan's Meat Shop<br>
-        <button class="view-btn">View Data</button>
-      </div>
+     <div class="card" onclick="openDataModal('Atan&apos;s Meat Shop')">
+  Atan's Meat Shop<br>
+  <button class="view-btn">View Data</button>
+</div>
     </div>
   </div>
 
@@ -357,33 +357,60 @@ Reports: `
   <button class="settings-btn" onclick="openForm('terms')">Terms of Service</button>
   <button class="settings-btn" onclick="openForm('report')">Report a Problem</button>
 
+ <div id="settingsModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeForm()">&times;</span>
+    <h3 id="modalTitle"></h3>
 
-  <div id="settingsModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeForm()">&times;</span>
-      <h3 id="modalTitle"></h3>
-      <form id="settingsForm">
-        <input type="text" id="settingsInput" placeholder="Enter info here...">
-        <button type="submit">Save</button>
-      </form>
-   </div>
+    <form id="personalForm" class="settings-form" style="display:none;">
+      <label>Name:</label><input type="text" placeholder="Enter your name"><br>
+      <label>Email:</label><input type="email" placeholder="Enter your email"><br>
+      <label>Phone:</label><input type="text" placeholder="Enter phone number"><br>
+      <button type="submit">Save</button>
+    </form>
+
+    <form id="passwordForm" class="settings-form" style="display:none;">
+      <label>Old Password:</label><input type="password"><br>
+      <label>New Password:</label><input type="password"><br>
+      <label>Confirm New Password:</label><input type="password"><br>
+      <button type="submit">Update</button>
+    </form>
+
+    <form id="deleteForm" class="settings-form" style="display:none;">
+      <p>⚠️ This action cannot be undone. Please type <b>DELETE</b> to confirm.</p>
+      <input type="text" placeholder="Type DELETE">
+      <button type="submit" style="background:red;color:white;">Delete Account</button>
+    </form>
+
+    <div id="termsForm" class="settings-form" style="display:none;">
+      <p><b>📜 Terms of Service:</b><br>
+      By using this system, you agree to comply with LGU 3 Admin policies, data security guidelines, 
+      and vendor management protocols. Any violation may result in account suspension.</p>
+    </div>
+
+   <form id="reportForm" class="settings-form" style="display:none;">
+      <label>Describe the issue:</label>
+      <textarea rows="4" style="width:100%;"></textarea>
+      <button type="submit">Send Report</button>
+    </form>
   </div>
+</div>
   `,
   };
-function openForm(type) {
+  function openForm(type) {
   document.getElementById("settingsModal").style.display = "block";
+  document.querySelectorAll(".settings-form").forEach(f => f.style.display = "none");
+
   let title = "";
-  if(type === "personal") title = "Update Personal Details";
-  if(type === "password") title = "Change Password";
-  if(type === "delete") title = "Delete Account";
-  if(type === "terms") title = "Terms of Service";
-  if(type === "report") title = "Report a Problem";
+  if(type === "personal"){ title = "Update Personal Details"; document.getElementById("personalForm").style.display="block"; }
+  if(type === "password"){ title = "Change Password"; document.getElementById("passwordForm").style.display="block"; }
+  if(type === "delete"){ title = "Delete Account"; document.getElementById("deleteForm").style.display="block"; }
+  if(type === "terms"){ title = "Terms of Service"; document.getElementById("termsForm").style.display="block"; }
+  if(type === "report"){ title = "Report a Problem"; document.getElementById("reportForm").style.display="block"; }
+
   document.getElementById("modalTitle").innerText = title;
 }
 
-function closeForm() {
-  document.getElementById("settingsModal").style.display = "none";
-}
 
 document.addEventListener("submit", function(e){
   if(e.target.id === "settingsForm"){
