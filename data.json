@@ -1,1 +1,72 @@
 
+  "vendors": [
+    {
+      "business": "Takoyaki store",
+      "status": "✅ Completed",
+      "owner": "Gacusan, Aira Jane",
+      "dueDate": "03 Sep 2025",
+      "payment": "₱3,785.00",
+      "rating": 5
+    },
+    {
+      "business": "Sound equipment",
+      "status": "✏ In progress",
+      "owner": "Furigay, Neri Jane",
+      "dueDate": "10 Sep 2025",
+      "payment": "₱2,345.00",
+      "rating": 5
+    },
+    {
+      "business": "Tables and chairs",
+      "status": "⏳ Not started",
+      "owner": "Pena, Rona Mae",
+      "dueDate": "04 Nov 2025",
+      "payment": "₱5,199.00",
+      "rating": 5
+    },
+    {
+      "business": "Atan's Meat Shop",
+      "status": "⛔ Blocked",
+      "owner": "Dacoco, Jonathan",
+      "dueDate": "12 Mar 2025",
+      "payment": "₱1,870.00",
+      "rating": 5
+    }
+  ],
+  "supplies": [
+    {
+      "ref": "RPT-001",
+      "business": "Daisy Poultry",
+      "category": "MEAT SHOP",
+      "supplier": "James",
+      "pickup": "Quezon City",
+      "dropoff": "Muñoz",
+      "time": "12:00 am - 2:00 pm",
+      "report": "Filed",
+      "contact": "0970-567-1136",
+      "value": "₱4,000.00",
+      "quality": 3,
+      "status": "⛔ Delayed"
+    },
+    {
+      "ref": "RPT-002",
+      "business": "Takoyaki Supplier",
+      "category": "SUPPLIES SHOP",
+      "supplier": "Maria",
+      "pickup": "Makati",
+      "dropoff": "Muñoz",
+      "time": "7:00 am - 9:00 am",
+      "report": "None",
+      "contact": "0917-888-9999",
+      "value": "₱2,500.00",
+      "quality": 5,
+      "status": "✅ Completed"
+    }
+  ],
+  "complaints": [
+    "Vendor delayed chicken delivery (Ref: RPT-001)",
+    "Incomplete Takoyaki supplies (Ref: RPT-002)",
+    "Catering delivery arrived late (Ref: RPT-003)",
+    "Rental items missing on arrival (Ref: RPT-004)"
+  ]
+}
