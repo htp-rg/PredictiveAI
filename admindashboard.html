@@ -50,6 +50,39 @@ th{font-size:.85rem;opacity:.7}
     .view-btn:hover {
       opacity:0.8;
     }
+  .settings-btn {
+  display: block;
+  width: 250px;
+  margin: 10px auto;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+}
+.settings-btn:hover {
+  background: #f0f0f0;
+}
+
+.modal {
+  display: none; 
+  position: fixed; 
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+}
+.modal-content {
+  background: white;
+  padding: 20px;
+  margin: 10% auto;
+  width: 300px;
+  border-radius: 10px;
+}
+.close {
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -224,7 +257,7 @@ Commodity: `
         Tables and chairs<br>
         <button class="view-btn">View Data</button>
       </div>
-      <div class="card" onclick="openDataModal('Atan\'s Meat Shop')">
+      <div class="card" onclick="openDataModal('Atan's Meat Shop')">
         Atan's Meat Shop<br>
         <button class="view-btn">View Data</button>
       </div>
@@ -313,8 +346,57 @@ Reports: `
   </div>
 `,
   
-  Settings: `<h1>Settings</h1><p>Settings content here...</p>`
-};
+ Settings: `
+  <h1>Settings</h1>
+  <h2>Account Center</h2>
+  <button class="settings-btn" onclick="openForm('personal')">Personal Details</button>
+  <button class="settings-btn" onclick="openForm('password')">Password and Security</button>
+  <button class="settings-btn" onclick="openForm('delete')">Delete Account</button>
+  
+  <h2>Community Standard</h2>
+  <button class="settings-btn" onclick="openForm('terms')">Terms of Service</button>
+  <button class="settings-btn" onclick="openForm('report')">Report a Problem</button>
+
+
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeForm()">&times;</span>
+      <h3 id="modalTitle"></h3>
+      <form id="settingsForm">
+        <input type="text" id="settingsInput" placeholder="Enter info here...">
+        <button type="submit">Save</button>
+      </form>
+    </div>
+  </div>
+  `,
+  
+function openForm(type) {
+  document.getElementById("settingsModal").style.display = "block";
+  let title = "";
+  if(type === "personal") title = "Update Personal Details";
+  if(type === "password") title = "Change Password";
+  if(type === "delete") title = "Delete Account";
+  if(type === "terms") title = "Terms of Service";
+  if(type === "report") title = "Report a Problem";
+  document.getElementById("modalTitle").innerText = title;
+}
+
+function closeForm() {
+  document.getElementById("settingsModal").style.display = "none";
+}
+
+document.addEventListener("submit", function(e){
+  if(e.target.id === "settingsForm"){
+    e.preventDefault();
+    const val = document.getElementById("settingsInput").value.trim();
+    if(val === ""){
+      alert("Fill info before saving!");
+    } else {
+      alert("Info saved: " + val);
+      closeForm();
+    }
+  }
+});
 
 function attachRefLinks(){
   document.querySelectorAll(".ref-link").forEach(link=>{
