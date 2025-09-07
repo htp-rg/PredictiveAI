@@ -224,12 +224,13 @@ Commodity: `
         Tables and chairs<br>
         <button class="view-btn">View Data</button>
       </div>
-      <div class="card" onclick="openDataModal('Atan's Meat Shop')">
+      <div class="card" onclick="openDataModal('Atan\'s Meat Shop')">
         Atan's Meat Shop<br>
         <button class="view-btn">View Data</button>
       </div>
     </div>
   </div>
+
   
   <div id="dataModal" class="overlay" style="display:none;justify-content:center;align-items:center;">
     <div class="modal" style="background:#fff;padding:1rem;border-radius:8px;max-width:600px;width:90%;">
@@ -312,84 +313,9 @@ Reports: `
   </div>
 `,
   
-  Settings: `
-   <h1>Settings</h1>
-  <h2>Account Center</h2>
-  <button class="settings-btn" onclick="openModal('personalModal')">Personal Details</button>
-  <button class="settings-btn" onclick="openModal('passwordModal')">Password & Security</button>
-  <button class="settings-btn" onclick="confirmDelete()">Delete Account</button>
+  Settings: `<h1>Settings</h1><p>Settings content here...</p>`
+};
 
-  <h2>Community Standard</h2>
-  <button class="settings-btn" onclick="openModal('termsModal')">Terms of Service</button>
-  <button class="settings-btn" onclick="openModal('reportModal')">Report a Problem</button>
-
-  <!-- Personal Details Modal -->
-  <div class="overlay modal" id="personalModal">
-    <div class="modal-content" style="background:#fff;padding:1rem;border-radius:8px;max-width:400px;width:90%;">
-      <span class="close" onclick="closeModal('personalModal')">&times;</span>
-      <h3>Personal Details</h3>
-      <form>
-        <input type="text" placeholder="Username">
-        <input type="text" placeholder="Full Name">
-        <input type="date" placeholder="Birthday">
-        <input type="email" placeholder="Email">
-        <button type="submit">Save</button>
-      </form>
-    </div>
-  </div>
-
-  
-  <div class="overlay modal" id="passwordModal">
-    <div class="modal-content" style="background:#fff;padding:1rem;border-radius:8px;max-width:400px;width:90%;">
-      <span class="close" onclick="closeModal('passwordModal')">&times;</span>
-      <h3>Password & Security</h3>
-      <form>
-        <input type="password" placeholder="Current Password">
-        <input type="password" placeholder="New Password">
-        <input type="password" placeholder="Confirm New Password">
-        <button type="submit">Change Password</button>
-      </form>
-    </div>
-  </div>
-
-  
-  <div class="overlay modal" id="termsModal">
-    <div class="modal-content" style="background:#fff;padding:1rem;border-radius:8px;max-width:500px;width:90%;">
-      <span class="close" onclick="closeModal('termsModal')">&times;</span>
-      <h3>Terms of Service</h3>
-      <p>
-        By using this system, you agree to follow all applicable rules and guidelines. 
-        The system ensures data privacy, fair use, and accountability. 
-        Misuse or unauthorized access may result in account termination.
-      </p>
-    </div>
-  </div>
-
-  
-  <div class="overlay modal" id="reportModal">
-    <div class="modal-content" style="background:#fff;padding:1rem;border-radius:8px;max-width:500px;width:90%;">
-      <span class="close" onclick="closeModal('reportModal')">&times;</span>
-      <h3>Report a Problem</h3>
-      <form>
-        <textarea rows="5" placeholder="Describe your issue..." style="width:100%;"></textarea>
-        <button type="submit">Submit Report</button>
-      </form>
-    </div>
-  </div>
-`,
-<script>
-    function openModal(id) {
-  document.getElementById(id).style.display = 'flex';
-}
-function closeModal(id) {
-  document.getElementById(id).style.display = 'none';
-}
-function confirmDelete() {
-  if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-    alert("Your account has been deleted (demo only).");
-  }
-}
-  
 function attachRefLinks(){
   document.querySelectorAll(".ref-link").forEach(link=>{
     link.onclick=(e)=>{
@@ -551,7 +477,6 @@ function renderPage(page, refNo=null){
   if(page === "Reports") initReports(refNo);
   if(page === "Commodity") { 
     initCommodity(); 
-  } 
 }
 
 document.querySelectorAll(".nav-item").forEach(link=>{
@@ -567,6 +492,52 @@ document.querySelectorAll(".nav-item").forEach(link=>{
 
 document.getElementById("backBtn").onclick=()=>window.history.back();
 document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
+
+function initDashboard(){
+  const ctx=document.getElementById("pipelineChart");
+  if(ctx){
+    pipelineChart = new Chart(ctx,{
+      type:"line",
+      data:{
+        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+        datasets:[{label:"Deliveries",data:[5,8,6,10,7,9],borderColor:"#0a53c1"}]
+      }
+    });
+  }
+  document.querySelectorAll("[data-stars]").forEach(cell=>{
+    const rating=+cell.dataset.stars||0;
+    cell.innerHTML="";
+    for(let i=1;i<=5;i++){
+      const star=document.createElement("span");
+      star.textContent="★";
+      star.className="star"+(i<=rating?" active":"");
+      star.onclick=()=>{cell.dataset.stars=i;renderPage("dashboard");};
+      cell.appendChild(star);
+    }
+  });
+  const taskList=document.getElementById("taskList");
+  if(taskList){
+    document.querySelectorAll(".edit-icon").forEach(icon=>{
+      icon.onclick=()=>{
+        const li=icon.parentElement;
+        const spanText=li.childNodes[1].textContent.trim();
+        const newTask=prompt("Edit task:",spanText);
+        if(newTask!==null) li.childNodes[1].textContent=" "+newTask+" ";
+      };
+    });
+    document.querySelectorAll(".delete-icon").forEach(icon=>{
+      icon.onclick=()=>icon.parentElement.remove();
+    });
+    document.getElementById("addTaskBtn").onclick=()=>{
+      const task=prompt("New Task:");
+      if(task){
+        const li=document.createElement("li");
+        li.innerHTML=`<input type="checkbox" /> ${task} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
+        taskList.appendChild(li);
+      }
+    };
+  }
+}
 
 function makeTableEditable(tableId,searchId){
   const table=document.getElementById(tableId);
