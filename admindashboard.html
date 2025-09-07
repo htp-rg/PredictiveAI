@@ -200,7 +200,8 @@ const pages = {
     </div>
     <div class="card">
       <h3>Recent Complaints</h3>
-      <ul id="complaintsList">
+  
+      <ul id="complaintsList" style="display:none;">
         <li data-ref="RPT-001">Vendor delayed chicken delivery</li>
         <li data-ref="RPT-002">Incomplete Takoyaki supplies</li>
         <li data-ref="RPT-003">Catering delivery arrived late</li>
@@ -248,25 +249,30 @@ function initReports(refNo){
     });
   }
 
- 
-  if(refNo){
-    document.querySelectorAll("#complaintsList li").forEach(li=>{
-      li.style.fontWeight=(li.dataset.ref===refNo)?"bold":"normal";
-      li.style.background=(li.dataset.ref===refNo)?"#fce8b2":"transparent";
-    });
-    document.getElementById("complaintSelect").value=refNo;
-  }
-
+  const list=document.getElementById("complaintsList");
+  const select=document.getElementById("complaintSelect");
   const viewBtn=document.getElementById("viewComplaintBtn");
+
+
   if(viewBtn){
     viewBtn.onclick=()=>{
-      const ref=document.getElementById("complaintSelect").value;
+      const ref=select.value;
       if(ref){
+        list.style.display="block"; 
         renderPage("Reports", ref);
       } else {
         alert("Please select a complaint Ref No. first.");
       }
     };
+  }
+
+  if(refNo){
+    list.style.display="block";
+    document.querySelectorAll("#complaintsList li").forEach(li=>{
+      li.style.fontWeight=(li.dataset.ref===refNo)?"bold":"normal";
+      li.style.background=(li.dataset.ref===refNo)?"#fce8b2":"transparent";
+    });
+    select.value=refNo;
   }
 
   const chatBtn=document.getElementById("chatNowBtn");
@@ -277,7 +283,6 @@ function initReports(refNo){
     };
   }
 }
-
 function renderPage(page, refNo=null){
   contentArea.innerHTML=pages[page]||`<h1>${page}</h1>`;
   if(page==="dashboard") initDashboard();
