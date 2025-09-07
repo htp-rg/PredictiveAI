@@ -191,30 +191,37 @@ const pages = {
     </tbody>
   </table>
   `,
-  Reports: `
-    <h1>Reports and Dashboard with AI Analytic</h1>
-    <div class="grid">
-      <div class="card">
-        <h3>Vendor Performance Dashboard</h3>
-        <canvas id="vendorChart" height="120"></canvas>
-      </div>
-      <div class="card">
-        <h3>Recent Complaints</h3>
-        <ul id="complaintsList">
-          <li data-ref="RPT-001">Vendor delayed chicken delivery (Ref: RPT-001)</li>
-          <li data-ref="RPT-002">Incomplete Takoyaki supplies (Ref: RPT-002)</li>
-          <li data-ref="RPT-003">Catering delivery arrived late (Ref: RPT-003)</li>
-          <li data-ref="RPT-004">Rental items missing on arrival (Ref: RPT-004)</li>
-        </ul>
-        <button id="viewComplaintBtn" class="btn" style="margin-top:.5rem;">View Complaint</button>
-      </div>
-      <div class="card">
-        <h3>AI Chat Support</h3>
-        <button id="chatNowBtn" class="btn">💬 Chat Now</button>
-        <div id="chatboxContainer"></div>
-      </div>
+ Reports: `
+  <h1>Reports and Dashboard with AI Analytic</h1>
+  <div class="grid">
+    <div class="card">
+      <h3>Vendor Performance Dashboard</h3>
+      <canvas id="vendorChart" height="120"></canvas>
     </div>
-  `,
+    <div class="card">
+      <h3>Recent Complaints</h3>
+      <ul id="complaintsList">
+        <li data-ref="RPT-001">Vendor delayed chicken delivery</li>
+        <li data-ref="RPT-002">Incomplete Takoyaki supplies</li>
+        <li data-ref="RPT-003">Catering delivery arrived late</li>
+        <li data-ref="RPT-004">Rental items missing on arrival</li>
+      </ul>
+      <select id="complaintSelect" style="margin-top:.5rem;width:100%;padding:.4rem;">
+        <option value="">-- Select Complaint Ref No. --</option>
+        <option value="RPT-001">RPT-001</option>
+        <option value="RPT-002">RPT-002</option>
+        <option value="RPT-003">RPT-003</option>
+        <option value="RPT-004">RPT-004</option>
+      </select>
+      <button id="viewComplaintBtn" class="btn" style="margin-top:.5rem;">View Complaint</button>
+    </div>
+    <div class="card">
+      <h3>AI Chat Support</h3>
+      <button id="chatNowBtn" class="btn">💬 Chat Now</button>
+      <div id="chatboxContainer"></div>
+    </div>
+  </div>
+`,
 
   Settings: `<h1>Settings</h1><p>Settings content here...</p>`
 };
@@ -240,25 +247,33 @@ function initReports(refNo){
       }
     });
   }
+
+ 
   if(refNo){
     document.querySelectorAll("#complaintsList li").forEach(li=>{
       li.style.fontWeight=(li.dataset.ref===refNo)?"bold":"normal";
       li.style.background=(li.dataset.ref===refNo)?"#fce8b2":"transparent";
     });
+    document.getElementById("complaintSelect").value=refNo;
   }
+
   const viewBtn=document.getElementById("viewComplaintBtn");
   if(viewBtn){
     viewBtn.onclick=()=>{
-      const ref=prompt("Enter Report Ref No. (e.g., RPT-001):");
+      const ref=document.getElementById("complaintSelect").value;
       if(ref){
-        renderPage("Reports", ref.trim().toUpperCase());
+        renderPage("Reports", ref);
+      } else {
+        alert("Please select a complaint Ref No. first.");
       }
     };
   }
+
   const chatBtn=document.getElementById("chatNowBtn");
   if(chatBtn){
     chatBtn.onclick=()=>{
-      document.getElementById("chatboxContainer").innerHTML='<div style="border:1px solid #ccc;padding:10px;border-radius:8px;">🤖 Hello! How can I assist you with vendor reports today?</div>';
+      document.getElementById("chatboxContainer").innerHTML=
+        '<div style="border:1px solid #ccc;padding:10px;border-radius:8px;">🤖 Hello! How can I assist you with vendor reports today?</div>';
     };
   }
 }
