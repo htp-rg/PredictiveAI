@@ -30,11 +30,13 @@ nav{padding:1rem}
 .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem;box-shadow:var(--shadow)}
 table{width:100%;border-collapse:collapse}
-th,td{border-bottom:1px solid var(--border);padding:.6rem;text-align:left}
+th,td{border-bottom:1px solid var(--border);padding:.6rem;text-align:left;vertical-align:middle}
 th{font-size:.85rem;opacity:.7}
 .overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center}
 .modal{background:#fff;padding:1rem;border-radius:12px;min-width:300px}
 .modal input,.modal select{display:block;width:100%;margin:.5rem 0;padding:.4rem}
+.star{cursor:pointer;font-size:1.2rem;color:#ccc}
+.star.active{color:gold}
 .edit-icon, .delete-icon{cursor:pointer;margin-left:4px;}
 </style>
 </head>
@@ -59,7 +61,7 @@ th{font-size:.85rem;opacity:.7}
       <div style="display:flex; align-items:center; gap:0.5rem;">
         <button class="btn" id="backBtn">← Back</button>
         <button class="btn" id="menuBtn">☰</button>
-        <div class="search">🔎 <input id="searchInput" type="search" placeholder="Search opportunities…"></div>
+        <div class="search">🔎 <input id="searchInput" type="search" placeholder="Search…"></div>
       </div>
       <div>
         <button class="btn" id="newBtn">+ New</button>
@@ -73,12 +75,12 @@ th{font-size:.85rem;opacity:.7}
 
 <div class="overlay" id="overlay">
   <div class="modal">
-    <h3 id="modalTitle">New Opportunity</h3>
-    <input id="dealInput" placeholder="Deal" />
+    <h3 id="modalTitle">New Vendor Engagement</h3>
+    <input id="dealInput" placeholder="Business Name" />
     <select id="stageInput">
-      <option>Discovery</option><option>Qualified</option><option>Proposal</option><option>Negotiation</option>
+      <option>✅ Completed</option><option>✏ In progress</option><option>⏳ Not started</option><option>⛔ Blocked</option>
     </select>
-    <input id="valueInput" placeholder="Value (e.g. 5000)" type="number" />
+    <input id="valueInput" placeholder="Records of Payment" type="text" />
     <input id="ownerInput" placeholder="Owner" />
     <button class="btn" id="saveBtn">Save</button>
     <button class="btn" onclick="closeModal()">Cancel</button>
@@ -92,216 +94,263 @@ let editingRow = null;
 let pipelineChart = null;
 
 const pages = {
-  dashboard: `
-    <h1>Dashboard</h1>
+  dashboard: ` <h1>Dashboard</h1>
     <div class="grid">
-      <div class="card">
-        <h3>Leads</h3>
-        <p id="kpiLeads">1,284</p>
-        <small>+12% MoM</small>
-      </div>
-      <div class="card">
-        <h3>Opportunities</h3>
-        <p id="kpiOpps">4</p>
-        <small>+5% MoM</small>
-      </div>
-      <div class="card">
-        <h3>Close Rate</h3>
-        <p id="kpiClose">28%</p>
-        <small>+2 pts</small>
-      </div>
-      <div class="card">
-        <h3>Revenue</h3>
-        <p id="kpiRevenue">$0</p>
-        <small>Auto</small>
-      </div>
+      <div class="card"><h3>Price Variance / Cost Savings</h3><p>₱12,500</p><small>+8% vs last month</small></div>
+      <div class="card"><h3>On-Time Delivery Rate</h3><p>92%</p><small>+3 pts</small></div>
+      <div class="card"><h3>Defect Rate / Compliance Score</h3><p>2%</p><small>-1 pt</small></div>
+      <div class="card"><h3>Vendor Performance Score</h3><p>87/100</p><small>Stable</small></div>
     </div>
 
     <div class="grid">
       <div class="card">
-        <h3>Pipeline (Last 6 Weeks)</h3>
+        <h3>Supply Chain Flow (Last 6 Weeks)</h3>
         <canvas id="pipelineChart" height="100"></canvas>
       </div>
-
       <div class="card" id="tasksCard">
         <h3>Tasks</h3>
         <ul id="taskList" style="list-style:none;padding:0;margin:0;">
-          <li><input type="checkbox" /> Call new leads <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
-          <li><input type="checkbox" checked /> Launch email campaign <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
-          <li><input type="checkbox" /> Update funnel step <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
-          <li><input type="checkbox" /> Review automation <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Review vendor contracts <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" checked /> Monitor deliveries <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Update compliance checklist <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Evaluate supplier pricing <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
         </ul>
         <button id="addTaskBtn" class="btn" style="margin-top:.5rem;">➕</button>
       </div>
-</div>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <h3>Recent Vendor Engagements</h3>
+      <table id="vendorEngagementsTable">
+        <thead>
+          <tr>
+            <th>Type of Business</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>3,785.00</td><td data-stars="5"></td></tr>
+          <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>2,345</td><td data-stars="5"></td></tr>
+          <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>5,199</td><td data-stars="5"></td></tr>
+          <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>1,870</td><td data-stars="5"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  `,
+
+  Vendor: `
+    <h1>Vendor Management</h1>
+    <input type="text" id="vendorSearch" placeholder="Search Vendor…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+    <table id="vendorTable">
+      <thead>
+        <tr><th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>3,785</td><td data-stars="5"></td></tr>
+        <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>2,345</td><td data-stars="5"></td></tr>
+        <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>5,199</td><td data-stars="5"></td></tr>
+        <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>1,870</td><td data-stars="5"></td></tr>
+      </tbody>
+    </table>
+  `,
+  Supply: `
+  <h1>Supply Monitoring</h1>
+  <input type="text" id="supplySearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+  <table id="supplyTable">
+    <thead>
+      <tr>
+        <th>Ref No.</th><th>Business Name</th><th>Business Category</th><th>Supplier</th>
+        <th>Pick-up</th><th>Drop-off</th><th>Delivery Time</th><th>Report</th>
+        <th>Contact No.</th><th>Item Value</th><th>Quality</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="#" class="ref-link">RPT-001</a></td>
+        <td>Daisy Poultry</td><td>MEAT SHOP</td><td>James</td><td>Quezon City</td>
+        <td>Muñoz</td><td>12:00 am - 2:00 pm</td><td>Filed</td>
+        <td>0970-567-1136</td><td>₱4,000.00</td><td>★★★★★</td><td>⛔ Delayed</td>
+      </tr>
+      <tr>
+        <td><a href="#" class="ref-link">RPT-002</a></td>
+        <td>Takoyaki Supplier</td><td>SUPPLIES SHOP</td><td>Maria</td><td>Makati</td>
+        <td>Muñoz</td><td>7:00 am - 9:00 am</td><td>None</td>
+        <td>0917-888-9999</td><td>₱2,500.00</td><td>★★★★★</td><td>✅ Completed</td>
+      </tr>
+      <tr>
+        <td><a href="#" class="ref-link">RPT-003</a></td>
+        <td>Catering Supplies</td><td>CATERING</td><td>Sofia</td><td>Taguig</td>
+        <td>Muñoz</td><td>10:00 am - 12:00 pm</td><td>None</td>
+        <td>0920-555-4444</td><td>₱3,200.00</td><td>★★★★★</td><td>✏ In progress</td>
+      </tr>
+      <tr>
+        <td><a href="#" class="ref-link">RPT-004</a></td>
+        <td>Party Rental</td><td>RENTAL SHOP</td><td>Ramon</td><td>Manila</td>
+        <td>Muñoz</td><td>3:00 am - 5:00 am</td><td>None</td>
+        <td>0998-222-3333</td><td>₱5,000.00</td><td>★★★★★</td><td>✅ Completed</td>
+      </tr>
+    </tbody>
+  </table>
+  `,
+  Reports: `
+    <h1>Reports and Dashboard with AI Analytic</h1>
+    <div class="grid">
       <div class="card">
-        <h3>Recent Opportunities</h3>
-        <table id="oppsTable">
-          <thead>
-            <tr>
-              <th>Deal</th>
-              <th>Stage</th>
-              <th>Value</th>
-              <th>Owner</th>
-              <th>Updated</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Website Redesign</td>
-              <td>Proposal</td>
-              <td>$8400</td>
-              <td>Alex</td>
-              <td>Today</td>
-              <td><button class="btn edit-btn">Edit</button></td>
-            </tr>
-            <tr>
-              <td>SEO Retainer</td>
-              <td>Negotiation</td>
-              <td>$2100</td>
-              <td>Sam</td>
-              <td>Yesterday</td>
-              <td><button class="btn edit-btn">Edit</button></td>
-            </tr>
-            <tr>
-              <td>Ads Package</td>
-              <td>Qualified</td>
-              <td>$3600</td>
-              <td>Jamie</td>
-              <td>Aug 20</td>
-              <td><button class="btn edit-btn">Edit</button></td>
-            </tr>
-            <tr>
-              <td>CRM Migration</td>
-              <td>Discovery</td>
-              <td>$5200</td>
-              <td>Riley</td>
-              <td>Aug 17</td>
-              <td><button class="btn edit-btn">Edit</button></td>
-            </tr>
-          </tbody>
-        </table>
+        <h3>Vendor Performance Dashboard</h3>
+        <canvas id="vendorChart" height="120"></canvas>
+      </div>
+      <div class="card">
+        <h3>Recent Complaints</h3>
+        <ul id="complaintsList">
+          <li data-ref="RPT-001">Vendor delayed chicken delivery (Ref: RPT-001)</li>
+          <li data-ref="RPT-002">Incomplete Takoyaki supplies (Ref: RPT-002)</li>
+          <li data-ref="RPT-003">Catering delivery arrived late (Ref: RPT-003)</li>
+          <li data-ref="RPT-004">Rental items missing on arrival (Ref: RPT-004)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>AI Chat Support</h3>
+        <button id="chatNowBtn" class="btn">💬 Chat Now</button>
+        <div id="chatboxContainer"></div>
       </div>
     </div>
   `,
 
-  Vendor: `<h1>Vendor Management</h1><p>Vendor content here...</p>`,
-  Commodity: `<h1>Commodity and Price Monitoring</h1><p>Commodity content here...</p>`,
-  Supply: `<h1>Supply Monitoring</h1><p>Supply content here...</p>`,
-  Inspection: `<h1>Inspection and compliance</h1><p>Inspection content here...</p>`,
-  Reports: `<h1>Reports and Dashboard with AI analytic</h1><p>Reports content here...</p>`,
   Settings: `<h1>Settings</h1><p>Settings content here...</p>`
 };
 
-function openModal(row=null){
-  overlay.style.display="flex"; 
-  editingRow=row;
-  if(row){
-    document.getElementById("modalTitle").innerText="Edit Opportunity";
-    document.getElementById("dealInput").value=row.cells[0].innerText;
-    document.getElementById("stageInput").value=row.cells[1].innerText;
-    document.getElementById("valueInput").value=row.cells[2].innerText.replace(/\$/,"");
-    document.getElementById("ownerInput").value=row.cells[3].innerText;
-  } else {
-    document.getElementById("modalTitle").innerText="New Opportunity";
-    document.querySelectorAll(".modal input").forEach(i=>i.value="");
+function attachRefLinks(){
+  document.querySelectorAll(".ref-link").forEach(link=>{
+    link.onclick=(e)=>{
+      e.preventDefault();
+      const ref = link.textContent;
+      renderPage("Reports", ref);
+    };
+  });
+}
+
+function initReports(refNo){
+  const ctx=document.getElementById("vendorChart");
+  if(ctx){
+    new Chart(ctx,{
+      type:"bar",
+      data:{
+        labels:["Takoyaki","Meat Shop","Catering","Rental"],
+        datasets:[{label:"Performance",data:[87,65,72,90],backgroundColor:"#0a53c1"}]
+      }
+    });
+  }
+  if(refNo){
+    document.querySelectorAll("#complaintsList li").forEach(li=>{
+      li.style.fontWeight=(li.dataset.ref===refNo)?"bold":"normal";
+      li.style.background=(li.dataset.ref===refNo)?"#fce8b2":"transparent";
+    });
+  }
+  const chatBtn=document.getElementById("chatNowBtn");
+  if(chatBtn){
+    chatBtn.onclick=()=>{
+      document.getElementById("chatboxContainer").innerHTML='<div style="border:1px solid #ccc;padding:10px;border-radius:8px;">🤖 Hello! How can I assist you with vendor reports today?</div>';
+    };
   }
 }
 
-function closeModal(){overlay.style.display="none";}
-
-function attachEditButtons(){
-  document.querySelectorAll(".edit-btn").forEach(b=>{
-    b.onclick=()=>openModal(b.closest("tr"));
-  });
+function renderPage(page, refNo=null){
+  contentArea.innerHTML=pages[page]||`<h1>${page}</h1>`;
+  if(page==="dashboard") initDashboard();
+  if(page==="Vendor") makeTableEditable("vendorTable","vendorSearch");
+  if(page==="Supply"){ makeTableEditable("supplyTable","supplySearch"); attachRefLinks(); }
+  if(page==="Reports") initReports(refNo);
 }
 
-function attachTaskActions(){
-  const taskList=document.getElementById("taskList"), addTaskBtn=document.getElementById("addTaskBtn");
-  if(!taskList) return;
-  document.querySelectorAll("#taskList li").forEach(li=>{
-    const editIcon=li.querySelector(".edit-icon"), deleteIcon=li.querySelector(".delete-icon");
-    editIcon.onclick=()=>{const newText=prompt("Edit Task", li.firstChild.textContent.trim()); if(newText) li.firstChild.textContent=newText+" ";};
-    deleteIcon.onclick=()=>{if(confirm("Delete this task?")) li.remove();};
-  });
-  addTaskBtn.onclick=()=>{
-    const taskName=prompt("Enter new task:");
-    if(taskName){
-      const li=document.createElement("li");
-      li.innerHTML=`<input type="checkbox" /> ${taskName} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
-      taskList.appendChild(li);
-      attachTaskActions();
-    }
-  };
-}
-
-function initDashboard(){
-  const container = document.getElementById("contentArea");
-  container.innerHTML = pages.dashboard;
-  attachEditButtons();
-  attachTaskActions();
-
-  const ctx = document.getElementById("pipelineChart");
-  if(ctx){ 
-    pipelineChart = new Chart(ctx,{ 
-    type:"line", 
-      data:{
-        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
-        datasets:[{ 
-          label:"Opportunities", 
-          data:[10,15,8,20,18,25], 
-          borderColor:"#0a53c1",
-          backgroundColor:"rgba(10,83,193,0.2)", 
-          fill:true, 
-          tension:0.3 
-        }]
-      } 
-    }); 
-  } 
-}
-
-
-document.querySelectorAll(".nav-item").forEach(link => {
+document.querySelectorAll(".nav-item").forEach(link=>{
   if(!link.classList.contains("logout-btn")){
-    link.onclick = (e)=>{
+    link.onclick=(e)=>{
       e.preventDefault();
       document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));
       link.classList.add("active");
-      const page = link.dataset.page;
-      contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
-      if(page==="dashboard") initDashboard();
-    }
+      renderPage(link.dataset.page);
+    };
   }
 });
 
-document.getElementById("backBtn").onclick = () => { window.history.back(); };
-document.getElementById("menuBtn").onclick = () => { document.getElementById("sidebar").classList.toggle("open"); };
-document.getElementById("newBtn").onclick = () => openModal();
-document.getElementById("saveBtn").onclick = () => {
-  const table = document.querySelector("#oppsTable tbody");
-  if(!table) return;
-  const deal = document.getElementById("dealInput").value,
-        stage = document.getElementById("stageInput").value,
-        value = "$" + document.getElementById("valueInput").value,
-        owner = document.getElementById("ownerInput").value,
-        updated = "Today";
-  if(editingRow){
-    editingRow.cells[0].innerText = deal;
-    editingRow.cells[1].innerText = stage;
-    editingRow.cells[2].innerText = value;
-    editingRow.cells[3].innerText = owner;
-    editingRow.cells[4].innerText = updated;
-  } else {
-    const row = table.insertRow();
-    row.innerHTML = `<td>${deal}</td><td>${stage}</td><td>${value}</td><td>${owner}</td><td>${updated}</td>
-      <td><button class="btn edit-btn">Edit</button></td>`;
-  }
-  attachEditButtons();
-  closeModal();
-};
+document.getElementById("backBtn").onclick=()=>window.history.back();
+document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
 
-initDashboard();
+function initDashboard(){
+  const ctx=document.getElementById("pipelineChart");
+  if(ctx){
+    pipelineChart = new Chart(ctx,{
+      type:"line",
+      data:{
+        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+        datasets:[{label:"Deliveries",data:[5,8,6,10,7,9],borderColor:"#0a53c1"}]
+      }
+    });
+  }
+  document.querySelectorAll("[data-stars]").forEach(cell=>{
+    const rating=+cell.dataset.stars||0;
+    cell.innerHTML="";
+    for(let i=1;i<=5;i++){
+      const star=document.createElement("span");
+      star.textContent="★";
+      star.className="star"+(i<=rating?" active":"");
+      star.onclick=()=>{cell.dataset.stars=i;renderPage("dashboard");};
+      cell.appendChild(star);
+    }
+  });
+  const taskList=document.getElementById("taskList");
+  if(taskList){
+    document.querySelectorAll(".edit-icon").forEach(icon=>{
+      icon.onclick=()=>{
+        const li=icon.parentElement;
+        const spanText=li.childNodes[1].textContent.trim();
+        const newTask=prompt("Edit task:",spanText);
+        if(newTask!==null) li.childNodes[1].textContent=" "+newTask+" ";
+      };
+    });
+    document.querySelectorAll(".delete-icon").forEach(icon=>{
+      icon.onclick=()=>icon.parentElement.remove();
+    });
+    document.getElementById("addTaskBtn").onclick=()=>{
+      const task=prompt("New Task:");
+      if(task){
+        const li=document.createElement("li");
+        li.innerHTML=`<input type="checkbox" /> ${task} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
+        taskList.appendChild(li);
+      }
+    };
+  }
+}
+
+function makeTableEditable(tableId,searchId){
+  const table=document.getElementById(tableId);
+  const search=document.getElementById(searchId);
+  if(search){
+    search.oninput=()=>{
+      const val=search.value.toLowerCase();
+      Array.from(table.tBodies[0].rows).forEach(r=>{
+        r.style.display= r.innerText.toLowerCase().includes(val)?"":"none";
+      });
+    };
+  }
+  table.querySelectorAll("td").forEach(td=>{
+    td.ondblclick=()=>{
+      const old=td.innerText;
+      const input=document.createElement("input");
+      input.value=old;
+      td.innerText="";
+      td.appendChild(input);
+      input.focus();
+      input.onblur=()=>{td.innerText=input.value||old;};
+    };
+  });
+}
+
+function openModal(){overlay.style.display="flex";}
+function closeModal(){overlay.style.display="none";}
+document.getElementById("newBtn").onclick=openModal;
+document.getElementById("saveBtn").onclick=()=>{alert("Saved!");closeModal();};
+
+renderPage("dashboard");
 </script>
 </body>
 </html>
