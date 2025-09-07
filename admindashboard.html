@@ -467,6 +467,43 @@ function getPieData() {
     datasets: [{ data: [counts.High, counts.Low, counts.Stable], backgroundColor: ['#ff4d4d','#9fff80','#ffd966'] }]
   };
 }
+      document.getElementById("addTaskBtn").onclick = () => {
+      const task = prompt("New Task:");
+      if (task) {
+        const li = document.createElement("li");
+
+       
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        li.appendChild(checkbox);
+
+    
+        li.appendChild(document.createTextNode(" " + task + " "));
+
+  
+        const editIcon = document.createElement("span");
+        editIcon.textContent = "✏️";
+        editIcon.className = "edit-icon";
+        editIcon.onclick = () => {
+          const newTask = prompt("Edit task:", task);
+          if (newTask !== null) {
+            li.childNodes[1].textContent = " " + newTask + " ";
+          }
+        };
+        li.appendChild(editIcon);
+
+      
+        const deleteIcon = document.createElement("span");
+        deleteIcon.textContent = "🗑️";
+        deleteIcon.className = "delete-icon";
+        deleteIcon.onclick = () => li.remove();
+        li.appendChild(deleteIcon);
+
+        taskList.appendChild(li);
+      }
+    };
+  }
+}
 
 function openDataModal(businessName) {
   document.getElementById('modalTitle').innerText = businessName + ' - Past 6 Months';
