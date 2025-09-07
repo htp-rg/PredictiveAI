@@ -153,63 +153,72 @@ const pages = {
     </table>
   `,
 
-    Commodity: `
-    <h1>COMMODITY AND PRICE MONITORING</h1>
-    <table id="commodityTable">
-      <thead>
-        <tr>
-          <th>Type of Business</th>
-          <th>Previous Price</th>
-          <th>Current Price</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td contenteditable="true">Takoyaki store</td>
-          <td contenteditable="true"></td>
-          <td contenteditable="true"></td>
-          <td contenteditable="true">Stable</td>
-        </tr>
-        <tr>
-          <td contenteditable="true">Sound equipment</td>
-          <td contenteditable="true"></td>
-          <td contenteditable="true"></td>
-          <td contenteditable="true">High</td>
-        </tr>
-        <tr>
-          <td contenteditable="true">Tables and chairs</td>
-          <td contenteditable="true"></td>
-          <td contenteditable="true"></td>
-          <td contenteditable="true">Low</td>
-        </tr>
-        <tr>
-          <td contenteditable="true">Atan's Meat Shop</td>
-          <td contenteditable="true"></td>
-          <td contenteditable="true"></td>
-          <td contenteditable="true">High</td>
-        </tr>
-      </tbody>
-    </table>
+  Commodity: `
+  <h1>COMMODITY AND PRICE MONITORING</h1>
+  <table id="commodityTable">
+    <thead>
+      <tr>
+        <th>Type of Business</th>
+        <th>Previous Price</th>
+        <th>Current Price</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td contenteditable="true">Takoyaki store</td>
+        <td contenteditable="true">50</td>
+        <td contenteditable="true">55</td>
+        <td contenteditable="true">Stable</td>
+      </tr>
+      <tr>
+        <td contenteditable="true">Sound equipment</td>
+        <td contenteditable="true">200</td>
+        <td contenteditable="true">250</td>
+        <td contenteditable="true">High</td>
+      </tr>
+      <tr>
+        <td contenteditable="true">Tables and chairs</td>
+        <td contenteditable="true">100</td>
+        <td contenteditable="true">90</td>
+        <td contenteditable="true">Low</td>
+      </tr>
+      <tr>
+        <td contenteditable="true">Atan's Meat Shop</td>
+        <td contenteditable="true">150</td>
+        <td contenteditable="true">180</td>
+        <td contenteditable="true">High</td>
+      </tr>
+    </tbody>
+  </table>
 
-    <canvas id="pieChart" width="400" height="200"></canvas>
+  <div style="display:flex;gap:2rem;margin-top:1rem;align-items:flex-start;">
+    <canvas id="pieChart" width="300" height="300"></canvas>
 
-    <div class="card-container" style="display:flex;gap:1rem;margin-top:1rem;">
-      <div class="card" onclick="openDataModal('Takoyaki store')">Takoyaki store<br><button>View Data</button></div>
-      <div class="card" onclick="openDataModal('Sound equipment')">Sound equipment<br><button>View Data</button></div>
-      <div class="card" onclick="openDataModal('Tables and chairs')">Tables and chairs<br><button>View Data</button></div>
-      <div class="card" onclick="openDataModal('Atan\\'s Meat Shop')">Atan's Meat Shop<br><button>View Data</button></div>
-    </div>
-
-    <div id="dataModal" class="overlay" style="display:none;">
-      <div class="modal">
-        <span class="close" onclick="closeDataModal()" style="float:right;cursor:pointer;">&times;</span>
-        <h3 id="modalTitle"></h3>
-        <canvas id="lineChart" width="400" height="200"></canvas>
+    <div class="card-container" style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <div class="card" onclick="openDataModal('Takoyaki store')">
+        Takoyaki store<br><button>View Data</button>
+      </div>
+      <div class="card" onclick="openDataModal('Sound equipment')">
+        Sound equipment<br><button>View Data</button>
+      </div>
+      <div class="card" onclick="openDataModal('Tables and chairs')">
+        Tables and chairs<br><button>View Data</button>
+      </div>
+      <div class="card" onclick="openDataModal('Atan\\'s Meat Shop')">
+        Atan's Meat Shop<br><button>View Data</button>
       </div>
     </div>
-  `,
-  
+  </div>
+
+  <div id="dataModal" class="overlay" style="display:none;">
+    <div class="modal" style="background:#fff;padding:1rem;border-radius:8px;max-width:600px;width:90%;">
+      <span class="close" onclick="closeDataModal()" style="float:right;cursor:pointer;font-size:20px;">&times;</span>
+      <h3 id="modalTitle"></h3>
+      <canvas id="lineChart" width="500" height="250"></canvas>
+    </div>
+  </div>
+`,
   Supply: `
   <h1>Supply Monitoring</h1>
   <input type="text" id="supplySearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
@@ -326,7 +335,6 @@ function getPieData() {
   };
 }
 
-
 function openDataModal(businessName) {
   document.getElementById('modalTitle').innerText = businessName + ' - Past 6 Months';
   document.getElementById('dataModal').style.display = 'flex';
@@ -334,15 +342,27 @@ function openDataModal(businessName) {
   const ctxLine = document.getElementById('lineChart').getContext('2d');
   if (window.lineChart) window.lineChart.destroy();
 
+
+  let row = [...document.querySelectorAll('#commodityTable tbody tr')]
+              .find(r => r.cells[0].innerText.trim() === businessName);
+
+  let prev = row ? parseFloat(row.cells[1].innerText) || 0 : 0;
+  let curr = row ? parseFloat(row.cells[2].innerText) || 0 : 0;
+
+ 
+  let sampleTrend = [prev - 10, prev, (prev+curr)/2, curr];
+
   window.lineChart = new Chart(ctxLine, {
     type: 'line',
     data: {
-      labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'],
+      labels: ['Month 1','Month 2','Month 3','Month 4'],
       datasets: [{
-        label: 'Price Trend',
-        data: Array.from({length: 6}, () => Math.floor(Math.random() * 100)),
+        label: businessName + ' Price Trend',
+        data: sampleTrend,
         borderColor: '#007bff',
-        fill: false
+        backgroundColor: '#007bff33',
+        fill: true,
+        tension: 0.3
       }]
     }
   });
