@@ -468,6 +468,7 @@ function initReports(refNo){
   
 function renderPage(page, refNo=null){
   contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
+  
   if(page === "dashboard") initDashboard();
   if(page === "Vendor") makeTableEditable("vendorTable","vendorSearch");
   if(page === "Supply") { 
@@ -477,6 +478,7 @@ function renderPage(page, refNo=null){
   if(page === "Reports") initReports(refNo);
   if(page === "Commodity") { 
     initCommodity(); 
+  } 
 }
 
 document.querySelectorAll(".nav-item").forEach(link=>{
