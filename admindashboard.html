@@ -329,6 +329,337 @@ function attachRefLinks(){
 let pieChart = null;
 let lineChart = null;
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+  --text:#111111; --blue:#0a53c1; --ink-20:#f4f6f8;
+  --white:#ffffff; --border:#e6e8eb;
+  --shadow:0 6px 24px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--white);color:var(--text);}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+.sidebar{border-right:1px solid var(--border);background:var(--white);transition:transform .3s}
+.sidebar.open{transform:translateX(0)}
+.sidebar:not(.open){transform:translateX(-100%)}
+.brand{font-weight:800;text-transform:uppercase;padding:1rem;border-bottom:1px solid var(--border);}
+nav{padding:1rem}
+.nav-item{display:block;padding:.6rem;border-radius:8px;text-decoration:none;color:var(--text);}
+.nav-item:hover,.nav-item.active{background:var(--ink-20)}
+.main{display:grid;grid-template-rows:64px 1fr;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 1rem;border-bottom:1px solid var(--border);}
+.search{display:flex;align-items:center;border:1px solid var(--border);border-radius:12px;padding:.4rem .7rem}
+.search input{border:none;outline:none}
+.btn{border:1px solid var(--text);background:transparent;padding:.4rem .8rem;border-radius:8px;cursor:pointer}
+.content{padding:1rem;overflow:auto}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid var(--border);padding:.6rem;text-align:left;vertical-align:middle}
+th{font-size:.85rem;opacity:.7}
+.overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center}
+.modal{background:#fff;padding:1rem;border-radius:12px;min-width:300px}
+.modal input,.modal select{display:block;width:100%;margin:.5rem 0;padding:.4rem}
+.star{cursor:pointer;font-size:1.2rem;color:#ccc}
+.star.active{color:gold}
+.edit-icon, .delete-icon{cursor:pointer;margin-left:4px;}
+  .view-btn {
+      background:black;
+      color:white;
+      border:none;
+      padding:6px 12px;
+      margin-top:6px;
+      cursor:pointer;
+      border-radius:4px;
+    }
+    .view-btn:hover {
+      opacity:0.8;
+    }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar open" id="sidebar">
+    <div class="brand">LGU 3 ADMIN SYSTEM</div>
+   <nav>
+    <a href="#" class="nav-item active" data-page="dashboard">Dashboard</a>
+    <a href="#" class="nav-item" data-page="Vendor">Vendor Management</a>
+    <a href="#" class="nav-item" data-page="Commodity">Commodity and Price Monitoring</a>
+    <a href="#" class="nav-item" data-page="Supply">Supply Monitoring</a>
+    <a href="#" class="nav-item" data-page="Inspection">Inspection and compliance</a>
+    <a href="#" class="nav-item" data-page="Reports">Reports and Dashboard with AI analytic</a>
+    <a href="#" class="nav-item" data-page="Settings">Settings</a>
+    <a href="main.html" class="nav-item logout-btn" style="margin-top: 2rem; font-weight: bold;">Logout</a>
+  </nav>
+</aside>
+
+  <section class="main">
+    <header class="topbar">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <button class="btn" id="backBtn">← Back</button>
+        <button class="btn" id="menuBtn">☰</button>
+        <div class="search">🔎 <input id="searchInput" type="search" placeholder="Search…"></div>
+      </div>
+      <div>
+        <button class="btn" id="newBtn">+ New</button>
+        <button class="btn" id="exportBtn">Export</button>
+      </div>
+    </header>
+
+    <div class="content" id="contentArea"></div>
+  </section>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3 id="modalTitle">New Vendor Engagement</h3>
+    <input id="dealInput" placeholder="Business Name" />
+    <select id="stageInput">
+      <option>✅ Completed</option><option>✏ In progress</option><option>⏳ Not started</option><option>⛔ Blocked</option>
+    </select>
+    <input id="valueInput" placeholder="Records of Payment" type="text" />
+    <input id="ownerInput" placeholder="Owner" />
+    <button class="btn" id="saveBtn">Save</button>
+    <button class="btn" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<script>
+const overlay = document.getElementById("overlay");
+const contentArea = document.getElementById("contentArea");
+let editingRow = null;
+let pipelineChart = null;
+
+const pages = {
+  dashboard: ` <h1>Dashboard</h1>
+    <div class="grid">
+      <div class="card"><h3>Price Variance / Cost Savings</h3><p>₱12,500</p><small>+8% vs last month</small></div>
+      <div class="card"><h3>On-Time Delivery Rate</h3><p>92%</p><small>+3 pts</small></div>
+      <div class="card"><h3>Defect Rate / Compliance Score</h3><p>2%</p><small>-1 pt</small></div>
+      <div class="card"><h3>Vendor Performance Score</h3><p>87/100</p><small>Stable</small></div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Supply Chain Flow (Last 6 Weeks)</h3>
+        <canvas id="pipelineChart" height="100"></canvas>
+      </div>
+      <div class="card" id="tasksCard">
+        <h3>Tasks</h3>
+        <ul id="taskList" style="list-style:none;padding:0;margin:0;">
+          <li><input type="checkbox" /> Review vendor contracts <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" checked /> Monitor deliveries <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Update compliance checklist <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Evaluate supplier pricing <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+        </ul>
+        <button id="addTaskBtn" class="btn" style="margin-top:.5rem;">➕</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <h3>Recent Vendor Engagements</h3>
+      <table id="vendorEngagementsTable">
+        <thead>
+          <tr>
+            <th>Type of Business</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>3,785.00</td><td data-stars="5"></td></tr>
+          <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>2,345</td><td data-stars="5"></td></tr>
+          <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>5,199</td><td data-stars="5"></td></tr>
+          <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>1,870</td><td data-stars="5"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  `,
+
+  Vendor: `
+    <h1>Vendor Management</h1>
+    <input type="text" id="vendorSearch" placeholder="Search Vendor…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+    <table id="vendorTable">
+      <thead>
+        <tr><th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>3,785</td><td data-stars="5"></td></tr>
+        <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>2,345</td><td data-stars="5"></td></tr>
+        <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>5,199</td><td data-stars="5"></td></tr>
+        <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>1,870</td><td data-stars="5"></td></tr>
+      </tbody>
+    </table>
+  `,
+
+Commodity: `
+  <h1>COMMODITY AND PRICE MONITORING</h1>
+  <table id="commodityTable">
+    <thead>
+      <tr>
+        <th>Type of Business</th>
+        <th>Previous Price</th>
+        <th>Current Price</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td contenteditable="true">Takoyaki store</td>
+        <td contenteditable="true">50</td>
+        <td contenteditable="true">55</td>
+        <td contenteditable="true">Stable</td>
+      </tr>
+      <tr>
+        <td contenteditable="true">Sound equipment</td>
+        <td contenteditable="true">200</td>
+        <td contenteditable="true">250</td>
+        <td contenteditable="true">High</td>
+      </tr>
+      <tr>
+        <td contenteditable="true">Tables and chairs</td>
+        <td contenteditable="true">100</td>
+        <td contenteditable="true">90</td>
+        <td contenteditable="true">Low</td>
+      </tr>
+      <tr>
+        <td contenteditable="true">Atan's Meat Shop</td>
+        <td contenteditable="true">150</td>
+        <td contenteditable="true">180</td>
+        <td contenteditable="true">High</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="display:flex;gap:2rem;margin-top:1rem;align-items:flex-start;">
+    
+    <div style="flex:0 0 auto;">
+      <canvas id="pieChart" width="300" height="300"></canvas>
+    </div>
+
+   
+    <div class="card-container" style="display:flex;gap:1rem;flex-wrap:wrap;flex:1;">
+      <div class="card" onclick="openDataModal('Takoyaki store')">
+        Takoyaki store<br>
+        <button class="view-btn">View Data</button>
+      </div>
+      <div class="card" onclick="openDataModal('Sound equipment')">
+        Sound equipment<br>
+        <button class="view-btn">View Data</button>
+      </div>
+      <div class="card" onclick="openDataModal('Tables and chairs')">
+        Tables and chairs<br>
+        <button class="view-btn">View Data</button>
+      </div>
+      <div class="card" onclick="openDataModal('Atan\'s Meat Shop')">
+        Atan's Meat Shop<br>
+        <button class="view-btn">View Data</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="dataModal" class="overlay" style="display:none;justify-content:center;align-items:center;">
+    <div class="modal" style="background:#fff;padding:1rem;border-radius:8px;max-width:600px;width:90%;">
+      <span class="close" onclick="closeDataModal()" style="float:right;cursor:pointer;font-size:20px;">&times;</span>
+      <h3 id="modalTitle"></h3>
+      <canvas id="lineChart" width="500" height="250"></canvas>
+    </div>
+  </div>
+ `,
+  
+  Supply: `
+  <h1>Supply Monitoring</h1>
+  <input type="text" id="supplySearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+  <table id="supplyTable">
+    <thead>
+      <tr>
+        <th>Ref No.</th><th>Business Name</th><th>Business Category</th><th>Supplier</th>
+        <th>Pick-up</th><th>Drop-off</th><th>Delivery Time</th><th>Report</th>
+        <th>Contact No.</th><th>Item Value</th><th>Quality</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="#" class="ref-link">RPT-001</a></td>
+        <td>Daisy Poultry</td><td>MEAT SHOP</td><td>James</td><td>Quezon City</td>
+        <td>Muñoz</td><td>12:00 am - 2:00 pm</td><td>Filed</td>
+        <td>0970-567-1136</td><td>₱4,000.00</td><td>★★★★★</td><td>⛔ Delayed</td>
+      </tr>
+      <tr>
+        <td><a href="#" class="ref-link">RPT-002</a></td>
+        <td>Takoyaki Supplier</td><td>SUPPLIES SHOP</td><td>Maria</td><td>Makati</td>
+        <td>Muñoz</td><td>7:00 am - 9:00 am</td><td>None</td>
+        <td>0917-888-9999</td><td>₱2,500.00</td><td>★★★★★</td><td>✅ Completed</td>
+      </tr>
+      <tr>
+        <td><a href="#" class="ref-link">RPT-003</a></td>
+        <td>Catering Supplies</td><td>CATERING</td><td>Sofia</td><td>Taguig</td>
+        <td>Muñoz</td><td>10:00 am - 12:00 pm</td><td>None</td>
+        <td>0920-555-4444</td><td>₱3,200.00</td><td>★★★★★</td><td>✏ In progress</td>
+      </tr>
+      <tr>
+        <td><a href="#" class="ref-link">RPT-004</a></td>
+        <td>Party Rental</td><td>RENTAL SHOP</td><td>Ramon</td><td>Manila</td>
+        <td>Muñoz</td><td>3:00 am - 5:00 am</td><td>None</td>
+        <td>0998-222-3333</td><td>₱5,000.00</td><td>★★★★★</td><td>✅ Completed</td>
+      </tr>
+    </tbody>
+  </table>
+  `,
+Reports: `
+  <h1>Reports and Dashboard with AI Analytic</h1>
+  <div class="grid">
+    <div class="card">
+      <h3>Vendor Performance Dashboard</h3>
+      <canvas id="vendorChart" height="120"></canvas>
+    </div>
+    <div class="card">
+      <h3>Recent Complaints</h3>
+      <div id="complaintsContainer" style="display:none;">
+        <p id="complaintMessage" style="background:#fce8b2;padding:.5rem;border-radius:6px;"></p>
+      </div>
+
+      <select id="complaintSelect" style="margin-top:.5rem;width:100%;padding:.4rem;">
+        <option value="">-- Select Complaint Ref No. --</option>
+        <option value="RPT-001">RPT-001</option>
+        <option value="RPT-002">RPT-002</option>
+        <option value="RPT-003">RPT-003</option>
+        <option value="RPT-004">RPT-004</option>
+      </select>
+      <button id="viewComplaintBtn" class="btn" style="margin-top:.5rem;">View Complaint</button>
+    </div>
+    <div class="card">
+      <h3>AI Chat Support</h3>
+      <div id="chatboxContainer" style="border:1px solid #ccc;padding:10px;border-radius:8px;height:200px;overflow:auto;"></div>
+      <div style="margin-top:.5rem;display:flex;gap:.5rem;">
+        <input id="chatInput" type="text" placeholder="Type your question..." style="flex:1;padding:.4rem;border:1px solid #ccc;border-radius:6px;">
+        <button id="chatSendBtn" class="btn">Send</button>
+      </div>
+    </div>
+  </div>
+`,
+  
+  Settings: `<h1>Settings</h1><p>Settings content here...</p>`
+};
+
+function attachRefLinks(){
+  document.querySelectorAll(".ref-link").forEach(link=>{
+    link.onclick=(e)=>{
+      e.preventDefault();
+      const ref = link.textContent;
+      renderPage("Reports", ref);
+    };
+  });
+}
+
+let pieChart = null;
+let lineChart = null;
+
 function initCommodity(){
   const ctx = document.getElementById('pieChart');
   if(!ctx) return;
@@ -382,6 +713,197 @@ function openDataModal(businessName) {
 function closeDataModal() {
   document.getElementById("dataModal").style.display = "none";
 }
+  
+function initReports(refNo){
+  const ctx=document.getElementById("vendorChart");
+  if(ctx){
+    new Chart(ctx,{
+      type:"bar",
+      data:{
+        labels:["Takoyaki","Meat Shop","Catering","Rental"],
+        datasets:[{label:"Performance",data:[87,65,72,90],backgroundColor:"#0a53c1"}]
+      }
+    });
+  }
+
+  const complaints={
+    "RPT-001":"Vendor delayed chicken delivery",
+    "RPT-002":"Incomplete Takoyaki supplies",
+    "RPT-003":"Catering delivery arrived late",
+    "RPT-004":"Rental items missing on arrival"
+  };
+
+  const container=document.getElementById("complaintsContainer");
+  const message=document.getElementById("complaintMessage");
+  const select=document.getElementById("complaintSelect");
+  const viewBtn=document.getElementById("viewComplaintBtn");
+
+  if(viewBtn){
+    viewBtn.onclick=()=>{
+      const ref=select.value;
+      if(ref && complaints[ref]){
+        container.style.display="block";
+        message.textContent=`(${ref}) ${complaints[ref]}`;
+      } else {
+        alert("Please select a complaint Ref No. first.");
+      }
+    };
+  }
+
+
+  if(refNo && complaints[refNo]){
+    container.style.display="block";
+    message.textContent=`(${refNo}) ${complaints[refNo]}`;
+    select.value=refNo;
+  }
+  const chatBox=document.getElementById("chatboxContainer");
+  const chatInput=document.getElementById("chatInput");
+  const chatSendBtn=document.getElementById("chatSendBtn");
+
+  function addMessage(sender,text){
+    const div=document.createElement("div");
+    div.style.margin="4px 0";
+    div.innerHTML=`<b>${sender}:</b> ${text}`;
+    chatBox.appendChild(div);
+    chatBox.scrollTop=chatBox.scrollHeight;
+  }
+
+  function botReply(msg){
+    msg=msg.toLowerCase();
+    if(msg.includes("status")){
+      return "📊 Current reports show most vendors are on track, with 2 pending complaints.";
+    }
+    if(msg.includes("performance")){
+      return "✅ Vendor performance is averaging 85%, with rentals leading at 90%.";
+    }
+    if(msg.includes("complaint")){
+      return "⚠️ There are 4 active complaints. Select a Ref No. to view details.";
+    }
+    if(msg.includes("hello")||msg.includes("hi")){
+      return "👋 Hello! How can I assist you today?";
+    }
+    return "🤖 Sorry, I don’t have an answer for that. Try asking about 'status', 'performance', or 'complaints'.";
+  }
+
+  if(chatSendBtn){
+    chatSendBtn.onclick=()=>{
+      const text=chatInput.value.trim();
+      if(text){
+        addMessage("You",text);
+        addMessage("Bot",botReply(text));
+        chatInput.value="";
+      }
+    };
+  }
+}
+  
+function renderPage(page, refNo=null){
+  contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
+  if(page === "dashboard") initDashboard();
+  if(page === "Vendor") makeTableEditable("vendorTable","vendorSearch");
+  if(page === "Supply") { 
+    makeTableEditable("supplyTable","supplySearch"); 
+    attachRefLinks(); 
+  }
+  if(page === "Reports") initReports(refNo);
+  if(page === "Commodity") { 
+    initCommodity(); 
+  } 
+}
+
+document.querySelectorAll(".nav-item").forEach(link=>{
+  if(!link.classList.contains("logout-btn")){
+    link.onclick=(e)=>{
+      e.preventDefault();
+      document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));
+      link.classList.add("active");
+      renderPage(link.dataset.page);
+    };
+  }
+});
+
+document.getElementById("backBtn").onclick=()=>window.history.back();
+document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
+
+function initDashboard(){
+  const ctx=document.getElementById("pipelineChart");
+  if(ctx){
+    pipelineChart = new Chart(ctx,{
+      type:"line",
+      data:{
+        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+        datasets:[{label:"Deliveries",data:[5,8,6,10,7,9],borderColor:"#0a53c1"}]
+      }
+    });
+  }
+  document.querySelectorAll("[data-stars]").forEach(cell=>{
+    const rating=+cell.dataset.stars||0;
+    cell.innerHTML="";
+    for(let i=1;i<=5;i++){
+      const star=document.createElement("span");
+      star.textContent="★";
+      star.className="star"+(i<=rating?" active":"");
+      star.onclick=()=>{cell.dataset.stars=i;renderPage("dashboard");};
+      cell.appendChild(star);
+    }
+  });
+  const taskList=document.getElementById("taskList");
+  if(taskList){
+    document.querySelectorAll(".edit-icon").forEach(icon=>{
+      icon.onclick=()=>{
+        const li=icon.parentElement;
+        const spanText=li.childNodes[1].textContent.trim();
+        const newTask=prompt("Edit task:",spanText);
+        if(newTask!==null) li.childNodes[1].textContent=" "+newTask+" ";
+      };
+    });
+    document.querySelectorAll(".delete-icon").forEach(icon=>{
+      icon.onclick=()=>icon.parentElement.remove();
+    });
+    document.getElementById("addTaskBtn").onclick=()=>{
+      const task=prompt("New Task:");
+      if(task){
+        const li=document.createElement("li");
+        li.innerHTML=`<input type="checkbox" /> ${task} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
+        taskList.appendChild(li);
+      }
+    };
+  }
+}
+
+function makeTableEditable(tableId,searchId){
+  const table=document.getElementById(tableId);
+  const search=document.getElementById(searchId);
+  if(search){
+    search.oninput=()=>{
+      const val=search.value.toLowerCase();
+      Array.from(table.tBodies[0].rows).forEach(r=>{
+        r.style.display= r.innerText.toLowerCase().includes(val)?"":"none";
+      });
+    };
+  }
+  table.querySelectorAll("td").forEach(td=>{
+    td.ondblclick=()=>{
+      const old=td.innerText;
+      const input=document.createElement("input");
+      input.value=old;
+      td.innerText="";
+      td.appendChild(input);
+      input.focus();
+      input.onblur=()=>{td.innerText=input.value||old;};
+    };
+  });
+}
+
+function openModal(){overlay.style.display="flex";}
+function closeModal(){overlay.style.display="none";}
+document.getElementById("newBtn").onclick=openModal;
+document.getElementById("saveBtn").onclick=()=>{alert("Saved!");closeModal();};
+
+renderPage("dashboard");
+</script>
+</body>
+</html>
   
 function initReports(refNo){
   const ctx=document.getElementById("vendorChart");
