@@ -240,6 +240,66 @@ const pages = {
       </div>
     </div>
   `,
+Inspection: `
+<h1>Supply Monitoring & Inspection Survey</h1>
+
+<input type="text" id="inspectionSearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+
+<table id="inspectionTable">
+  <thead>
+    <tr>
+      <th>Business Name</th>
+      <th>Interior Inspection</th>
+      <th>Merchandise Display</th>
+      <th>Fire Safety</th>
+      <th>Health Compliance</th>
+      <th>Hand Sanitizers & Masks</th>
+      <th>Social Distancing</th>
+      <th>Adequate Staffing</th>
+      <th>Employee Hygiene</th>
+      <th>Policy & Dress Code</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Atan's Meat Shop</td>
+      <td>Good</td>
+      <td>Very Good</td>
+      <td>Fair</td>
+      <td>Good</td>
+      <td>Very Good</td>
+      <td>Good</td>
+      <td>Good</td>
+      <td>Very Good</td>
+      <td>Good</td>
+    </tr>
+    <tr>
+      <td>Takoyaki Store</td>
+      <td>Very Good</td>
+      <td>Good</td>
+      <td>Good</td>
+      <td>Very Good</td>
+      <td>Good</td>
+      <td>Fair</td>
+      <td>Good</td>
+      <td>Good</td>
+      <td>Very Good</td>
+    </tr>
+    <tr>
+      <td>Daisy Poultry</td>
+      <td>Fair</td>
+      <td>Good</td>
+      <td>Poor</td>
+      <td>Fair</td>
+      <td>Good</td>
+      <td>Good</td>
+      <td>Fair</td>
+      <td>Good</td>
+      <td>Fair</td>
+    </tr>
+  </tbody>
+</table>
+ `,
 
   Supply: `
     <h1>Supply Monitoring</h1>
@@ -364,7 +424,15 @@ const pages = {
     </div>
   `
 };
+const inspectionTable = document.getElementById('inspectionTable');
+const inspectionSearch = document.getElementById('inspectionSearch');
 
+inspectionSearch.addEventListener('input', () => {
+  const val = inspectionSearch.value.toLowerCase();
+  Array.from(inspectionTable.tBodies[0].rows).forEach(row => {
+    row.style.display = row.cells[0].innerText.toLowerCase().includes(val) ? '' : 'none';
+  });
+});
 
 function openForm(type) {
   const modal = document.getElementById("settingsModal");
