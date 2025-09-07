@@ -424,12 +424,6 @@ Inspection: `
     </div>
   `
 };
-inspectionSearch.addEventListener('input', () => {
-  const val = inspectionSearch.value.toLowerCase();
-  Array.from(inspectionTable.tBodies[0].rows).forEach(row => {
-    row.style.display = row.cells[0].innerText.toLowerCase().includes(val) ? '' : 'none';
-  });
-});
 
 function openForm(type) {
   const modal = document.getElementById("settingsModal");
