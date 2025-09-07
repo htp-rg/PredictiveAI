@@ -38,6 +38,18 @@ th{font-size:.85rem;opacity:.7}
 .star{cursor:pointer;font-size:1.2rem;color:#ccc}
 .star.active{color:gold}
 .edit-icon, .delete-icon{cursor:pointer;margin-left:4px;}
+  .view-btn {
+      background:black;
+      color:white;
+      border:none;
+      padding:6px 12px;
+      margin-top:6px;
+      cursor:pointer;
+      border-radius:4px;
+    }
+    .view-btn:hover {
+      opacity:0.8;
+    }
 </style>
 </head>
 <body>
@@ -153,7 +165,7 @@ const pages = {
     </table>
   `,
 
-  Commodity: `
+ Commodity: `
   <h1>COMMODITY AND PRICE MONITORING</h1>
   <table id="commodityTable">
     <thead>
@@ -192,34 +204,41 @@ const pages = {
     </tbody>
   </table>
 
- <div style="display:flex;gap:2rem;margin-top:1rem;align-items:flex-start;">
- <div style="flex:0 0 auto;">
-  <canvas id="pieChart" style="width:100px;height:100px;"></canvas>
+  <div style="display:flex;gap:2rem;margin-top:1rem;align-items:flex-start;">
+    
+   
+    <div style="flex:0 0 auto;">
+      <canvas id="pieChart" width="180" height="180"></canvas>
+    </div>
 
-    <div class="card-container" style="display:flex;gap:1rem;flex-wrap:wrap;">
+
+    <div class="card-container" style="display:flex;gap:1rem;flex-wrap:wrap;flex:1;">
       <div class="card" onclick="openDataModal('Takoyaki store')">
-        Takoyaki store<br><button>View Data</button>
+        Takoyaki store<br>
+        <button class="view-btn">View Data</button>
       </div>
       <div class="card" onclick="openDataModal('Sound equipment')">
-        Sound equipment<br><button>View Data</button>
+        Sound equipment<br>
+        <button class="view-btn">View Data</button>
       </div>
       <div class="card" onclick="openDataModal('Tables and chairs')">
-        Tables and chairs<br><button>View Data</button>
+        Tables and chairs<br>
+        <button class="view-btn">View Data</button>
       </div>
       <div class="card" onclick="openDataModal('Atan\\'s Meat Shop')">
-        Atan's Meat Shop<br><button>View Data</button>
+        Atan's Meat Shop<br>
+        <button class="view-btn">View Data</button>
       </div>
     </div>
   </div>
-
-  <div id="dataModal" class="overlay" style="display:none;">
+ 
+  <div id="dataModal" class="overlay" style="display:none;justify-content:center;align-items:center;">
     <div class="modal" style="background:#fff;padding:1rem;border-radius:8px;max-width:600px;width:90%;">
       <span class="close" onclick="closeDataModal()" style="float:right;cursor:pointer;font-size:20px;">&times;</span>
       <h3 id="modalTitle"></h3>
       <canvas id="lineChart" width="500" height="250"></canvas>
-    </div>
-  </div>
-`,
+      `,
+  
   Supply: `
   <h1>Supply Monitoring</h1>
   <input type="text" id="supplySearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
@@ -343,25 +362,23 @@ function openDataModal(businessName) {
   const ctxLine = document.getElementById('lineChart').getContext('2d');
   if (window.lineChart) window.lineChart.destroy();
 
-
   let row = [...document.querySelectorAll('#commodityTable tbody tr')]
               .find(r => r.cells[0].innerText.trim() === businessName);
 
   let prev = row ? parseFloat(row.cells[1].innerText) || 0 : 0;
   let curr = row ? parseFloat(row.cells[2].innerText) || 0 : 0;
 
- 
-  let sampleTrend = [prev - 10, prev, (prev+curr)/2, curr];
+  let pipeline = [prev - 5, prev, (prev + curr) / 2, curr];
 
   window.lineChart = new Chart(ctxLine, {
     type: 'line',
     data: {
-      labels: ['Month 1','Month 2','Month 3','Month 4'],
+      labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4'],
       datasets: [{
         label: businessName + ' Price Trend',
-        data: sampleTrend,
-        borderColor: '#007bff',
-        backgroundColor: '#007bff33',
+        data: pipeline,
+        borderColor: '#000',
+        backgroundColor: 'rgba(0,0,0,0.1)',
         fill: true,
         tension: 0.3
       }]
