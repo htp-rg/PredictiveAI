@@ -31,6 +31,8 @@ table{width:100%;border-collapse:collapse}
 th,td{border-bottom:1px solid var(--border);padding:.6rem;text-align:left;vertical-align:middle}
 th{font-size:.85rem;opacity:.7}
 .star{font-size:1.2rem;color:gold}
+#complaintForm {display:none;flex-direction:column;gap:.5rem;margin-top:1rem;}
+#complaintForm textarea {width:100%;padding:.5rem;border:1px solid var(--border);border-radius:8px;}
 </style>
 </head>
 <body>
@@ -67,99 +69,18 @@ th{font-size:.85rem;opacity:.7}
 const contentArea = document.getElementById("contentArea");
 
 const pages = {
-  dashboard: ` <h1>Dashboard</h1>
+  dashboard: `<h1>Dashboard</h1>
     <div class="grid">
       <div class="card"><h3>Price Variance / Cost Savings</h3><p>₱12,500</p><small>+8% vs last month</small></div>
       <div class="card"><h3>On-Time Delivery Rate</h3><p>92%</p><small>+3 pts</small></div>
       <div class="card"><h3>Defect Rate / Compliance Score</h3><p>2%</p><small>-1 pt</small></div>
       <div class="card"><h3>Vendor Performance Score</h3><p>87/100</p><small>Stable</small></div>
     </div>
-
-    <div class="grid">
-      <div class="card">
-        <h3>Supply Chain Flow (Last 6 Weeks)</h3>
-        <canvas id="pipelineChart" height="100"></canvas>
-      </div>
-      <div class="card">
-        <h3>Tasks (Read Only)</h3>
-        <ul>
-          <li>Review vendor contracts</li>
-          <li>Monitor deliveries</li>
-          <li>Update compliance checklist</li>
-          <li>Evaluate supplier pricing</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:1rem;">
-      <h3>Recent Vendor Engagements</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Type of Business</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>₱3,785</td><td>★★★★★</td></tr>
-          <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>₱2,345</td><td>★★★★★</td></tr>
-          <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>₱5,199</td><td>★★★★★</td></tr>
-          <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>₱1,870</td><td>★★★★★</td></tr>
-        </tbody>
-      </table>
-    </div>
   `,
 
-  Vendor: `
-    <h1>Vendor Management</h1>
-    <input type="text" id="vendorSearch" placeholder="Search Vendor…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
-    <table>
-      <thead>
-        <tr><th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>₱3,785</td><td>★★★★★</td></tr>
-        <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>₱2,345</td><td>★★★★★</td></tr>
-        <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>₱5,199</td><td>★★★★★</td></tr>
-        <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>₱1,870</td><td>★★★★★</td></tr>
-      </tbody>
-    </table>
-  `,
+  Vendor: `<h1>Vendor Management</h1><p>Vendor list here...</p>`,
 
-  Supply: `
-  <h1>Supply Monitoring</h1>
-  <input type="text" id="supplySearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
-  <table>
-    <thead>
-      <tr>
-        <th>Ref No.</th><th>Business Name</th><th>Business Category</th><th>Supplier</th>
-        <th>Pick-up</th><th>Drop-off</th><th>Delivery Time</th><th>Report</th>
-        <th>Contact No.</th><th>Item Value</th><th>Quality</th><th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>RPT-001</td><td>Daisy Poultry</td><td>MEAT SHOP</td><td>James</td><td>Quezon City</td>
-        <td>Muñoz</td><td>12:00 am - 2:00 pm</td><td>Filed</td>
-        <td>0970-567-1136</td><td>₱4,000.00</td><td>★★★☆☆</td><td>⛔ Delayed</td>
-      </tr>
-      <tr>
-        <td>RPT-002</td><td>Takoyaki Supplier</td><td>SUPPLIES SHOP</td><td>Maria</td><td>Makati</td>
-        <td>Muñoz</td><td>7:00 am - 9:00 am</td><td>None</td>
-        <td>0917-888-9999</td><td>₱2,500.00</td><td>★★★★★</td><td>✅ Completed</td>
-      </tr>
-      <tr>
-        <td>RPT-003</td><td>Catering Supplies</td><td>CATERING</td><td>Sofia</td><td>Taguig</td>
-        <td>Muñoz</td><td>10:00 am - 12:00 pm</td><td>None</td>
-        <td>0920-555-4444</td><td>₱3,200.00</td><td>★★★★★</td><td>✏ In progress</td>
-      </tr>
-      <tr>
-        <td>RPT-004</td><td>Party Rental</td><td>RENTAL SHOP</td><td>Ramon</td><td>Manila</td>
-        <td>Muñoz</td><td>3:00 am - 5:00 am</td><td>None</td>
-        <td>0998-222-3333</td><td>₱5,000.00</td><td>★★★★★</td><td>✅ Completed</td>
-      </tr>
-    </tbody>
-  </table>
-  `,
+  Supply: `<h1>Supply Monitoring</h1><p>Supply details here...</p>`,
 
   Reports: `
     <h1>Reports and Dashboard with AI Analytic</h1>
@@ -170,12 +91,12 @@ const pages = {
       </div>
       <div class="card">
         <h3>Recent Complaints</h3>
-        <ul>
-          <li>Vendor delayed chicken delivery (Ref: RPT-001)</li>
-          <li>Incomplete Takoyaki supplies (Ref: RPT-002)</li>
-          <li>Catering delivery arrived late (Ref: RPT-003)</li>
-          <li>Rental items missing on arrival (Ref: RPT-004)</li>
-        </ul>
+        <ul id="reportComplaints"></ul>
+        <button class="btn" onclick="toggleComplaintForm()">➕ Make a Complaint</button>
+        <div id="complaintForm">
+          <textarea id="complaintText" placeholder="Enter your complaint..."></textarea>
+          <button class="btn" onclick="submitComplaint()">Submit Complaint</button>
+        </div>
       </div>
       <div class="card">
         <h3>AI Chat Support</h3>
@@ -191,20 +112,9 @@ const pages = {
 
 function renderPage(page){
   contentArea.innerHTML = pages[page]||`<h1>${page}</h1>`;
-  if(page==="dashboard") initDashboard();
-  if(page==="Reports") initReports();
-}
-
-function initDashboard(){
-  const ctx=document.getElementById("pipelineChart");
-  if(ctx){
-    new Chart(ctx,{
-      type:"line",
-      data:{
-        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
-        datasets:[{label:"Deliveries",data:[5,8,6,10,7,9],borderColor:"#0a53c1"}]
-      }
-    });
+  if(page==="Reports") {
+    initReports();
+    loadComplaints();
   }
 }
 
@@ -220,6 +130,40 @@ function initReports(){
     });
   }
 }
+
+
+function toggleComplaintForm(){
+  const form=document.getElementById("complaintForm");
+  form.style.display = form.style.display==="flex" ? "none" : "flex";
+}
+
+function submitComplaint(){
+  let text=document.getElementById("complaintText").value.trim();
+  if(!text){alert("Please enter a complaint");return;}
+  let complaints=JSON.parse(localStorage.getItem("complaints"))||[];
+  complaints.push(text);
+  localStorage.setItem("complaints",JSON.stringify(complaints));
+  document.getElementById("complaintText").value="";
+  toggleComplaintForm();
+  loadComplaints();
+}
+
+function loadComplaints(){
+  let complaints=JSON.parse(localStorage.getItem("complaints"))||[];
+  let list=document.getElementById("reportComplaints");
+  if(!list) return;
+  list.innerHTML="";
+  if(complaints.length===0){
+    list.innerHTML="<li>No complaints yet</li>";
+  } else {
+    complaints.forEach((c,i)=>{
+      let li=document.createElement("li");
+      li.textContent=`${i+1}. ${c}`;
+      list.appendChild(li);
+    });
+  }
+}
+
 
 document.querySelectorAll(".nav-item").forEach(link=>{
   if(!link.classList.contains("logout-btn")){
