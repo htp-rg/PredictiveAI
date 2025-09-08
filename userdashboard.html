@@ -3,64 +3,58 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>LGU Admin Dashboard</title>
-<!-- Tailwind CSS for modern, responsive styling -->
-<script src="https://cdn.tailwindcss.com"></script>
-<!-- Chart.js for data visualization -->
+<title>Admin Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  :root {
-    --text: #111111; --blue: #0a53c1; --ink-20: #f4f6f8;
-    --white: #ffffff; --border: #e6e8eb;
-    --shadow: 0 6px 24px rgba(0, 0, 0, .06);
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; font-family: Inter, system-ui, sans-serif; background: var(--white); color: var(--text); }
-  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-  .sidebar { border-right: 1px solid var(--border); background: var(--white); transition: transform .3s; }
-  .sidebar.open { transform: translateX(0); }
-  @media (max-width: 768px) {
-    .sidebar { position: fixed; z-index: 100; transform: translateX(-100%); }
-    .sidebar.open { transform: translateX(0); }
-    .app { grid-template-columns: 1fr; }
-    .topbar .btn:not(#menuBtn) { display: none; }
-  }
-  .brand { font-weight: 800; text-transform: uppercase; padding: 1rem; border-bottom: 1px solid var(--border); }
-  nav { padding: 1rem; }
-  .nav-item { display: block; padding: .6rem; border-radius: 8px; text-decoration: none; color: var(--text); }
-  .nav-item:hover, .nav-item.active { background: var(--ink-20); }
-  .main { display: grid; grid-template-rows: 64px 1fr; min-width: 0; }
-  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; border-bottom: 1px solid var(--border); }
-  .search { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 12px; padding: .4rem .7rem; }
-  .search input { border: none; outline: none; background: transparent; }
-  .btn { border: 1px solid var(--text); background: transparent; padding: .4rem .8rem; border-radius: 8px; cursor: pointer; }
-  .content { padding: 1rem; overflow-y: auto; }
-  .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-  .card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 1rem; box-shadow: var(--shadow); }
-  table { width: 100%; border-collapse: collapse; }
-  th, td { border-bottom: 1px solid var(--border); padding: .6rem; text-align: left; vertical-align: middle; }
-  th { font-size: .85rem; opacity: .7; }
-  .overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, .5); align-items: center; justify-content: center; z-index: 200; }
-  .modal { background: #fff; padding: 1rem; border-radius: 12px; min-width: 300px; max-width: 90%; }
-  .modal input, .modal select, .modal textarea { display: block; width: 100%; margin: .5rem 0; padding: .4rem; border-radius: 6px; border: 1px solid #ccc; }
-  .star { cursor: pointer; font-size: 1.2rem; color: #ccc; }
-  .star.active { color: gold; }
-  .edit-icon, .delete-icon { cursor: pointer; margin-left: 4px; }
-  .view-btn {
-    background: black;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    margin-top: 6px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  .view-btn:hover { opacity: 0.8; }
+:root{
+  --text:#111111; --blue:#0a53c1; --ink-20:#f4f6f8;
+  --white:#ffffff; --border:#e6e8eb;
+  --shadow:0 6px 24px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--white);color:var(--text);}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+.sidebar{border-right:1px solid var(--border);background:var(--white);transition:transform .3s}
+.sidebar.open{transform:translateX(0)}
+.sidebar:not(.open){transform:translateX(-100%)}
+.brand{font-weight:800;text-transform:uppercase;padding:1rem;border-bottom:1px solid var(--border);}
+nav{padding:1rem}
+.nav-item{display:block;padding:.6rem;border-radius:8px;text-decoration:none;color:var(--text);}
+.nav-item:hover,.nav-item.active{background:var(--ink-20)}
+.main{display:grid;grid-template-rows:64px 1fr;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 1rem;border-bottom:1px solid var(--border);}
+.search{display:flex;align-items:center;border:1px solid var(--border);border-radius:12px;padding:.4rem .7rem}
+.search input{border:none;outline:none}
+.btn{border:1px solid var(--text);background:transparent;padding:.4rem .8rem;border-radius:8px;cursor:pointer}
+.content{padding:1rem;overflow:auto}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid var(--border);padding:.6rem;text-align:left;vertical-align:middle}
+th{font-size:.85rem;opacity:.7}
+
+
+.overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:1000}
+.modal{background:#fff;padding:1rem;border-radius:12px;min-width:300px;max-width:90vw;max-height:90vh;overflow:auto}
+.modal input,.modal select{display:block;width:100%;margin:.5rem 0;padding:.4rem}
+
+
+.settings-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:1100}
+.settings-modal-content{background:white;padding:20px;margin:10% auto;width:300px;border-radius:10px}
+
+.star{cursor:pointer;font-size:1.2rem;color:#ccc}
+.star.active{color:gold}
+.edit-icon,.delete-icon{cursor:pointer;margin-left:4px}
+.view-btn{background:black;color:white;border:none;padding:6px 12px;margin-top:6px;cursor:pointer;border-radius:4px}
+.view-btn:hover{opacity:0.8}
+.settings-btn{display:block;width:250px;margin:10px auto;padding:10px;font-size:16px;border-radius:20px;border:1px solid #ccc;background:white;cursor:pointer}
+.settings-btn:hover{background:#f0f0f0}
+.close{float:right;font-size:20px;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="app">
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar open" id="sidebar">
     <div class="brand">LGU 3 ADMIN SYSTEM</div>
     <nav>
       <a href="#" class="nav-item active" data-page="dashboard">Dashboard</a>
@@ -70,19 +64,18 @@
       <a href="#" class="nav-item" data-page="Inspection">Inspection and compliance</a>
       <a href="#" class="nav-item" data-page="Reports">Reports and Dashboard with AI analytic</a>
       <a href="#" class="nav-item" data-page="Settings">Settings</a>
-      <a href="#" class="nav-item logout-btn" style="margin-top: 2rem; font-weight: bold;">Logout</a>
+      <a href="main.html" class="nav-item logout-btn" style="margin-top: 2rem; font-weight: bold;">Logout</a>
     </nav>
   </aside>
 
   <section class="main">
     <header class="topbar">
-      <div class="flex items-center gap-2">
-        <button class="btn md:hidden" id="menuBtn">☰</button>
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <button class="btn" id="backBtn">← Back</button>
+        <button class="btn" id="menuBtn">☰</button>
         <div class="search">🔎 <input id="searchInput" type="search" placeholder="Search…"></div>
       </div>
       <div>
-        <button class="btn" id="newBtn">+ New</button>
-        <button class="btn" id="exportBtn">Export</button>
       </div>
     </header>
 
@@ -91,603 +84,741 @@
 </div>
 
 
-<div class="overlay" id="messageModal">
+<div class="overlay" id="overlay">
   <div class="modal">
-    <h3 id="messageTitle" class="text-lg font-semibold"></h3>
-    <p id="messageContent" class="my-4"></p>
-    <div class="flex justify-end gap-2">
-      <button class="btn" id="messageOkBtn">OK</button>
-      <button class="btn" id="messageCancelBtn" style="display:none;">Cancel</button>
-    </div>
-  </div>
-</div>
-
-
-<div class="overlay" id="vendorModal">
-  <div class="modal">
-    <h3 id="modalTitle" class="text-lg font-semibold">New Vendor Engagement</h3>
-    <input id="businessNameInput" placeholder="Business Name" />
-    <select id="stageInput" class="rounded-md">
-      <option value="✅ Completed">✅ Completed</option>
-      <option value="✏ In progress">✏ In progress</option>
-      <option value="⏳ Not started">⏳ Not started</option>
-      <option value="⛔ Blocked">⛔ Blocked</option>
+    <h3 id="modalTitle">New Vendor Engagement</h3>
+    <input id="dealInput" placeholder="Business Name" />
+    <select id="stageInput">
+      <option>✅ Completed</option><option>✏ In progress</option><option>⏳ Not started</option><option>⛔ Blocked</option>
     </select>
-    <input id="ownerInput" placeholder="Owner" />
     <input id="valueInput" placeholder="Records of Payment" type="text" />
-    <input id="dueDateInput" type="date" />
-    <div class="flex justify-end gap-2 mt-4">
-      <button class="btn bg-blue-500 text-white border-blue-500 hover:bg-blue-600" id="saveVendorBtn">Save</button>
-      <button class="btn" onclick="closeModal('vendorModal')">Cancel</button>
+    <input id="ownerInput" placeholder="Owner" />
+    <button class="btn" id="saveBtn">Save</button>
+    <button class="btn" id="cancelNewBtn">Cancel</button>
+  </div>
+</div>
+
+<script>
+  function saveToStorage(key, data){
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+function loadFromStorage(key, defaultValue){
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : defaultValue;
+}
+  
+const overlay = document.getElementById("overlay");
+const contentArea = document.getElementById("contentArea");
+let pipelineChart = null;
+let pieChart = null;
+let lineChart = null;
+
+const pages = {
+  dashboard: `
+    <h1>Dashboard</h1>
+    <div class="grid">
+      <div class="card"><h3>Price Variance / Cost Savings</h3><p>₱12,500</p><small>+8% vs last month</small></div>
+      <div class="card"><h3>On-Time Delivery Rate</h3><p>92%</p><small>+3 pts</small></div>
+      <div class="card"><h3>Defect Rate / Compliance Score</h3><p>2%</p><small>-1 pt</small></div>
+      <div class="card"><h3>Vendor Performance Score</h3><p>87/100</p><small>Stable</small></div>
     </div>
-  </div>
-</div>
 
+    <div class="grid">
+      <div class="card">
+        <h3>Supply Chain Flow (Last 6 Weeks)</h3>
+        <canvas id="pipelineChart" height="100"></canvas>
+      </div>
+      <div class="card" id="tasksCard">
+        <h3>Tasks</h3>
+        <ul id="taskList" style="list-style:none;padding:0;margin:0;">
+          <li><input type="checkbox" /> Review vendor contracts <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" checked /> Monitor deliveries <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Update compliance checklist <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+          <li><input type="checkbox" /> Evaluate supplier pricing <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span></li>
+        </ul>
+        <button id="addTaskBtn" class="btn" style="margin-top:.5rem;">➕</button>
+      </div>
+    </div>
 
-<div id="dataModal" class="overlay">
-  <div class="modal max-w-lg w-full">
-    <span class="close float-right cursor-pointer text-xl" onclick="closeDataModal()">&times;</span>
-    <h3 id="lineChartTitle" class="text-lg font-semibold mb-4"></h3>
-    <canvas id="lineChart" width="500" height="250"></canvas>
-  </div>
-</div>
+    <div class="card" style="margin-top:1rem;">
+      <h3>Recent Vendor Engagements</h3>
+      <table id="vendorEngagementsTable">
+        <thead>
+          <tr>
+            <th>Type of Business</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>3,785.00</td><td data-stars="5"></td></tr>
+          <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>2,345</td><td data-stars="0"></td></tr>
+          <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>5,199</td><td data-stars="0"></td></tr>
+          <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>1,870</td><td data-stars="3"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  `,
 
-<script type="module">
+  Vendor: `
+ <h1>Vendor Management</h1>
+<input type="text" id="vendorSearch" placeholder="Search Vendor…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+<table id="vendorTable" border="1" cellpadding="5">
+  <thead>
+    <tr><th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>3,785.00</td><td data-stars="5"></td></tr>
+    <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>2,345</td><td data-stars="0"></td></tr>
+    <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>5,199</td><td data-stars="0"></td></tr>
+    <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>1,870</td><td data-stars="3"></td></tr>
+  </tbody>
+</table>
+  `,
 
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-  import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  Commodity: `
+    <h1>COMMODITY AND PRICE MONITORING</h1>
+    <table id="commodityTable">
+      <thead>
+        <tr>
+          <th>Type of Business</th>
+          <th>Previous Price</th>
+          <th>Current Price</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td contenteditable="true">Takoyaki store</td>
+          <td contenteditable="true">50</td>
+          <td contenteditable="true">55</td>
+          <td contenteditable="true">Stable</td>
+        </tr>
+        <tr>
+          <td contenteditable="true">Sound equipment</td>
+          <td contenteditable="true">200</td>
+          <td contenteditable="true">250</td>
+          <td contenteditable="true">High</td>
+        </tr>
+        <tr>
+          <td contenteditable="true">Tables and chairs</td>
+          <td contenteditable="true">100</td>
+          <td contenteditable="true">90</td>
+          <td contenteditable="true">Low</td>
+        </tr>
+        <tr>
+          <td contenteditable="true">Atan's Meat Shop</td>
+          <td contenteditable="true">150</td>
+          <td contenteditable="true">180</td>
+          <td contenteditable="true">High</td>
+        </tr>
+      </tbody>
+    </table>
 
- 
-  let auth, db, userId;
-  let pipelineChart = null;
-  let pieChart = null;
-  let lineChart = null;
-  const overlay = document.getElementById("overlay");
-  const contentArea = document.getElementById("contentArea");
+    <div style="display:flex;gap:2rem;margin-top:1rem;align-items:flex-start;">
+      <div style="flex:0 0 auto;">
+        <canvas id="pieChart" width="300" height="300"></canvas>
+      </div>
 
+      <div class="card-container" style="display:flex;gap:1rem;flex-wrap:wrap;flex:1;">
+        <div class="card" onclick="openDataModal('Takoyaki store')">
+          Takoyaki store<br>
+          <button class="view-btn">View Data</button>
+        </div>
+        <div class="card" onclick="openDataModal('Sound equipment')">
+          Sound equipment<br>
+          <button class="view-btn">View Data</button>
+        </div>
+        <div class="card" onclick="openDataModal('Tables and chairs')">
+          Tables and chairs<br>
+          <button class="view-btn">View Data</button>
+        </div>
+        <div class="card" onclick="openDataModal('Atan Meat Shop')">
+          Atan Meat Shop<br>
+          <button class="view-btn">View Data</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="dataModal" class="overlay" style="display:none;justify-content:center;align-items:center;">
+      <div class="modal" style="background:#fff;padding:1rem;border-radius:8px;max-width:600px;width:90%;">
+        <span class="close" onclick="closeDataModal()" style="float:right;cursor:pointer;font-size:20px;">&times;</span>
+        <h3 id="dataModalTitle"></h3>
+        <canvas id="lineChart" width="500" height="250"></canvas>
+      </div>
+    </div>
+  `,
+Inspection: `
+<h1>Supply Monitoring & Inspection Survey</h1>
+
+<input type="text" id="inspectionSearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+
+<table id="inspectionTable">
+  <thead>
+    <tr>
+      <th>Business Name</th>
+      <th>Interior Inspection</th>
+      <th>Merchandise Display</th>
+      <th>Fire Safety</th>
+      <th>Health Compliance</th>
+      <th>Hand Sanitizers & Masks</th>
+      <th>Social Distancing</th>
+      <th>Adequate Staffing</th>
+      <th>Employee Hygiene</th>
+      <th>Policy & Dress Code</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Atan's Meat Shop</td>
+      <td>Good</td>
+      <td>Very Good</td>
+      <td>Fair</td>
+      <td>Good</td>
+      <td>Very Good</td>
+      <td>Good</td>
+      <td>Good</td>
+      <td>Very Good</td>
+      <td>Good</td>
+    </tr>
+    <tr>
+      <td>Takoyaki Store</td>
+      <td>Very Good</td>
+      <td>Good</td>
+      <td>Good</td>
+      <td>Very Good</td>
+      <td>Good</td>
+      <td>Fair</td>
+      <td>Good</td>
+      <td>Good</td>
+      <td>Very Good</td>
+    </tr>
+    <tr>
+      <td>Sound Equipment</td>
+      <td>Fair</td>
+      <td>Good</td>
+      <td>Fair</td>
+      <td>Fair</td>
+      <td>Good</td>
+      <td>Good</td>
+      <td>Fair</td>
+      <td>Good</td>
+      <td>Fair</td>
+    </tr>
+    <tr>
+      <td>Tables and Chairs</td>
+      <td>Good</td>
+      <td>Fair</td>
+      <td>Good</td>
+      <td>Good</td>
+      <td>Fair</td>
+      <td>Good</td>
+      <td>Good</td>
+      <td>Fair</td>
+      <td>Good</td>
+    </tr>
+  </tbody>
+</table>
+`,
   
-  const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-  const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-  const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+  Supply: `
+    <h1>Supply Monitoring</h1>
+    <input type="text" id="supplySearch" placeholder="Search Supply…" style="margin-bottom:1rem;width:100%;padding:.5rem;">
+    <table id="supplyTable">
+      <thead>
+        <tr>
+          <th>Ref No.</th><th>Business Name</th><th>Business Category</th><th>Supplier</th>
+          <th>Pick-up</th><th>Drop-off</th><th>Delivery Time</th><th>Report</th>
+          <th>Contact No.</th><th>Item Value</th><th>Quality</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="#" class="ref-link">RPT-001</a></td>
+          <td>Daisy Poultry</td><td>MEAT SHOP</td><td>James</td><td>Quezon City</td>
+          <td>Muñoz</td><td>12:00 am - 2:00 pm</td><td>Filed</td>
+          <td>0970-567-1136</td><td>₱4,000.00</td><td data-stars="5"></td><td>⛔ Delayed</td>
+        </tr>
+        <tr>
+          <td><a href="#" class="ref-link">RPT-002</a></td>
+          <td>Takoyaki Supplier</td><td>SUPPLIES SHOP</td><td>Maria</td><td>Makati</td>
+          <td>Muñoz</td><td>7:00 am - 9:00 am</td><td>Filed</td>
+          <td>0917-888-9999</td><td>₱2,500.00</td><td data-stars="5"></td><td>✅ Completed</td>
+        </tr>
+        <tr>
+          <td><a href="#" class="ref-link">RPT-003</a></td>
+          <td>Catering Supplies</td><td>CATERING</td><td>Sofia</td><td>Taguig</td>
+          <td>Muñoz</td><td>10:00 am - 12:00 pm</td><td>Filed</td>
+          <td>0920-555-4444</td><td>₱3,200.00</td><td data-stars="5"></td><td>✏ In progress</td>
+        </tr>
+        <tr>
+          <td><a href="#" class="ref-link">RPT-004</a></td>
+          <td>Party Rental</td><td>RENTAL SHOP</td><td>Ramon</td><td>Manila</td>
+          <td>Muñoz</td><td>3:00 am - 5:00 am</td><td>Filed</td>
+          <td>0998-222-3333</td><td>₱5,000.00</td><td data-stars="5"></td><td>✅ Completed</td>
+        </tr>
+      </tbody>
+    </table>
+  `,
 
-  
-  async function initFirebase() {
-    try {
-      const app = initializeApp(firebaseConfig);
-      auth = getAuth(app);
-      db = getFirestore(app);
-
-      if (initialAuthToken) {
-        await signInWithCustomToken(auth, initialAuthToken);
-      } else {
-        await signInAnonymously(auth);
-      }
-      userId = auth.currentUser?.uid || 'anonymous';
-      console.log('Firebase initialized. User ID:', userId);
-      renderPage("dashboard");
-    } catch (e) {
-      console.error("Error during Firebase initialization or sign-in:", e);
-      showMessage("Error", "Failed to connect to the database. Please try again later.", true);
-    }
-  }
-
-
-  const data = {
-    vendors: [],
-    commodities: [],
-    supply: [],
-    tasks: []
-  };
-
-  const getCollectionPath = (collectionName) => {
-   
-    return `artifacts/${appId}/public/data/${collectionName}`;
-  };
-
-
-  function setupDataListeners() {
-
-    onSnapshot(collection(db, getCollectionPath("vendorEngagements")), (snapshot) => {
-      data.vendors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      updateUI('Vendor');
-      updateUI('dashboard');
-    });
-
-   
-    onSnapshot(collection(db, getCollectionPath("commodities")), (snapshot) => {
-      data.commodities = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      updateUI('Commodity');
-    });
-
-
-    onSnapshot(collection(db, getCollectionPath("supply")), (snapshot) => {
-      data.supply = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      updateUI('Supply');
-    });
-
-   
-    onSnapshot(collection(db, getCollectionPath("tasks")), (snapshot) => {
-      data.tasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      updateUI('dashboard');
-    });
-  }
-
- 
- const pages = {
-  dashboard: () => {
-    const vendorEngagementsHtml = `
-      <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>₱3,785</td><td data-stars="5"></td></tr>
-      <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>₱2,345</td><td data-stars="5"></td></tr>
-      <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>₱5,199</td><td data-stars="4"></td></tr>
-      <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>₱1,870</td><td data-stars="3"></td></tr>
-    `;
-
-    const tasksHtml = `
-      <li><input type="checkbox" checked> <span>Follow up with Takoyaki store</span></li>
-      <li><input type="checkbox"> <span>Check Sound equipment delivery</span></li>
-      <li><input type="checkbox"> <span>Review new Catering proposal</span></li>
-    `;
-
-    return `
-      <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <div class="card p-4 rounded-xl shadow-md"><h3>Price Variance / Cost Savings</h3><p>₱12,500</p><small class="text-green-500">+8% vs last month</small></div>
-        <div class="card p-4 rounded-xl shadow-md"><h3>On-Time Delivery Rate</h3><p>92%</p><small class="text-green-500">+3 pts</small></div>
-        <div class="card p-4 rounded-xl shadow-md"><h3>Defect Rate / Compliance Score</h3><p>2%</p><small class="text-red-500">-1 pt</small></div>
-        <div class="card p-4 rounded-xl shadow-md"><h3>Vendor Performance Score</h3><p>87/100</p><small class="text-gray-500">Stable</small></div>
+  Reports: `
+    <h1>Reports and Dashboard with AI Analytic</h1>
+    <div class="grid">
+      <div class="card">
+        <h3>Vendor Performance Dashboard</h3>
+        <canvas id="vendorChart" height="120"></canvas>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-        <div class="card p-4 rounded-xl shadow-md">
-          <h3 class="text-lg font-semibold">Supply Chain Flow (Last 6 Weeks)</h3>
-          <canvas id="pipelineChart" height="150"></canvas>
+      <div class="card">
+        <h3>Recent Complaints</h3>
+        <div id="complaintsContainer" style="display:none;">
+          <p id="complaintMessage" style="background:#fce8b2;padding:.5rem;border-radius:6px;"></p>
         </div>
-        <div class="card p-4 rounded-xl shadow-md">
-          <h3 class="text-lg font-semibold">Tasks</h3>
-          <ul id="taskList" class="list-none p-0 m-0 space-y-2">
-            ${tasksHtml}
-          </ul>
-          <button id="addTaskBtn" class="btn mt-2 bg-gray-200 hover:bg-gray-300">➕ Add Task</button>
+        <select id="complaintSelect" style="margin-top:.5rem;width:100%;padding:.4rem;">
+          <option value="">-- Select Complaint Ref No. --</option>
+          <option value="RPT-001">RPT-001</option>
+          <option value="RPT-002">RPT-002</option>
+          <option value="RPT-003">RPT-003</option>
+          <option value="RPT-004">RPT-004</option>
+        </select>
+        <button id="viewComplaintBtn" class="btn" style="margin-top:.5rem;">View Complaint</button>
+      </div>
+      <div class="card">
+        <h3>AI Chat Support</h3>
+        <div id="chatboxContainer" style="border:1px solid #ccc;padding:10px;border-radius:8px;height:200px;overflow:auto;"></div>
+        <div style="margin-top:.5rem;display:flex;gap:.5rem;">
+          <input id="chatInput" type="text" placeholder="Type your question..." style="flex:1;padding:.4rem;border:1px solid #ccc;border-radius:6px;">
+          <button id="chatSendBtn" class="btn">Send</button>
         </div>
       </div>
-      <div class="card p-4 rounded-xl shadow-md">
-        <h3 class="text-lg font-semibold">Recent Vendor Engagements</h3>
-        <table id="vendorEngagementsTable" class="w-full">
-          <thead>
-            <tr><th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th></tr>
-          </thead>
-          <tbody>${vendorEngagementsHtml}</tbody>
-        </table>
-      </div>
-    `;
-  },
+    </div>
+  `,
 
-  Vendor: () => {
-    const vendorTableHtml = `
-      <tr><td>Takoyaki store</td><td>✅ Completed</td><td>Gacusan, Aira Jane</td><td>03 Sep 2025</td><td>₱3,785</td><td data-stars="5"></td></tr>
-      <tr><td>Sound equipment</td><td>✏ In progress</td><td>Furigay, Neri Jane</td><td>10 Sep 2025</td><td>₱2,345</td><td data-stars="5"></td></tr>
-      <tr><td>Tables and chairs</td><td>⏳ Not started</td><td>Pena, Rona Mae</td><td>04 Nov 2025</td><td>₱5,199</td><td data-stars="4"></td></tr>
-      <tr><td>Atan's Meat Shop</td><td>⛔ Blocked</td><td>Dacoco, Jonathan</td><td>12 Mar 2025</td><td>₱1,870</td><td data-stars="3"></td></tr>
-    `;
-    return `
-      <h1 class="text-3xl font-bold mb-4">Vendor Management</h1>
-      <input type="text" id="vendorSearch" placeholder="Search Vendor…" class="mb-4 w-full p-2 border rounded-md">
-      <table id="vendorTable" class="w-full">
-        <thead>
-          <tr><th>Business Name</th><th>Status</th><th>Owner</th><th>Due Date</th><th>Records of Payment</th><th>Rating</th></tr>
-        </thead>
-        <tbody>${vendorTableHtml}</tbody>
-      </table>
-    `;
-  },
+  Settings: `
+    <h1>Settings</h1>
+    <h2>Account Center</h2>
+    <button class="settings-btn" onclick="openForm('personal')">Personal Details</button>
+    <button class="settings-btn" onclick="openForm('password')">Password and Security</button>
+    <button class="settings-btn" onclick="openForm('delete')">Delete Account</button>
 
-  Commodity: () => {
-    const commodityTableHtml = `
-      <tr><td>Takoyaki store</td><td>50</td><td>55</td><td>Stable</td></tr>
-      <tr><td>Sound equipment</td><td>200</td><td>250</td><td>High</td></tr>
-      <tr><td>Tables and chairs</td><td>100</td><td>90</td><td>Low</td></tr>
-      <tr><td>Atan's Meat Shop</td><td>150</td><td>180</td><td>High</td></tr>
-    `;
-    return `
-      <h1 class="text-3xl font-bold mb-4">Commodity and Price Monitoring</h1>
-      <table id="commodityTable" class="w-full mb-4">
-        <thead>
-          <tr><th>Type of Business</th><th>Previous Price</th><th>Current Price</th><th>Status</th></tr>
-        </thead>
-        <tbody>${commodityTableHtml}</tbody>
-      </table>
-      <div class="flex flex-col md:flex-row gap-8 items-start">
-        <div class="w-full md:w-1/3">
-          <canvas id="pieChart" class="w-full h-auto"></canvas>
-        </div>
-        <div class="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="card p-4 rounded-xl shadow-md cursor-pointer" onclick="openDataModal('Takoyaki store')">Takoyaki store<br><button class="view-btn">View Data</button></div>
-          <div class="card p-4 rounded-xl shadow-md cursor-pointer" onclick="openDataModal('Sound equipment')">Sound equipment<br><button class="view-btn">View Data</button></div>
-          <div class="card p-4 rounded-xl shadow-md cursor-pointer" onclick="openDataModal('Tables and chairs')">Tables and chairs<br><button class="view-btn">View Data</button></div>
-          <div class="card p-4 rounded-xl shadow-md cursor-pointer" onclick="openDataModal('Atan\'s Meat Shop')">Atan's Meat Shop<br><button class="view-btn">View Data</button></div>
-        </div>
-      </div>
-      <div id="dataModal" class="overlay hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-        <div class="modal bg-white p-4 rounded-xl max-w-lg w-full">
-          <span class="close cursor-pointer float-right text-xl" onclick="closeDataModal()">&times;</span>
-          <h3 id="modalTitle"></h3>
-          <canvas id="lineChart" width="500" height="250"></canvas>
-        </div>
-      </div>
-    `;
-  },
+    <h2>Community Standard</h2>
+    <button class="settings-btn" onclick="openForm('terms')">Terms of Service</button>
+    <button class="settings-btn" onclick="openForm('report')">Report a Problem</button>
 
-  Supply: () => {
-    const supplyTableHtml = `
-      <tr><td><a href="#" class="ref-link">RPT-001</a></td><td>Daisy Poultry</td><td>MEAT SHOP</td><td>James</td><td>Quezon City</td><td>Muñoz</td><td>12:00 am - 2:00 pm</td><td>Filed</td><td>0970-567-1136</td><td>₱4,000.00</td><td>★★★★★</td><td>⛔ Delayed</td></tr>
-      <tr><td><a href="#" class="ref-link">RPT-002</a></td><td>Takoyaki Supplier</td><td>SUPPLIES SHOP</td><td>Maria</td><td>Makati</td><td>Muñoz</td><td>7:00 am - 9:00 am</td><td>None</td><td>0917-888-9999</td><td>₱2,500.00</td><td>★★★★★</td><td>✅ Completed</td></tr>
-      <tr><td><a href="#" class="ref-link">RPT-003</a></td><td>Catering Supplies</td><td>CATERING</td><td>Sofia</td><td>Taguig</td><td>Muñoz</td><td>10:00 am - 12:00 pm</td><td>None</td><td>0920-555-4444</td><td>₱3,200.00</td><td>★★★★★</td><td>✏ In progress</td></tr>
-      <tr><td><a href="#" class="ref-link">RPT-004</a></td><td>Party Rental</td><td>RENTAL SHOP</td><td>Ramon</td><td>Manila</td><td>Muñoz</td><td>3:00 am - 5:00 am</td><td>None</td><td>0998-222-3333</td><td>₱5,000.00</td><td>★★★★★</td><td>✅ Completed</td></tr>
-    `;
-    return `
-      <h1 class="text-3xl font-bold mb-4">Supply Monitoring</h1>
-      <input type="text" id="supplySearch" placeholder="Search Supply…" class="mb-4 w-full p-2 border rounded-md">
-      <table id="supplyTable" class="w-full">
-        <thead>
-          <tr><th>Ref No.</th><th>Business Name</th><th>Business Category</th><th>Supplier</th><th>Pick-up</th><th>Drop-off</th><th>Delivery Time</th><th>Report</th><th>Contact No.</th><th>Item Value</th><th>Quality</th><th>Status</th></tr>
-        </thead>
-        <tbody>${supplyTableHtml}</tbody>
-      </table>
-    `;
-  }
+    <div id="settingsModal" class="settings-modal">
+      <div class="settings-modal-content">
+        <span class="close" onclick="closeForm()">&times;</span>
+        <h3 id="settingsModalTitle"></h3>
+
+        <form id="personalForm" class="settings-form" style="display:none;">
+          <label>Name:</label><input type="text" placeholder="Enter your name"><br>
+          <label>Email:</label><input type="email" placeholder="Enter your email"><br>
+          <label>Phone:</label><input type="text" placeholder="Enter phone number"><br>
+          <button type="submit">Save</button>
+        </form>
+
+        <form id="passwordForm" class="settings-form" style="display:none;">
+          <label>Old Password:</label><input type="password"><br>
+          <label>New Password:</label><input type="password"><br>
+          <label>Confirm New Password:</label><input type="password"><br>
+          <button type="submit">Update</button>
+        </form>
+
+        <form id="deleteForm" class="settings-form" style="display:none;">
+          <p>⚠️ This action cannot be undone. Please type <b>DELETE</b> to confirm.</p>
+          <input type="text" placeholder="Type DELETE">
+          <button type="submit" style="background:red;color:white;">Delete Account</button>
+        </form>
+
+        <div id="termsForm" class="settings-form" style="display:none;">
+          <p><b>📜 Terms of Service:</b><br>
+          By using this system, you agree to comply with LGU 3 Admin policies, data security guidelines, 
+          and vendor management protocols. Any violation may result in account suspension.</p>
+        </div>
+
+        <form id="reportForm" class="settings-form" style="display:none;">
+          <label>Describe the issue:</label>
+          <textarea rows="4" style="width:100%;"></textarea>
+          <button type="submit">Send Report</button>
+        </form>
+      </div>
+    </div>
+  `
 };
-    Settings: () => `
-      <h1 class="text-3xl font-bold mb-4">Settings</h1>
-      <h2 class="text-xl font-semibold mt-6 mb-2">Account Center</h2>
-      <button class="btn w-full text-left bg-gray-200 hover:bg-gray-300 mb-2" onclick="openModal('messageModal', 'Delete Account', 'Are you sure you want to delete your account? This action cannot be undone.', true, () => deleteAccount())">Delete Account</button>
-      <h2 class="text-xl font-semibold mt-6 mb-2">Community Standard</h2>
-      <button class="btn w-full text-left bg-gray-200 hover:bg-gray-300 mb-2" onclick="showMessage('Terms of Service', 'By using this system, you agree to follow all applicable rules and guidelines. The system ensures data privacy, fair use, and accountability. Misuse or unauthorized access may result in account termination.', false)">Terms of Service</button>
-      <button class="btn w-full text-left bg-gray-200 hover:bg-gray-300 mb-2" onclick="showMessage('Report a Problem', 'Describe your issue in the chatbox on the reports page. Thank you!', false)">Report a Problem</button>
-    `
+
+  function saveTasks(tasks){
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function loadTasks(){
+  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  const taskList = document.getElementById("taskList");
+  tasks.forEach(t=>{
+    const li = document.createElement("li");
+    li.innerHTML = `<input type="checkbox" ${t.done?"checked":""} disabled> ${t.text}`;
+    taskList.appendChild(li);
+  });
+}
+
+function openForm(type) {
+  const modal = document.getElementById("settingsModal");
+  modal.style.display = "block";
+  document.querySelectorAll(".settings-form").forEach(f => f.style.display = "none");
+
+  const map = {
+    personal: { title: "Update Personal Details", id: "personalForm" },
+    password: { title: "Change Password", id: "passwordForm" },
+    delete:   { title: "Delete Account", id: "deleteForm" },
+    terms:    { title: "Terms of Service", id: "termsForm" },
+    report:   { title: "Report a Problem", id: "reportForm" }
+  };
+  const cfg = map[type] || map.personal;
+  document.getElementById("settingsModalTitle").innerText = cfg.title;
+  const form = document.getElementById(cfg.id);
+  if (form) form.style.display = "block";
+}
+function closeForm(){
+  const modal = document.getElementById("settingsModal");
+  if(modal) modal.style.display = "none";
+}
+
+
+document.addEventListener("submit", function(e){
+  const inSettings = e.target.closest("#settingsModal");
+  if(inSettings){
+    e.preventDefault();
+    alert("Settings saved.");
+    closeForm();
+  }
+});
+
+document.querySelectorAll('#vendorTable td[data-stars]').forEach(td => {
+  const stars = parseInt(td.getAttribute('data-stars'));
+  td.innerHTML = '★'.repeat(stars) + '☆'.repeat(5 - stars);
+});
+  
+function attachRefLinks(){
+  document.querySelectorAll(".ref-link").forEach(link=>{
+    link.onclick=(e)=>{
+      e.preventDefault();
+      const ref = link.textContent.trim();
+      renderPage("Reports", ref);
+    };
+  });
+}
+
+
+function initCommodity(){
+  const ctx = document.getElementById('pieChart');
+  if(!ctx) return;
+
+  pieChart = new Chart(ctx, {
+    type: 'pie',
+    data: getPieData(),
+    options: { responsive: false, plugins: { legend: { position: 'bottom' } } }
+  });
+
+  document.querySelectorAll('#commodityTable td').forEach(cell => {
+    cell.addEventListener('input', () => {
+      pieChart.data = getPieData();
+      pieChart.update();
+    });
+  });
+}
+function getPieData() {
+  const statuses = Array.from(document.querySelectorAll('#commodityTable tbody tr td:nth-child(4)'))
+                        .map(td => td.innerText.trim());
+  let counts = { High: 0, Low: 0, Stable: 0 };
+  statuses.forEach(status => { if (counts[status] !== undefined) counts[status]++; });
+  return {
+    labels: ['High', 'Low', 'Stable'],
+    datasets: [{ data: [counts.High, counts.Low, counts.Stable], backgroundColor: ['#ff4d4d','#9fff80','#ffd966'] }]
+  };
+}
+
+
+function openDataModal(businessName) {
+  const titleEl = document.getElementById('dataModalTitle');
+  const modal = document.getElementById('dataModal');
+  if(!titleEl || !modal) return;
+
+  titleEl.innerText = businessName + ' - Past 6 Months';
+  modal.style.display = 'flex';
+
+  const ctxLine = document.getElementById('lineChart').getContext('2d');
+  if (lineChart) lineChart.destroy();
+
+  let row = [...document.querySelectorAll('#commodityTable tbody tr')]
+              .find(r => r.cells[0].innerText.trim() === businessName);
+  let prev = row ? parseFloat(row.cells[1].innerText) || 0 : 0;
+  let curr = row ? parseFloat(row.cells[2].innerText) || 0 : 0;
+
+  const exampleLabels = ["Jan","Feb","Mar","Apr","May","Jun"];
+  const exampleData = [prev, prev+((curr-prev)/5), prev+((curr-prev)/3), (prev+curr)/2, curr-((curr-prev)/5), curr];
+
+  lineChart = new Chart(ctxLine, {
+    type: "line",
+    data: { labels: exampleLabels, datasets: [{ label: businessName + " Prices", data: exampleData, borderColor: "black", backgroundColor: "rgba(0,0,0,0.1)", fill: false, tension: 0.2 }] }
+  });
+}
+function closeDataModal() {
+  const modal = document.getElementById("dataModal");
+  if(modal) modal.style.display = "none";
+}
+
+
+function initReports(refNo){
+  const ctx = document.getElementById("vendorChart");
+  if(ctx){
+    new Chart(ctx,{
+      type:"bar",
+      data:{
+        labels:["Takoyaki","Meat Shop","Catering","Rental"],
+        datasets:[{label:"Performance",data:[87,65,72,90],backgroundColor:"#0a53c1"}]
+      }
+    });
+  }
+
+  const complaints={
+    "RPT-001":"Vendor delayed chicken delivery",
+    "RPT-002":"Incomplete Takoyaki supplies",
+    "RPT-003":"Catering delivery arrived late",
+    "RPT-004":"Rental items missing on arrival"
   };
 
-  function updateUI(pageName) {
-    if (document.getElementById("contentArea").innerHTML !== pages[pageName]()) {
-      contentArea.innerHTML = pages[pageName]();
+  const container=document.getElementById("complaintsContainer");
+  const message=document.getElementById("complaintMessage");
+  const select=document.getElementById("complaintSelect");
+  const viewBtn=document.getElementById("viewComplaintBtn");
+
+  if(viewBtn){
+    viewBtn.onclick=()=>{
+      const ref=select.value;
+      if(ref && complaints[ref]){
+        container.style.display="block";
+        message.textContent=`(${ref}) ${complaints[ref]}`;
+      } else {
+        alert("Please select a complaint Ref No. first.");
+      }
+    };
+  }
+
+  if(refNo && complaints[refNo]){
+    container.style.display="block";
+    message.textContent=`(${refNo}) ${complaints[refNo]}`;
+    select.value=refNo;
+  }
+
+  const chatBox=document.getElementById("chatboxContainer");
+  const chatInput=document.getElementById("chatInput");
+  const chatSendBtn=document.getElementById("chatSendBtn");
+
+  function addMessage(sender,text){
+    const div=document.createElement("div");
+    div.style.margin="4px 0";
+    div.innerHTML=`<b>${sender}:</b> ${text}`;
+    chatBox.appendChild(div);
+    chatBox.scrollTop=chatBox.scrollHeight;
+  }
+
+  function botReply(msg){
+    msg=msg.toLowerCase();
+    if(msg.includes("status")){
+      return "📊 Current reports show most vendors are on track, with 2 pending complaints.";
     }
-    attachEventListeners(pageName);
+    if(msg.includes("performance")){
+      return "✅ Vendor performance is averaging 85%, with rentals leading at 90%.";
+    }
+    if(msg.includes("complaint")){
+      return "⚠️ There are 4 active complaints. Select a Ref No. to view details.";
+    }
+    if(msg.includes("hello")||msg.includes("hi")){
+      return "👋 Hello! How can I assist you today?";
+    }
+    return "🤖 Sorry, I don’t have an answer for that. Try asking about 'status', 'performance', or 'complaints'.";
   }
 
-  function renderPage(page, refNo = null) {
-    contentArea.innerHTML = pages[page](refNo);
-    attachEventListeners(page, refNo);
+  if(chatSendBtn){
+    chatSendBtn.onclick=()=>{
+      const text=chatInput.value.trim();
+      if(text){
+        addMessage("You",text);
+        addMessage("Bot",botReply(text));
+        chatInput.value="";
+      }
+    };
+  }
+}
+
+
+function renderPage(page, refNo=null){
+  contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
+
+ 
+  if(page === "Vendor"){
+    makeTableEditable("vendorTable","vendorSearch");
+
+ 
+    document.querySelectorAll('#vendorTable td[data-stars]').forEach(td => {
+      const stars = parseInt(td.getAttribute('data-stars')) || 0;
+      td.innerHTML = '';
+      for(let i=1;i<=5;i++){
+        const star = document.createElement('span');
+        star.textContent = '★';
+        star.className = i <= stars ? 'star active' : 'star';
+        star.onclick = () => {
+          td.dataset.stars = i;
+         
+          renderPage("Vendor");
+        };
+        td.appendChild(star);
+      }
+    });
   }
 
-  function attachEventListeners(page, refNo = null) {
-    if (page === "dashboard") {
-      initDashboard();
-      document.querySelectorAll('#taskList input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', async (e) => {
-          const taskId = e.target.dataset.id;
-          const completed = e.target.checked;
-          const taskRef = doc(db, getCollectionPath("tasks"), taskId);
-          try {
-            await setDoc(taskRef, { completed }, { merge: true });
-          } catch (e) {
-            console.error("Error updating task status: ", e);
-            showMessage("Error", "Could not update task status.", true);
-          }
+  if(page === "dashboard") initDashboard();
+  if(page === "Supply") { 
+    makeTableEditable("supplyTable","supplySearch"); 
+    attachRefLinks(); 
+  }
+  if(page === "Reports") initReports(refNo);
+  if(page === "Commodity") { 
+    initCommodity(); 
+  }
+  if(page === "Inspection"){
+    const inspectionTable = document.getElementById('inspectionTable');
+    const inspectionSearch = document.getElementById('inspectionSearch');
+    if(inspectionSearch && inspectionTable){
+      inspectionSearch.addEventListener('input', () => {
+        const val = inspectionSearch.value.toLowerCase();
+        Array.from(inspectionTable.tBodies[0].rows).forEach(row => {
+          row.style.display = row.cells[0].innerText.toLowerCase().includes(val) ? '' : 'none';
         });
       });
     }
-    if (page === "Vendor") makeTableSearchable("vendorTable", "vendorSearch");
-    if (page === "Supply") {
-      makeTableSearchable("supplyTable", "supplySearch");
-      attachRefLinks();
-    }
-    if (page === "Commodity") initCommodity();
-    if (page === "Reports") initReports(refNo);
   }
+}
 
-  
-  const messageModal = document.getElementById('messageModal');
-  const messageTitle = document.getElementById('messageTitle');
-  const messageContent = document.getElementById('messageContent');
-  const messageOkBtn = document.getElementById('messageOkBtn');
-  const messageCancelBtn = document.getElementById('messageCancelBtn');
 
-  function showMessage(title, message, isConfirm, onConfirm) {
-    messageTitle.textContent = title;
-    messageContent.textContent = message;
-    messageOkBtn.style.display = 'inline-block';
-    messageCancelBtn.style.display = isConfirm ? 'inline-block' : 'none';
-    messageModal.style.display = 'flex';
-
-    messageOkBtn.onclick = () => {
-      if (!isConfirm && onConfirm) onConfirm();
-      messageModal.style.display = 'none';
+document.querySelectorAll(".nav-item").forEach(link=>{
+  if(!link.classList.contains("logout-btn")){
+    link.onclick=(e)=>{
+      e.preventDefault();
+      document.querySelectorAll(".nav-item").forEach(l=>l.classList.remove("active"));
+      link.classList.add("active");
+      renderPage(link.dataset.page);
     };
-    messageCancelBtn.onclick = () => {
-      messageModal.style.display = 'none';
-    };
-    if (isConfirm && onConfirm) {
-      messageOkBtn.onclick = () => {
-        onConfirm();
-        messageModal.style.display = 'none';
-      };
-    }
   }
+});
 
-  function deleteAccount() {
-    showMessage("Success", "Your account has been deleted (demo only).", false, () => {
-      window.location.href = 'main.html';
+document.getElementById("backBtn").onclick=()=>window.history.back();
+document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
+
+function initDashboard(){
+  const ctx=document.getElementById("pipelineChart");
+  if(ctx){
+    pipelineChart = new Chart(ctx,{
+      type:"line",
+      data:{
+        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+        datasets:[{label:"Deliveries",data:[5,8,6,10,7,9],borderColor:"#0a53c1"}]
+      }
     });
   }
 
-  function attachRefLinks() {
-    document.querySelectorAll(".ref-link").forEach(link => {
-      link.onclick = (e) => {
-        e.preventDefault();
-        const ref = link.dataset.ref;
-        renderPage("Reports", ref);
-      };
-    });
-  }
 
-  function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
-  function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
-  function closeDataModal() { closeModal("dataModal"); }
-
-  document.querySelectorAll(".nav-item").forEach(link => {
-    if (!link.classList.contains("logout-btn")) {
-      link.onclick = (e) => {
-        e.preventDefault();
-        document.querySelectorAll(".nav-item").forEach(l => l.classList.remove("active"));
-        link.classList.add("active");
-        renderPage(link.dataset.page);
-      };
+  document.querySelectorAll("[data-stars]").forEach(cell=>{
+    const rating=+cell.dataset.stars||0;
+    cell.innerHTML="";
+    for(let i=1;i<=5;i++){
+      const star=document.createElement("span");
+      star.textContent="★";
+      star.className="star"+(i<=rating?" active":"");
+      star.onclick=()=>{cell.dataset.stars=i;renderPage("dashboard");};
+      cell.appendChild(star);
     }
   });
 
-  document.getElementById("menuBtn").onclick = () => document.getElementById("sidebar").classList.toggle("open");
-  document.getElementById("newBtn").onclick = () => {
-    document.getElementById("vendorModal").style.display = "flex";
-    document.getElementById("modalTitle").textContent = "New Vendor Engagement";
-    document.getElementById("businessNameInput").value = "";
-    document.getElementById("ownerInput").value = "";
-    document.getElementById("valueInput").value = "";
-    document.getElementById("dueDateInput").value = "";
-  };
-  
-  
-  document.getElementById("saveVendorBtn").onclick = async () => {
-    const businessName = document.getElementById("businessNameInput").value;
-    const status = document.getElementById("stageInput").value;
-    const owner = document.getElementById("ownerInput").value;
-    const recordsOfPayment = document.getElementById("valueInput").value;
-    const dueDate = document.getElementById("dueDateInput").value;
-    if (!businessName || !owner) {
-      showMessage("Error", "Business name and owner are required.", true);
-      return;
-    }
-
-    try {
-      await addDoc(collection(db, getCollectionPath("vendorEngagements")), {
-        businessName, status, owner, recordsOfPayment, dueDate, rating: 5
-      });
-      showMessage("Success", "Vendor engagement saved successfully!", false);
-      closeModal('vendorModal');
-    } catch (e) {
-      console.error("Error adding document: ", e);
-      showMessage("Error", "Failed to save data. Please try again.", true);
-    }
-  };
-
-  
-  function makeTableSearchable(tableId, searchId) {
-    const table = document.getElementById(tableId);
-    const search = document.getElementById(searchId);
-    if (search && table) {
-      search.oninput = () => {
-        const val = search.value.toLowerCase();
-        Array.from(table.tBodies[0].rows).forEach(r => {
-          r.style.display = r.innerText.toLowerCase().includes(val) ? "" : "none";
-        });
+ 
+  const taskList=document.getElementById("taskList");
+  if(taskList){
+    document.querySelectorAll(".edit-icon").forEach(icon=>{
+      icon.onclick=()=>{
+        const li=icon.parentElement;
+        const spanText=li.childNodes[1].textContent.trim();
+        const newTask=prompt("Edit task:",spanText);
+        if(newTask!==null) li.childNodes[1].textContent=" "+newTask+" ";
       };
-    }
-  }
-
-
-  function initDashboard() {
-    const ctx = document.getElementById('pipelineChart');
-    if (ctx) {
-      if (pipelineChart) pipelineChart.destroy();
-      const labels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"];
-      const data = {
-        labels: labels,
-        datasets: [{
-          label: 'Incoming Supplies',
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
-          borderColor: 'rgb(54, 162, 235)',
-          data: [120, 150, 130, 180, 160, 200],
-        }]
-      };
-      pipelineChart = new Chart(ctx, { type: 'bar', data: data });
-    }
-    
-  
-    const taskList = document.getElementById('taskList');
-    const addTaskBtn = document.getElementById('addTaskBtn');
-    if (addTaskBtn) {
-      addTaskBtn.onclick = async () => {
-        const newTask = prompt("Enter a new task:");
-        if (newTask) {
-          try {
-            await addDoc(collection(db, getCollectionPath("tasks")), {
-              task: newTask,
-              completed: false,
-              createdAt: new Date()
-            });
-          } catch (e) {
-            console.error("Error adding new task: ", e);
-            showMessage("Error", "Could not add task.", true);
-          }
-        }
-      };
-    }
-  }
-
-  function initCommodity() {
-    const ctx = document.getElementById('pieChart');
-    if (!ctx) return;
-    if (pieChart) pieChart.destroy();
-
-    const getPieData = () => {
-      const statuses = data.commodities.map(c => c.status);
-      let counts = { High: 0, Low: 0, Stable: 0 };
-      statuses.forEach(status => { if (counts[status] !== undefined) counts[status]++; });
-      return {
-        labels: ['High', 'Low', 'Stable'],
-        datasets: [{
-          data: [counts.High, counts.Low, counts.Stable],
-          backgroundColor: ['#ff4d4d', '#9fff80', '#ffd966']
-        }]
-      };
-    };
-    pieChart = new Chart(ctx, {
-      type: 'pie',
-      data: getPieData(),
-      options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
     });
-  }
-
-  function openDataModal(businessName) {
-    document.getElementById('lineChartTitle').innerText = businessName + ' - Past 6 Months';
-    document.getElementById('dataModal').style.display = 'flex';
-    const ctxLine = document.getElementById('lineChart');
-    if (lineChart) lineChart.destroy();
-
-    const commodity = data.commodities.find(c => c.businessName === businessName);
-    const prev = commodity ? parseFloat(commodity.previousPrice) || 0 : 0;
-    const curr = commodity ? parseFloat(commodity.currentPrice) || 0 : 0;
-    const exampleLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-    const exampleData = [prev, prev + ((curr - prev) / 5), prev + ((curr - prev) / 3), (prev + curr) / 2, curr - ((curr - prev) / 5), curr];
-
-    lineChart = new Chart(ctxLine, {
-      type: "line",
-      data: {
-        labels: exampleLabels,
-        datasets: [{
-          label: businessName + " Prices",
-          data: exampleData,
-          borderColor: "black",
-          backgroundColor: "rgba(0,0,0,0.1)",
-          fill: false,
-          tension: 0.2
-        }]
-      }
+    document.querySelectorAll(".delete-icon").forEach(icon=>{
+      icon.onclick=()=>icon.parentElement.remove();
     });
-  }
-
-
-  function initReports(refNo) {
-    const ctx = document.getElementById("vendorChart");
-    if (ctx) {
-      new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: ["Takoyaki", "Meat Shop", "Catering", "Rental"],
-          datasets: [{ label: "Performance", data: [87, 65, 72, 90], backgroundColor: "#0a53c1" }]
+    const addBtn = document.getElementById("addTaskBtn");
+    if(addBtn){
+      addBtn.onclick=()=>{
+        const task=prompt("New Task:");
+        if(task){
+          const li=document.createElement("li");
+          li.innerHTML=`<input type="checkbox" /> ${task} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
+          taskList.appendChild(li);
+         
+          li.querySelector(".edit-icon").onclick=()=>{
+            const spanText=li.childNodes[1].textContent.trim();
+            const newTask=prompt("Edit task:",spanText);
+            if(newTask!==null) li.childNodes[1].textContent=" "+newTask+" ";
+          };
+          li.querySelector(".delete-icon").onclick=()=>li.remove();
         }
+      };
+    }
+  }
+}
+
+function makeTableEditable(tableId,searchId){
+  const table=document.getElementById(tableId);
+  const search=document.getElementById(searchId);
+  if(!table) return;
+
+  if(search){
+    search.oninput=()=>{
+      const val=search.value.toLowerCase();
+      Array.from(table.tBodies[0].rows).forEach(r=>{
+        r.style.display= r.innerText.toLowerCase().includes(val)?"":"none";
       });
-    }
-
-    const complaints = {
-      "RPT-001": "Vendor delayed chicken delivery",
-      "RPT-002": "Incomplete Takoyaki supplies",
-      "RPT-003": "Catering delivery arrived late",
-      "RPT-004": "Rental items missing on arrival"
     };
-
-    const container = document.getElementById("complaintsContainer");
-    const message = document.getElementById("complaintMessage");
-    const select = document.getElementById("complaintSelect");
-    const viewBtn = document.getElementById("viewComplaintBtn");
-    const chatBox = document.getElementById("chatboxContainer");
-    const chatInput = document.getElementById("chatInput");
-    const chatSendBtn = document.getElementById("chatSendBtn");
-
-    if (viewBtn) {
-      viewBtn.onclick = () => {
-        const ref = select.value;
-        if (ref && complaints[ref]) {
-          container.classList.remove('hidden');
-          message.textContent = `(${ref}) ${complaints[ref]}`;
-        } else {
-          showMessage("Error", "Please select a complaint Ref No. first.", true);
-        }
-      };
-    }
-
-    if (refNo && complaints[refNo]) {
-      container.classList.remove('hidden');
-      message.textContent = `(${refNo}) ${complaints[refNo]}`;
-      select.value = refNo;
-    }
-
-    function addMessage(sender, text, isUser) {
-      const div = document.createElement("div");
-      div.style.margin = "4px 0";
-      div.className = isUser ? "text-right" : "text-left";
-      div.innerHTML = `<span class="inline-block p-2 rounded-lg ${isUser ? 'bg-blue-500 text-white' : 'bg-gray-200'}">${text}</span>`;
-      chatBox.appendChild(div);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    async function getGeminiResponse(userQuery) {
-      const payload = {
-        contents: [{ parts: [{ text: userQuery }] }],
-        tools: [{ "google_search": {} }],
-        systemInstruction: {
-          parts: [{ text: "You are an AI assistant for a local government unit's supply chain and vendor management system. Provide concise and helpful answers based on the provided dashboard data. Do not make up information." }]
-        }
-      };
-      
-      const apiKey = "";
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-      try {
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const result = await response.json();
-        const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-        return text || "I'm sorry, I couldn't process that request.";
-      } catch (error) {
-        console.error("Gemini API error:", error);
-        return "Sorry, I am having trouble connecting to the AI. Please try again later.";
-      }
-    }
-
-    if (chatSendBtn) {
-      chatSendBtn.onclick = async () => {
-        const text = chatInput.value.trim();
-        if (text) {
-          addMessage("You", text, true);
-          chatInput.value = "";
-          chatInput.disabled = true;
-          chatSendBtn.disabled = true;
-
-          const botResponse = await getGeminiResponse(text);
-          addMessage("Bot", botResponse, false);
-
-          chatInput.disabled = false;
-          chatSendBtn.disabled = false;
-          chatInput.focus();
-        }
-      };
-    }
   }
+  table.querySelectorAll("td").forEach(td=>{
+    td.ondblclick=()=>{
+      const old=td.innerText;
+      const input=document.createElement("input");
+      input.value=old;
+      td.innerText="";
+      td.appendChild(input);
+      input.focus();
+      input.onblur=()=>{td.innerText=input.value||old;};
+      input.onkeydown=(e)=>{ if(e.key==="Enter") input.blur(); };
+    };
+  });
+}
 
 
-  initFirebase();
+function openModal(){overlay.style.display="flex";}
+function closeModal(){overlay.style.display="none";}
+document.getElementById("newBtn").onclick=openModal;
+document.getElementById("cancelNewBtn").onclick=closeModal;
+document.getElementById("saveBtn").onclick=()=>{alert("Saved!");closeModal();};
+
+
+document.getElementById("exportBtn").onclick=()=>{
+  const table = document.querySelector(".content table");
+  if(!table){ alert("No table to export on this page."); return; }
+  const rows=[...table.rows].map(tr=>[...tr.cells].map(td=>`"${td.innerText.replaceAll('"','""')}"`).join(",")).join("\n");
+  const blob = new Blob([rows],{type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "export.csv"; a.click();
+  URL.revokeObjectURL(url);
+};
+
+renderPage("dashboard");
 </script>
 </body>
 </html>
