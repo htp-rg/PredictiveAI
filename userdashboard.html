@@ -706,23 +706,21 @@ function renderPage(page, refNo = null) {
   setTimeout(() => {
     if (page === "dashboard") {
       initDashboard();
-      makeStarsEditable('td[data-stars]');
+      makeStarsEditable('#vendorEngagementsTable td[data-stars]'); 
     }
-    if (page === "Supply") attachRefLinks();
-    if (page === "Reports") initReports(refNo);
     if (page === "Commodity") {
       initCommodity();
-      makeStarsEditable('td[data-stars]');
-    }
-    if (page === "Inspection") {
-      makeStarsEditable('td[data-stars]');
+      makeStarsEditable('#commodityTable td[data-stars]');
     }
     if (page === "Vendor") {
       makeStarsEditable('#vendorTable td[data-stars]');
     }
+    if (page === "Inspection") {
+      makeStarsEditable('#inspectionTable td[data-stars]');
+    }
   }, 50); 
 }
-
+  
 setTimeout(() => {
   makeStarsEditable('td[data-stars]');
 }, 100);
