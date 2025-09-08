@@ -55,7 +55,7 @@ th{font-size:.85rem;opacity:.7}
 <body>
 <div class="app">
   <aside class="sidebar open" id="sidebar">
-    <div class="brand">LGU 3 ADMIN SYSTEM</div>
+    <div class="brand">LGU 3 USER SYSTEM</div>
     <nav>
       <a href="#" class="nav-item active" data-page="dashboard">Dashboard</a>
       <a href="#" class="nav-item" data-page="Vendor">Vendor Management</a>
@@ -444,13 +444,14 @@ Inspection: `
   `
 };
 
-  function saveTasks(tasks){
+function saveTasks(tasks){
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 function loadTasks(){
   const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   const taskList = document.getElementById("taskList");
+  taskList.innerHTML = "";
   tasks.forEach(t=>{
     const li = document.createElement("li");
     li.innerHTML = `<input type="checkbox" ${t.done?"checked":""} disabled> ${t.text}`;
@@ -480,7 +481,6 @@ function closeForm(){
   if(modal) modal.style.display = "none";
 }
 
-
 document.addEventListener("submit", function(e){
   const inSettings = e.target.closest("#settingsModal");
   if(inSettings){
@@ -491,10 +491,10 @@ document.addEventListener("submit", function(e){
 });
 
 document.querySelectorAll('#vendorTable td[data-stars]').forEach(td => {
-  const stars = parseInt(td.getAttribute('data-stars'));
+  const stars = parseInt(td.getAttribute('data-stars')) || 0;
   td.innerHTML = '★'.repeat(stars) + '☆'.repeat(5 - stars);
 });
-  
+
 function attachRefLinks(){
   document.querySelectorAll(".ref-link").forEach(link=>{
     link.onclick=(e)=>{
@@ -505,24 +505,17 @@ function attachRefLinks(){
   });
 }
 
-
 function initCommodity(){
   const ctx = document.getElementById('pieChart');
   if(!ctx) return;
 
-  pieChart = new Chart(ctx, {
+  new Chart(ctx, {
     type: 'pie',
     data: getPieData(),
     options: { responsive: false, plugins: { legend: { position: 'bottom' } } }
   });
-
-  document.querySelectorAll('#commodityTable td').forEach(cell => {
-    cell.addEventListener('input', () => {
-      pieChart.data = getPieData();
-      pieChart.update();
-    });
-  });
 }
+
 function getPieData() {
   const statuses = Array.from(document.querySelectorAll('#commodityTable tbody tr td:nth-child(4)'))
                         .map(td => td.innerText.trim());
@@ -534,7 +527,6 @@ function getPieData() {
   };
 }
 
-
 function openDataModal(businessName) {
   const titleEl = document.getElementById('dataModalTitle');
   const modal = document.getElementById('dataModal');
@@ -544,7 +536,7 @@ function openDataModal(businessName) {
   modal.style.display = 'flex';
 
   const ctxLine = document.getElementById('lineChart').getContext('2d');
-  if (lineChart) lineChart.destroy();
+  if (window.lineChart) window.lineChart.destroy();
 
   let row = [...document.querySelectorAll('#commodityTable tbody tr')]
               .find(r => r.cells[0].innerText.trim() === businessName);
@@ -554,7 +546,7 @@ function openDataModal(businessName) {
   const exampleLabels = ["Jan","Feb","Mar","Apr","May","Jun"];
   const exampleData = [prev, prev+((curr-prev)/5), prev+((curr-prev)/3), (prev+curr)/2, curr-((curr-prev)/5), curr];
 
-  lineChart = new Chart(ctxLine, {
+  window.lineChart = new Chart(ctxLine, {
     type: "line",
     data: { labels: exampleLabels, datasets: [{ label: businessName + " Prices", data: exampleData, borderColor: "black", backgroundColor: "rgba(0,0,0,0.1)", fill: false, tension: 0.2 }] }
   });
@@ -563,7 +555,6 @@ function closeDataModal() {
   const modal = document.getElementById("dataModal");
   if(modal) modal.style.display = "none";
 }
-
 
 function initReports(refNo){
   const ctx = document.getElementById("vendorChart");
@@ -651,50 +642,11 @@ function initReports(refNo){
 
 function renderPage(page, refNo=null){
   contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
-
- 
-  if(page === "Vendor"){
-    makeTableEditable("vendorTable","vendorSearch");
-
- 
-    document.querySelectorAll('#vendorTable td[data-stars]').forEach(td => {
-      const stars = parseInt(td.getAttribute('data-stars')) || 0;
-      td.innerHTML = '';
-      for(let i=1;i<=5;i++){
-        const star = document.createElement('span');
-        star.textContent = '★';
-        star.className = i <= stars ? 'star active' : 'star';
-        star.onclick = () => {
-          td.dataset.stars = i;
-         
-          renderPage("Vendor");
-        };
-        td.appendChild(star);
-      }
-    });
-  }
-
   if(page === "dashboard") initDashboard();
-  if(page === "Supply") { 
-    makeTableEditable("supplyTable","supplySearch"); 
-    attachRefLinks(); 
-  }
+  if(page === "Supply") attachRefLinks();
   if(page === "Reports") initReports(refNo);
-  if(page === "Commodity") { 
-    initCommodity(); 
-  }
-  if(page === "Inspection"){
-    const inspectionTable = document.getElementById('inspectionTable');
-    const inspectionSearch = document.getElementById('inspectionSearch');
-    if(inspectionSearch && inspectionTable){
-      inspectionSearch.addEventListener('input', () => {
-        const val = inspectionSearch.value.toLowerCase();
-        Array.from(inspectionTable.tBodies[0].rows).forEach(row => {
-          row.style.display = row.cells[0].innerText.toLowerCase().includes(val) ? '' : 'none';
-        });
-      });
-    }
-  }
+  if(page === "Commodity") initCommodity();
+  if(page === "Inspection"){}
 }
 
 
@@ -708,115 +660,8 @@ document.querySelectorAll(".nav-item").forEach(link=>{
     };
   }
 });
-
 document.getElementById("backBtn").onclick=()=>window.history.back();
 document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
-
-function initDashboard(){
-  const ctx=document.getElementById("pipelineChart");
-  if(ctx){
-    pipelineChart = new Chart(ctx,{
-      type:"line",
-      data:{
-        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
-        datasets:[{label:"Deliveries",data:[5,8,6,10,7,9],borderColor:"#0a53c1"}]
-      }
-    });
-  }
-
-
-  document.querySelectorAll("[data-stars]").forEach(cell=>{
-    const rating=+cell.dataset.stars||0;
-    cell.innerHTML="";
-    for(let i=1;i<=5;i++){
-      const star=document.createElement("span");
-      star.textContent="★";
-      star.className="star"+(i<=rating?" active":"");
-      star.onclick=()=>{cell.dataset.stars=i;renderPage("dashboard");};
-      cell.appendChild(star);
-    }
-  });
-
- 
-  const taskList=document.getElementById("taskList");
-  if(taskList){
-    document.querySelectorAll(".edit-icon").forEach(icon=>{
-      icon.onclick=()=>{
-        const li=icon.parentElement;
-        const spanText=li.childNodes[1].textContent.trim();
-        const newTask=prompt("Edit task:",spanText);
-        if(newTask!==null) li.childNodes[1].textContent=" "+newTask+" ";
-      };
-    });
-    document.querySelectorAll(".delete-icon").forEach(icon=>{
-      icon.onclick=()=>icon.parentElement.remove();
-    });
-    const addBtn = document.getElementById("addTaskBtn");
-    if(addBtn){
-      addBtn.onclick=()=>{
-        const task=prompt("New Task:");
-        if(task){
-          const li=document.createElement("li");
-          li.innerHTML=`<input type="checkbox" /> ${task} <span class="edit-icon">✏️</span> <span class="delete-icon">🗑️</span>`;
-          taskList.appendChild(li);
-         
-          li.querySelector(".edit-icon").onclick=()=>{
-            const spanText=li.childNodes[1].textContent.trim();
-            const newTask=prompt("Edit task:",spanText);
-            if(newTask!==null) li.childNodes[1].textContent=" "+newTask+" ";
-          };
-          li.querySelector(".delete-icon").onclick=()=>li.remove();
-        }
-      };
-    }
-  }
-}
-
-function makeTableEditable(tableId,searchId){
-  const table=document.getElementById(tableId);
-  const search=document.getElementById(searchId);
-  if(!table) return;
-
-  if(search){
-    search.oninput=()=>{
-      const val=search.value.toLowerCase();
-      Array.from(table.tBodies[0].rows).forEach(r=>{
-        r.style.display= r.innerText.toLowerCase().includes(val)?"":"none";
-      });
-    };
-  }
-  table.querySelectorAll("td").forEach(td=>{
-    td.ondblclick=()=>{
-      const old=td.innerText;
-      const input=document.createElement("input");
-      input.value=old;
-      td.innerText="";
-      td.appendChild(input);
-      input.focus();
-      input.onblur=()=>{td.innerText=input.value||old;};
-      input.onkeydown=(e)=>{ if(e.key==="Enter") input.blur(); };
-    };
-  });
-}
-
-
-function openModal(){overlay.style.display="flex";}
-function closeModal(){overlay.style.display="none";}
-document.getElementById("newBtn").onclick=openModal;
-document.getElementById("cancelNewBtn").onclick=closeModal;
-document.getElementById("saveBtn").onclick=()=>{alert("Saved!");closeModal();};
-
-
-document.getElementById("exportBtn").onclick=()=>{
-  const table = document.querySelector(".content table");
-  if(!table){ alert("No table to export on this page."); return; }
-  const rows=[...table.rows].map(tr=>[...tr.cells].map(td=>`"${td.innerText.replaceAll('"','""')}"`).join(",")).join("\n");
-  const blob = new Blob([rows],{type:"text/csv"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = "export.csv"; a.click();
-  URL.revokeObjectURL(url);
-};
 
 renderPage("dashboard");
 </script>
