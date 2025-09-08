@@ -444,12 +444,12 @@ Inspection: `
   `
 };
 
- function initDashboard() {
+function initDashboard() {
   const ctx = document.getElementById("pipelineChart");
-  if (!ctx) return;
+  if (!ctx) return; 
 
-  const labels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"];
-  const data = [50, 60, 55, 70, 65, 75];
+  const labels = ["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"];
+  const data = [50,60,55,70,65,75];
 
   if (window.pipelineChart) window.pipelineChart.destroy();
 
@@ -473,7 +473,7 @@ Inspection: `
     }
   });
 }
-
+  
   function makeStarsEditable(selector){
   document.querySelectorAll(selector).forEach(td => {
     td.innerHTML = '';
@@ -721,7 +721,9 @@ function renderPage(page, refNo = null) {
   }, 50); 
 }
 
-
+setTimeout(() => {
+  makeStarsEditable('td[data-stars]');
+}, 100);
 document.querySelectorAll(".nav-item").forEach(link=>{
   if(!link.classList.contains("logout-btn")){
     link.onclick=(e)=>{
@@ -732,6 +734,7 @@ document.querySelectorAll(".nav-item").forEach(link=>{
     };
   }
 });
+  
 document.getElementById("backBtn").onclick=()=>window.history.back();
 document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
 
