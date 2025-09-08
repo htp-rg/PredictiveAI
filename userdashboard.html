@@ -703,7 +703,6 @@ function initReports(refNo){
 function renderPage(page, refNo = null) {
   contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
 
-  
   setTimeout(() => {
     if (page === "dashboard") {
       initDashboard();
@@ -717,6 +716,9 @@ function renderPage(page, refNo = null) {
     }
     if (page === "Inspection") {
       makeStarsEditable('td[data-stars]');
+    }
+    if (page === "Vendor") {
+      makeStarsEditable('#vendorTable td[data-stars]');
     }
   }, 50); 
 }
