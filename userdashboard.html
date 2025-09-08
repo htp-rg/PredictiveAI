@@ -444,6 +444,36 @@ Inspection: `
   `
 };
 
+  function makeStarsEditable(selector){
+  document.querySelectorAll(selector).forEach(td => {
+    td.innerHTML = '';
+    const maxStars = 5;
+    let current = parseInt(td.getAttribute('data-stars')) || 0;
+
+    for(let i=1;i<=maxStars;i++){
+      const star = document.createElement('span');
+      star.className = 'star' + (i <= current ? ' active' : '');
+      star.innerText = '★';
+      star.dataset.value = i;
+      star.onclick = ()=>{
+        current = i;
+        td.setAttribute('data-stars', current);
+        updateStars(td, current);
+      };
+      td.appendChild(star);
+    }
+  });
+}
+
+function updateStars(td, count){
+  td.querySelectorAll('.star').forEach((s,i)=>{
+    if(i<count) s.classList.add('active');
+    else s.classList.remove('active');
+  });
+}
+
+
+makeStarsEditable('td[data-stars]');
 function saveTasks(tasks){
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
