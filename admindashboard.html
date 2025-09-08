@@ -631,8 +631,29 @@ function initReports(refNo){
 function renderPage(page, refNo=null){
   contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
 
+ 
+  if(page === "Vendor"){
+    makeTableEditable("vendorTable","vendorSearch");
+
+ 
+    document.querySelectorAll('#vendorTable td[data-stars]').forEach(td => {
+      const stars = parseInt(td.getAttribute('data-stars')) || 0;
+      td.innerHTML = '';
+      for(let i=1;i<=5;i++){
+        const star = document.createElement('span');
+        star.textContent = '★';
+        star.className = i <= stars ? 'star active' : 'star';
+        star.onclick = () => {
+          td.dataset.stars = i;
+         
+          renderPage("Vendor");
+        };
+        td.appendChild(star);
+      }
+    });
+  }
+
   if(page === "dashboard") initDashboard();
-  if(page === "Vendor") makeTableEditable("vendorTable","vendorSearch");
   if(page === "Supply") { 
     makeTableEditable("supplyTable","supplySearch"); 
     attachRefLinks(); 
@@ -654,6 +675,7 @@ function renderPage(page, refNo=null){
     }
   }
 }
+
 
 document.querySelectorAll(".nav-item").forEach(link=>{
   if(!link.classList.contains("logout-btn")){
