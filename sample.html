@@ -444,35 +444,17 @@ Inspection: `
   `
 };
 
-function initDashboard() {
-  const ctx = document.getElementById("pipelineChart");
-  if (!ctx) return; 
-
-  const labels = ["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"];
-  const data = [50,60,55,70,65,75];
-
-  if (window.pipelineChart) window.pipelineChart.destroy();
-
-  window.pipelineChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Supply Chain Flow",
-        data: data,
-        borderColor: "#0a53c1",
-        backgroundColor: "rgba(10,83,193,0.1)",
-        fill: true,
-        tension: 0.2
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-}
+function initDashboard(){
+  const ctx=document.getElementById("pipelineChart");
+  if(ctx){
+    pipelineChart = new Chart(ctx,{
+      type:"line",
+      data:{
+        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+        datasets:[{label:"Deliveries",data:[5,8,6,10,7,9],borderColor:"#0a53c1"}]
+      }
+    });
+  }
   
   function makeStarsEditable(selector){
   document.querySelectorAll(selector).forEach(td => {
@@ -700,37 +682,25 @@ function initReports(refNo){
 }
 
 
-function renderPage(page, param){
+function renderPage(page, refNo = null) {
   contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
 
-  setTimeout(()=>{
-    switch(page){
-      case 'dashboard':
-        initDashboard();
-        makeStarsEditable('#vendorEngagementsTable td[data-stars]');
-        break;
-      case 'Commodity':
-        initCommodity();
-        makeStarsEditable('#commodityTable td[data-stars]');
-        break;
-      case 'Vendor':
-        makeStarsEditable('#vendorTable td[data-stars]');
-        break;
-      case 'Supply':
-        attachRefLinks();
-        makeStarsEditable('#supplyTable td[data-stars]');
-        break;
-      case 'Reports':
-        initReports(param);
-        break;
-      case 'Inspection':
-        makeStarsEditable('#inspectionTable td[data-stars]');
-        break;
-      case 'Settings':
-       
-        break;
+  setTimeout(() => {
+    if (page === "dashboard") {
+      initDashboard();
+      makeStarsEditable('#vendorEngagementsTable td[data-stars]'); 
     }
-  }, 50);
+    if (page === "Commodity") {
+      initCommodity();
+      makeStarsEditable('#commodityTable td[data-stars]');
+    }
+    if (page === "Vendor") {
+      makeStarsEditable('#vendorTable td[data-stars]');
+    }
+    if (page === "Inspection") {
+      makeStarsEditable('#inspectionTable td[data-stars]');
+    }
+  }, 50); 
 }
   
 setTimeout(() => {
