@@ -701,24 +701,37 @@ function initReports(refNo){
 
 
 function renderPage(page, param){
-  contentArea.innerHTML = pages[page] || "<h1>Page not found</h1>";
+  contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
 
-  if(page==="dashboard") initDashboard();
-  if(page==="Vendor") makeStarsEditable('#vendorTable td[data-stars]');
-  if(page==="Commodity") initCommodity();
-  if(page==="Supply") attachRefLinks();
-  if(page==="Reports") in
-  if(page==="Settings") 
+  setTimeout(()=>{
+    switch(page){
+      case 'dashboard':
+        initDashboard();
+        makeStarsEditable('#vendorEngagementsTable td[data-stars]');
+        break;
+      case 'Commodity':
+        initCommodity();
+        makeStarsEditable('#commodityTable td[data-stars]');
+        break;
+      case 'Vendor':
+        makeStarsEditable('#vendorTable td[data-stars]');
+        break;
+      case 'Supply':
+        attachRefLinks();
+        makeStarsEditable('#supplyTable td[data-stars]');
+        break;
+      case 'Reports':
+        initReports(param);
+        break;
+      case 'Inspection':
+        makeStarsEditable('#inspectionTable td[data-stars]');
+        break;
+      case 'Settings':
+       
+        break;
+    }
+  }, 50);
 }
-
-document.querySelectorAll(".nav-item").forEach(item=>{
-  item.onclick=(e)=>{
-    e.preventDefault();
-    document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
-    item.classList.add("active");
-    renderPage(item.dataset.page);
-  };
-});
   
 setTimeout(() => {
   makeStarsEditable('td[data-stars]');
