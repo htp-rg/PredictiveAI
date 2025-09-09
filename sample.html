@@ -444,30 +444,59 @@ Inspection: `
   `
 };
 
-function initDashboard(){
-  const ctx=document.getElementById("pipelineChart");
-  if(ctx){
-    pipelineChart = new Chart(ctx,{
-      type:"line",
-      data:{
-        labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
-        datasets:[{label:"Deliveries",data:[5,8,6,10,7,9],borderColor:"#0a53c1"}]
+let pipelineChart, pieChart, lineChart;
+
+function initDashboard() {
+  const ctx = document.getElementById("pipelineChart");
+  if (ctx) {
+    if (pipelineChart) pipelineChart.destroy();
+    pipelineChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: ["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+        datasets: [{
+          label: "Deliveries",
+          data: [5, 8, 6, 10, 7, 9],
+          borderColor: "#0a53c1",
+          backgroundColor: "rgba(10,83,193,0.2)"
+        }]
+      }
+    });
+  }
+}
+
+function initCommodity() {
+  const ctx = document.getElementById("pieChart");
+  if (ctx) {
+    if (pieChart) pieChart.destroy();
+    pieChart = new Chart(ctx, {
+      type: "pie",
+      data: getPieData(),
+      options: {
+        responsive: false,
+        plugins: { legend: { position: "bottom" } }
+      }
+    });
+  }
+}
+
+function initReports(refNo) {
+  const ctx = document.getElementById("vendorChart");
+  if (ctx) {
+    if (lineChart) lineChart.destroy();
+    lineChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Takoyaki", "Meat Shop", "Catering", "Rental"],
+        datasets: [{
+          label: "Performance",
+          data: [87, 65, 72, 90],
+          backgroundColor: "#0a53c1"
+        }]
       }
     });
   }
 
-  function initReports(refNo){
-  const ctx = document.getElementById("vendorChart");
-  if(ctx){
-    new Chart(ctx,{
-      type:"bar",
-      data:{
-        labels:["Takoyaki","Meat Shop","Catering","Rental"],
-        datasets:[{label:"Performance",data:[87,65,72,90],backgroundColor:"#0a53c1"}]
-      }
-    });
-  }
-  
   function makeStarsEditable(selector){
   document.querySelectorAll(selector).forEach(td => {
     td.innerHTML = '';
