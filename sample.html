@@ -446,69 +446,19 @@ Inspection: `
 
 let pipelineChart, pieChart, lineChart;
 
-function initDashboard() {
-  const ctx = document.getElementById("pipelineChart");
-  if (ctx) {
-    if (pipelineChart) pipelineChart.destroy();
-    pipelineChart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: ["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
-        datasets: [{
-          label: "Deliveries",
-          data: [5, 8, 6, 10, 7, 9],
-          borderColor: "#0a53c1",
-          backgroundColor: "rgba(10,83,193,0.2)"
-        }]
-      }
-    });
-  }
-}
 
-function initCommodity() {
-  const ctx = document.getElementById("pieChart");
-  if (ctx) {
-    if (pieChart) pieChart.destroy();
-    pieChart = new Chart(ctx, {
-      type: "pie",
-      data: getPieData(),
-      options: {
-        responsive: false,
-        plugins: { legend: { position: "bottom" } }
-      }
-    });
-  }
-}
-
-function initReports(refNo) {
-  const ctx = document.getElementById("vendorChart");
-  if (ctx) {
-    if (lineChart) lineChart.destroy();
-    lineChart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Takoyaki", "Meat Shop", "Catering", "Rental"],
-        datasets: [{
-          label: "Performance",
-          data: [87, 65, 72, 90],
-          backgroundColor: "#0a53c1"
-        }]
-      }
-    });
-  }
-
-  function makeStarsEditable(selector){
+function makeStarsEditable(selector) {
   document.querySelectorAll(selector).forEach(td => {
     td.innerHTML = '';
     const maxStars = 5;
     let current = parseInt(td.getAttribute('data-stars')) || 0;
 
-    for(let i=1;i<=maxStars;i++){
+    for (let i = 1; i <= maxStars; i++) {
       const star = document.createElement('span');
       star.className = 'star' + (i <= current ? ' active' : '');
       star.innerText = '★';
       star.dataset.value = i;
-      star.onclick = ()=>{
+      star.onclick = () => {
         current = i;
         td.setAttribute('data-stars', current);
         updateStars(td, current);
@@ -518,84 +468,46 @@ function initReports(refNo) {
   });
 }
 
-function updateStars(td, count){
-  td.querySelectorAll('.star').forEach((s,i)=>{
-    if(i<count) s.classList.add('active');
+function updateStars(td, count) {
+  td.querySelectorAll('.star').forEach((s, i) => {
+    if (i < count) s.classList.add('active');
     else s.classList.remove('active');
   });
 }
 
 
-makeStarsEditable('td[data-stars]');
-function saveTasks(tasks){
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-}
+function initDashboard() {
+  const ctx = document.getElementById("pipelineChart");
+  if (!ctx) return;
 
-function loadTasks(){
-  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  const taskList = document.getElementById("taskList");
-  taskList.innerHTML = "";
-  tasks.forEach(t=>{
-    const li = document.createElement("li");
-    li.innerHTML = `<input type="checkbox" ${t.done?"checked":""} disabled> ${t.text}`;
-    taskList.appendChild(li);
+  if (pipelineChart) pipelineChart.destroy();
+  pipelineChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: ["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],
+      datasets: [{
+        label: "Deliveries",
+        data: [5, 8, 6, 10, 7, 9],
+        borderColor: "#0a53c1",
+        backgroundColor: "rgba(10,83,193,0.2)"
+      }]
+    }
   });
 }
 
-function openForm(type) {
-  const modal = document.getElementById("settingsModal");
-  modal.style.display = "block";
-  document.querySelectorAll(".settings-form").forEach(f => f.style.display = "none");
 
-  const map = {
-    personal: { title: "Update Personal Details", id: "personalForm" },
-    password: { title: "Change Password", id: "passwordForm" },
-    delete:   { title: "Delete Account", id: "deleteForm" },
-    terms:    { title: "Terms of Service", id: "termsForm" },
-    report:   { title: "Report a Problem", id: "reportForm" }
-  };
-  const cfg = map[type] || map.personal;
-  document.getElementById("settingsModalTitle").innerText = cfg.title;
-  const form = document.getElementById(cfg.id);
-  if (form) form.style.display = "block";
-}
-function closeForm(){
-  const modal = document.getElementById("settingsModal");
-  if(modal) modal.style.display = "none";
-}
+function initCommodity() {
+  const ctx = document.getElementById("pieChart");
+  if (!ctx) return;
 
-document.addEventListener("submit", function(e){
-  const inSettings = e.target.closest("#settingsModal");
-  if(inSettings){
-    e.preventDefault();
-    alert("Settings saved.");
-    closeForm();
-  }
-});
-
-document.querySelectorAll('#vendorTable td[data-stars]').forEach(td => {
-  const stars = parseInt(td.getAttribute('data-stars')) || 0;
-  td.innerHTML = '★'.repeat(stars) + '☆'.repeat(5 - stars);
-});
-
-function attachRefLinks(){
-  document.querySelectorAll(".ref-link").forEach(link=>{
-    link.onclick=(e)=>{
-      e.preventDefault();
-      const ref = link.textContent.trim();
-      renderPage("Reports", ref);
-    };
-  });
-}
-
-function initCommodity(){
-  const ctx = document.getElementById('pieChart');
-  if(!ctx) return;
-
-  new Chart(ctx, {
-    type: 'pie',
+  if (pieChart) pieChart.destroy();
+  pieChart = new Chart(ctx, {
+    type: "pie",
     data: getPieData(),
-    options: { responsive: false, plugins: { legend: { position: 'bottom' } } }
+    options: {
+      responsive: false,
+      plugins: { legend: { position: "bottom" } }
+    }
   });
 }
 
@@ -606,20 +518,23 @@ function getPieData() {
   statuses.forEach(status => { if (counts[status] !== undefined) counts[status]++; });
   return {
     labels: ['High', 'Low', 'Stable'],
-    datasets: [{ data: [counts.High, counts.Low, counts.Stable], backgroundColor: ['#ff4d4d','#9fff80','#ffd966'] }]
+    datasets: [{
+      data: [counts.High, counts.Low, counts.Stable],
+      backgroundColor: ['#ff4d4d','#9fff80','#ffd966']
+    }]
   };
 }
 
 function openDataModal(businessName) {
   const titleEl = document.getElementById('dataModalTitle');
   const modal = document.getElementById('dataModal');
-  if(!titleEl || !modal) return;
+  if (!titleEl || !modal) return;
 
   titleEl.innerText = businessName + ' - Past 6 Months';
   modal.style.display = 'flex';
 
   const ctxLine = document.getElementById('lineChart').getContext('2d');
-  if (window.lineChart) window.lineChart.destroy();
+  if (lineChart) lineChart.destroy();
 
   let row = [...document.querySelectorAll('#commodityTable tbody tr')]
               .find(r => r.cells[0].innerText.trim() === businessName);
@@ -627,22 +542,35 @@ function openDataModal(businessName) {
   let curr = row ? parseFloat(row.cells[2].innerText) || 0 : 0;
 
   const exampleLabels = ["Jan","Feb","Mar","Apr","May","Jun"];
-  const exampleData = [prev, prev+((curr-prev)/5), prev+((curr-prev)/3), (prev+curr)/2, curr-((curr-prev)/5), curr];
+  const exampleData = [prev, prev+((curr-prev)/5), prev+((curr-prev)/3),
+                       (prev+curr)/2, curr-((curr-prev)/5), curr];
 
-  window.lineChart = new Chart(ctxLine, {
+  lineChart = new Chart(ctxLine, {
     type: "line",
-    data: { labels: exampleLabels, datasets: [{ label: businessName + " Prices", data: exampleData, borderColor: "black", backgroundColor: "rgba(0,0,0,0.1)", fill: false, tension: 0.2 }] }
+    data: {
+      labels: exampleLabels,
+      datasets: [{
+        label: businessName + " Prices",
+        data: exampleData,
+        borderColor: "black",
+        backgroundColor: "rgba(0,0,0,0.1)",
+        fill: false,
+        tension: 0.2
+      }]
+    }
   });
 }
 function closeDataModal() {
   const modal = document.getElementById("dataModal");
-  if(modal) modal.style.display = "none";
+  if (modal) modal.style.display = "none";
 }
 
-function initReports(refNo){
+
+function initReports(refNo) {
   const ctx = document.getElementById("vendorChart");
-  if(ctx){
-    new Chart(ctx,{
+  if (ctx) {
+    if (lineChart) lineChart.destroy();
+    lineChart = new Chart(ctx, {
       type:"bar",
       data:{
         labels:["Takoyaki","Meat Shop","Catering","Rental"],
@@ -651,7 +579,7 @@ function initReports(refNo){
     });
   }
 
-  const complaints={
+  const complaints = {
     "RPT-001":"Vendor delayed chicken delivery",
     "RPT-002":"Incomplete Takoyaki supplies",
     "RPT-003":"Catering delivery arrived late",
@@ -678,8 +606,9 @@ function initReports(refNo){
   if(refNo && complaints[refNo]){
     container.style.display="block";
     message.textContent=`(${refNo}) ${complaints[refNo]}`;
-    select.value=refNo;
+    if (select) select.value=refNo;
   }
+
 
   const chatBox=document.getElementById("chatboxContainer");
   const chatInput=document.getElementById("chatInput");
@@ -695,18 +624,10 @@ function initReports(refNo){
 
   function botReply(msg){
     msg=msg.toLowerCase();
-    if(msg.includes("status")){
-      return "📊 Current reports show most vendors are on track, with 2 pending complaints.";
-    }
-    if(msg.includes("performance")){
-      return "✅ Vendor performance is averaging 85%, with rentals leading at 90%.";
-    }
-    if(msg.includes("complaint")){
-      return "⚠️ There are 4 active complaints. Select a Ref No. to view details.";
-    }
-    if(msg.includes("hello")||msg.includes("hi")){
-      return "👋 Hello! How can I assist you today?";
-    }
+    if(msg.includes("status")) return "📊 Current reports show most vendors are on track, with 2 pending complaints.";
+    if(msg.includes("performance")) return "✅ Vendor performance is averaging 85%, with rentals leading at 90%.";
+    if(msg.includes("complaint")) return "⚠️ There are 4 active complaints. Select a Ref No. to view details.";
+    if(msg.includes("hello")||msg.includes("hi")) return "👋 Hello! How can I assist you today?";
     return "🤖 Sorry, I don’t have an answer for that. Try asking about 'status', 'performance', or 'complaints'.";
   }
 
@@ -721,7 +642,6 @@ function initReports(refNo){
     };
   }
 }
-
 
 function renderPage(page, refNo = null) {
   contentArea.innerHTML = pages[page] || `<h1>${page}</h1>`;
@@ -741,12 +661,13 @@ function renderPage(page, refNo = null) {
     if (page === "Inspection") {
       makeStarsEditable('#inspectionTable td[data-stars]');
     }
+    if (page === "Reports") {
+      initReports(refNo);
+    }
   }, 50); 
 }
-  
-setTimeout(() => {
-  makeStarsEditable('td[data-stars]');
-}, 100);
+
+
 document.querySelectorAll(".nav-item").forEach(link=>{
   if(!link.classList.contains("logout-btn")){
     link.onclick=(e)=>{
@@ -757,9 +678,10 @@ document.querySelectorAll(".nav-item").forEach(link=>{
     };
   }
 });
-  
+
 document.getElementById("backBtn").onclick=()=>window.history.back();
 document.getElementById("menuBtn").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
+
 
 renderPage("dashboard");
 </script>
