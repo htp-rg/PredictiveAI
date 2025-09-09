@@ -455,6 +455,18 @@ function initDashboard(){
       }
     });
   }
+
+  function initReports(refNo){
+  const ctx = document.getElementById("vendorChart");
+  if(ctx){
+    new Chart(ctx,{
+      type:"bar",
+      data:{
+        labels:["Takoyaki","Meat Shop","Catering","Rental"],
+        datasets:[{label:"Performance",data:[87,65,72,90],backgroundColor:"#0a53c1"}]
+      }
+    });
+  }
   
   function makeStarsEditable(selector){
   document.querySelectorAll(selector).forEach(td => {
